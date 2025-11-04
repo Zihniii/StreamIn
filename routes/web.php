@@ -22,6 +22,11 @@ use App\Http\Controllers\WishlistPackageController;
 |
 */
 
+
 Route::get('/', function () {
-    return view('homepage');
+	return view('homepage');
+});
+
+Route::get('chat', function () {
+	return view('chat');
 });
