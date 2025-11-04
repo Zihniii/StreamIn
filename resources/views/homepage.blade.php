@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,7 @@
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #b91d4e 0%, #e85d8a 100%);
-            --card-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         }
 
         body {
@@ -50,7 +51,7 @@
             width: 48px;
             height: 48px;
             border-radius: 12px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
             display: flex;
@@ -217,7 +218,7 @@
             right: 0;
             background: white;
             padding: 0.75rem 0 1.5rem 0;
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
         }
 
         .nav-item {
@@ -241,172 +242,179 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container-fluid p-0" style="max-width: 480px; margin: 0 auto;">
         <!-- Header -->
         <div class="header">
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div class="d-flex align-items-center">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" alt="Profile" style="width: 48px; height: 48px; border-radius: 50%; margin-right: 1rem;">
-                    <h1 class="greeting mb-0">Hai, John Doe!</h1>
-                </div>
-                <div class="header-icons">
-                    <div class="icon-wrapper">
-                        <button class="icon-btn">
-                            <i class="far fa-bookmark"></i>
-                        </button>
-                        <div class="icon-label">Saved</div>
-                    </div>
-                    <div class="icon-wrapper">
-                        <button class="icon-btn">
-                            <i class="far fa-envelope"></i>
-                        </button>
-                        <div class="icon-label">Inbox</div>
-                    </div>
-                </div>
-            </div>
         </div>
 
-        <!-- Content Area -->
-        <div class="content-area">
-            <!-- Active Package Card -->
-            <div class="package-card">
-                <div id="packageCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#packageCarousel" data-bs-slide-to="0" class="active"></button>
-                        <button type="button" data-bs-target="#packageCarousel" data-bs-slide-to="1"></button>
-                        <button type="button" data-bs-target="#packageCarousel" data-bs-slide-to="2"></button>
-                    </div>
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <div class="netflix-logo me-3">N</div>
-                                    <h3 class="mb-0" style="font-weight: 700;">Netflix</h3>
-                                </div>
-                                <i class="fas fa-chevron-right text-muted"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <span class="time-badge">
-                        <i class="far fa-clock"></i>
-                        1d 22h 48m
-                    </span>
-                </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="d-flex align-items-center">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" alt="Profile"
+                    style="width: 48px; height: 48px; border-radius: 50%; margin-right: 1rem;">
+                <h1 class="greeting mb-0">Hai, John Doe!</h1>
             </div>
-
-            <!-- Search Box -->
-            <div class="position-relative">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="form-control search-box" placeholder="Search your package">
-            </div>
-
-            <!-- Applications Section -->
-            <h2 class="section-title">Applications</h2>
-            <div class="d-flex gap-3 mb-4 overflow-auto pb-2" style="scrollbar-width: none; -ms-overflow-style: none;">
-                <div class="app-item" style="min-width: 72px;">
-                    <div class="app-icon">
-                        <div class="netflix-logo" style="width: 100%; height: 100%; font-size: 2.5rem;">N</div>
-                    </div>
-                    <div>Netflix</div>
+            <div class="header-icons">
+                <div class="icon-wrapper">
+                    <button class="icon-btn">
+                        <i class="far fa-bookmark"></i>
+                    </button>
+                    <div class="icon-label">Saved</div>
                 </div>
-                <div class="app-item" style="min-width: 72px;">
-                    <div class="app-icon">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg" alt="Prime" style="width: 80%; height: auto;">
-                    </div>
-                    <div>Prime</div>
-                </div>
-                <div class="app-item" style="min-width: 72px;">
-                    <div class="app-icon">
-                        <i class="fas fa-play-circle" style="font-size: 2.5rem; color: #FFD700;"></i>
-                    </div>
-                    <div>VIU</div>
-                </div>
-                <div class="app-item" style="min-width: 72px;">
-                    <div class="app-icon">
-                        <i class="fas fa-play-circle" style="font-size: 2.5rem; color: #E50914;"></i>
-                    </div>
-                    <div>Vidio</div>
-                </div>
-                <div class="app-item" style="min-width: 72px;">
-                    <div class="app-icon">
-                        <i class="fas fa-star" style="font-size: 2.5rem; color: #00A8E1;"></i>
-                    </div>
-                    <div>Hotstar</div>
-                </div>
-            </div>
-
-            <!-- Recommended Section -->
-            <h2 class="section-title">Recommended for You</h2>
-            <div class="filter-tabs d-flex gap-2 mb-3">
-                <button class="btn btn-primary">Hourly</button>
-                <button class="btn btn-light">Daily</button>
-                <button class="btn btn-light">Monthly</button>
-            </div>
-
-            <div class="row g-3" style="margin-bottom: 100px;">
-                <div class="col-6">
-                    <div class="recommendation-card">
-                        <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400&h=300&fit=crop" alt="Netflix">
-                        <div class="recommendation-info">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="recommendation-title">Netflix</div>
-                                <div class="recommendation-duration">1 Hour</div>
-                            </div>
-                            <div class="recommendation-price">Rp 3.000</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="recommendation-card">
-                        <img src="https://images.unsplash.com/photo-1595769816263-9b910be24d5f?w=400&h=300&fit=crop" alt="Prime Video">
-                        <div class="recommendation-info">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="recommendation-title">Prime Video</div>
-                                <div class="recommendation-duration">3 Hour</div>
-                            </div>
-                            <div class="recommendation-price">Rp 5.000</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Navigation -->
-        <div class="bottom-nav">
-            <div class="row g-0">
-                <div class="col">
-                    <a href="#" class="nav-item active">
-                        <i class="fas fa-home"></i>
-                        Home
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="#" class="nav-item">
-                        <i class="fas fa-chart-bar"></i>
-                        Dashboard
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="#" class="nav-item">
-                        <i class="fas fa-comments"></i>
-                        Chat
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="#" class="nav-item">
-                        <i class="fas fa-user"></i>
-                        Profile
-                    </a>
+                <div class="icon-wrapper">
+                    <button class="icon-btn">
+                        <i class="far fa-envelope"></i>
+                    </button>
+                    <div class="icon-label">Inbox</div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Content Area -->
+    <div class="content-area">
+        <!-- Active Package Card -->
+        <div class="package-card">
+            <div id="packageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#packageCarousel" data-bs-slide-to="0"
+                        class="active"></button>
+                    <button type="button" data-bs-target="#packageCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#packageCarousel" data-bs-slide-to="2"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="netflix-logo me-3">N</div>
+                                <h3 class="mb-0" style="font-weight: 700;">Netflix</h3>
+                            </div>
+                            <i class="fas fa-chevron-right text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <span class="time-badge">
+                    <i class="far fa-clock"></i>
+                    1d 22h 48m
+                </span>
+            </div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="position-relative">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="form-control search-box" placeholder="Search your package">
+        </div>
+
+        <!-- Applications Section -->
+        <h2 class="section-title">Applications</h2>
+        <div class="d-flex gap-3 mb-4 overflow-auto pb-2" style="scrollbar-width: none; -ms-overflow-style: none;">
+            <div class="app-item" style="min-width: 72px;">
+                <div class="app-icon">
+                    <div class="netflix-logo" style="width: 100%; height: 100%; font-size: 2.5rem;">N</div>
+                </div>
+                <div>Netflix</div>
+            </div>
+            <div class="app-item" style="min-width: 72px;">
+                <div class="app-icon">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg"
+                        alt="Prime" style="width: 80%; height: auto;">
+                </div>
+                <div>Prime</div>
+            </div>
+            <div class="app-item" style="min-width: 72px;">
+                <div class="app-icon">
+                    <i class="fas fa-play-circle" style="font-size: 2.5rem; color: #FFD700;"></i>
+                </div>
+                <div>VIU</div>
+            </div>
+            <div class="app-item" style="min-width: 72px;">
+                <div class="app-icon">
+                    <i class="fas fa-play-circle" style="font-size: 2.5rem; color: #E50914;"></i>
+                </div>
+                <div>Vidio</div>
+            </div>
+            <div class="app-item" style="min-width: 72px;">
+                <div class="app-icon">
+                    <i class="fas fa-star" style="font-size: 2.5rem; color: #00A8E1;"></i>
+                </div>
+                <div>Hotstar</div>
+            </div>
+        </div>
+
+        <!-- Recommended Section -->
+        <h2 class="section-title">Recommended for You</h2>
+        <div class="filter-tabs d-flex gap-2 mb-3">
+            <button class="btn btn-primary">Hourly</button>
+            <button class="btn btn-light">Daily</button>
+            <button class="btn btn-light">Monthly</button>
+        </div>
+
+        <div class="row g-3" style="margin-bottom: 100px;">
+            <div class="col-6">
+                <div class="recommendation-card">
+                    <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400&h=300&fit=crop"
+                        alt="Netflix">
+                    <div class="recommendation-info">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="recommendation-title">Netflix</div>
+                            <div class="recommendation-duration">1 Hour</div>
+                        </div>
+                        <div class="recommendation-price">Rp 3.000</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="recommendation-card">
+                    <img src="https://images.unsplash.com/photo-1595769816263-9b910be24d5f?w=400&h=300&fit=crop"
+                        alt="Prime Video">
+                    <div class="recommendation-info">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="recommendation-title">Prime Video</div>
+                            <div class="recommendation-duration">3 Hour</div>
+                        </div>
+                        <div class="recommendation-price">Rp 5.000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="row g-0">
+            <div class="col">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+            </div>
+            <div class="col">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    Dashboard
+                </a>
+            </div>
+            <div class="col">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-comments"></i>
+                    Chat
+                </a>
+            </div>
+            <div class="col">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
