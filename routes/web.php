@@ -1,6 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AccountPackageController;
+use App\Http\Controllers\ChatMessageController;
+use App\Http\Controllers\ChatTicketController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ReportissueController;
+use App\Http\Controllers\SubcriptionController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WishlistPackageController;
 
 /*
 |--------------------------------------------------------------------------
