@@ -24,9 +24,33 @@ use App\Http\Controllers\WishlistPackageController;
 
 
 Route::get('/', function () {
-	return view('homepage');
+	return view('auth.welcome');
 });
+Route::get('login', function () {
+    return view('auth.login');
+})->name('login');
+
+Route::get('register', function () {
+    return view('auth.register');
+})->name('register');
+  
+Route::get('forgot-password', function () {
+    return view('auth.forgot-password');
+})->name('password.request');
+
+Route::get('reset-password', function () {
+    return view('auth.reset-password');
+})->name('reset-password');
+
+Route::get('success-updatedpass', function () {
+    return view('auth.success-updatedpass');
+})->name('success-updatedpass');
+
 
 Route::get('chat', function () {
 	return view('chat');
+});
+
+Route::get('homepage', function () {
+	return view('homepage');
 });
