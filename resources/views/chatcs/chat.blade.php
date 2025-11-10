@@ -238,7 +238,7 @@
 
     <!-- Header -->
     <div class="header">
-        <button class="back-btn" onclick="window.history.back()">
+        <button class="back-btn" onclick="window.location.href='{{ url('/chat') }}'">
             <i class="bi bi-chevron-left"></i>
         </button>
         <div class="header-content">
@@ -251,18 +251,14 @@
 
     <!-- Chat Area -->
     <div class="chat-area" id="chatArea">
-        <div class="message-container-left">
-            <div class="message message-bot">
-                How can I Help?
-            </div>
-        </div>
+        <!-- Greeting message will be added by JavaScript -->
     </div>
 
     <!-- Input Area -->
     <div class="input-area">
         <div class="input-group-custom">
             <input type="text" class="message-input" id="messageInput" placeholder="Write your issue here...">
-            <a href="chatphoto.blade.php" class="attachment-btn">
+            <a href="{{ url('/chatphoto') }}" class="attachment-btn">
                 <i class="bi bi-paperclip"></i>
             </a>
             <button class="send-btn" id="sendBtn">
@@ -279,6 +275,10 @@
 
         // Load chat history from localStorage
         window.addEventListener('DOMContentLoaded', function() {
+            // Always add greeting message at the top
+            addGreetingMessage();
+
+            // Load previous chat history
             loadChatHistory();
 
             // Check if there's uploaded photo from chatphoto page
@@ -308,7 +308,16 @@
                 localStorage.removeItem('uploadedPhoto');
                 saveChatHistory();
             }
+
+            chatArea.scrollTop = chatArea.scrollHeight;
         });
+
+        function addGreetingMessage() {
+            const greetingDiv = document.createElement('div');
+            greetingDiv.className = 'message-container-left';
+            greetingDiv.innerHTML = `<div class="message message-bot">How can I Help?</div>`;
+            chatArea.appendChild(greetingDiv);
+        }
 
         // Predefined bot responses
         const botResponses = {
@@ -366,8 +375,14 @@
         function loadChatHistory() {
             const savedChat = localStorage.getItem('chatHistory');
             if (savedChat) {
-                chatArea.innerHTML = savedChat;
-                chatArea.scrollTop = chatArea.scrollHeight;
+                // Create a temporary div to hold the saved chat
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = savedChat;
+
+                // Append all saved messages (skip the greeting since we already added it)
+                Array.from(tempDiv.children).forEach(child => {
+                    chatArea.appendChild(child);
+                });
             }
         }
     </script>

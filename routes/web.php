@@ -48,11 +48,11 @@ Route::get('success-updatedpass', function () {
 
 
 Route::get('chat', function () {
-	return view('chat.chat');
+	return view('chatcs.chat');
 });
 
 Route::get('chatphoto', function () {
-	return view('chat.chatphoto');
+	return view('chatcs.chatphoto');
 });
 
 Route::get('homepage', function () {

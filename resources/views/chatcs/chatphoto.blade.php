@@ -225,7 +225,7 @@
 
     <!-- Header -->
     <div class="header">
-        <a href="chat.blade.php" class="back-btn">
+        <a href="{{ url('/chat') }}" class="back-btn">
             <i class="bi bi-chevron-left"></i>
         </a>
         <div class="header-content">
@@ -324,7 +324,7 @@
                 // Save image to localStorage
                 localStorage.setItem('uploadedPhoto', selectedImageData);
                 // Redirect back to chat page
-                window.location.href = 'chat.blade.php';
+                window.location.href = '{{ url("/chat") }}';
             }
         });
     </script>
