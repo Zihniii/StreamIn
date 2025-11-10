@@ -33,7 +33,7 @@ Route::get('login', function () {
 Route::get('register', function () {
     return view('auth.register');
 })->name('register');
-  
+
 Route::get('forgot-password', function () {
     return view('auth.forgot-password');
 })->name('password.request');
@@ -48,7 +48,11 @@ Route::get('success-updatedpass', function () {
 
 
 Route::get('chat', function () {
-	return view('chat');
+	return view('chat.chat');
+});
+
+Route::get('chatphoto', function () {
+	return view('chat.chatphoto');
 });
 
 Route::get('homepage', function () {

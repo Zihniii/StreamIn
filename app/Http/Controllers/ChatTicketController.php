@@ -7,25 +7,39 @@ use App\Models\ChatTicket;
 
 class ChatTicketController extends Controller
 {
-    public function BuatTicket(Request $request)
+    // Cari tiket aktif atau buat baru kalau belum ada
+    public function getOrCreateTicket($userID, $issueCategory = null, $issueSubCategory = null)
     {
-        // ✅ 1. Validasi input
-        $request->validate([
-            'user_id' => 'required|integer',
-            'subject' => 'nullable|string|max:255'
-        ]);
+        // Cek apakah user punya tiket dengan status open
+        $ticket = ChatTicket::where('userID', $userID)
+            ->where('status', 'open')
+            ->latest()
+            ->first();
 
-        // ✅ 2. Buat record ticket baru
-        $ticket = ChatTicket::create([
-            'user_id' => $request->user_id,
-            'subject' => $request->subject ?? 'Chat Baru',
-            'status' => 'open',
-        ]);
+        // Kalau tidak ada tiket aktif, buat baru
+        if (!$ticket) {
+            $ticket = ChatTicket::create([
+                'userID' => $userID,
+                'issueCategory' => $issueCategory ?? 'General',
+                'issueSubCategory' => $issueSubCategory ?? 'Other',
+                'status' => 'open',
+                'createdAt' => now(),
+            ]);
+        }
 
-        // ✅ 3. Return response sukses
-        return response()->json([
-            'message' => 'Ticket chat berhasil dibuat',
-            'ticket_id' => $ticket->id
-        ], 201);
+        return $ticket;
+    }
+
+    // ✅ Menutup tiket secara manual (misalnya saat kasus sudah selesai)
+    public function close($id)
+    {
+        $ticket = ChatTicket::findOrFail($id);
+
+        // Cek dulu biar gak error kalau udah closed
+        if ($ticket->status !== 'closed') {
+            $ticket->update(['status' => 'closed']);
+        }
+
+        return redirect()->back()->with('success', 'Tiket berhasil ditutup.');
     }
 }

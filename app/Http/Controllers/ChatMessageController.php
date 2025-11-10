@@ -4,64 +4,57 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ChatMessage;
+use App\Http\Controllers\ChatTicketController;
 use App\Models\ChatTicket;
-use Illuminate\Support\Facades\Storage;
 
 class ChatMessageController extends Controller
 {
-    public function KirimPesan(Request $request)
-    {
-        // 1️⃣ Validasi pesan dan lampiran
-        $this->ValidasiPesan($request);
-        if ($request->hasFile('lampiran')) {
-            $this->ValidasiLampiran($request);
-        }
-
-        // 2️⃣ Simpan pesan ke database
-        $pesan = $this->SimpanPesan($request);
-
-        // 3️⃣ Teruskan pesan ke admin / sistem notifikasi
-        $this->TeruskanPesan($pesan);
-
-        return response()->json([
-            'message' => 'Pesan berhasil dikirim',
-            'data' => $pesan
-        ], 201);
-    }
-
-    protected function ValidasiPesan($request)
+    public function store(Request $request)
     {
         $request->validate([
-            'ticket_id' => 'required|integer|exists:chat_tickets,id',
-            'pesan' => 'required|string'
+            'message' => 'required|string|max:500',
+            'userID' => 'required|integer',
+        ], [
+            'message.required' => 'Pesan tidak boleh kosong.',
         ]);
+
+        // 🔹 Panggil fungsi getOrCreateTicket() dari ChatTicketController
+        $ticketController = new ChatTicketController();
+        $ticket = $ticketController->getOrCreateTicket(
+            $request->userID,
+            $request->input('issueCategory'),
+            $request->input('issueSubCategory')
+        );
+
+        // 🔹 Simpan pesan user ke tabel ChatMessage
+        ChatMessage::create([
+            'sender' => 'user',
+            'messageText' => $request->message,
+            'ticketID' => $ticket->ticketID, // ✅ ubah ke ticketID (bukan chatTicketID)
+            'sentAt' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Pesan berhasil dikirim.');
     }
 
-    protected function ValidasiLampiran($request)
+    // 🔹 Menampilkan halaman chat beserta semua pesan di tiket aktif
+    public function index(Request $request)
     {
-        $request->validate([
-            'lampiran' => 'file|max:2048|mimes:jpg,jpeg,png,pdf,docx'
-        ]);
-    }
+        $userID = auth()->id() ?? 1; // sementara pakai ID 1 jika belum login
 
-    protected function SimpanPesan($request)
-    {
-        $lampiranPath = null;
-        if ($request->hasFile('lampiran')) {
-            $lampiranPath = $request->file('lampiran')->store('lampiran_chat', 'public');
+        $ticket = ChatTicket::where('userID', $userID)
+            ->where('status', 'open')
+            ->latest()
+            ->first();
+
+        $messages = [];
+
+        if ($ticket) {
+            $messages = ChatMessage::where('ticketID', $ticket->ticketID)
+                ->orderBy('sentAt', 'asc')
+                ->get();
         }
 
-        return ChatMessage::create([
-            'ticket_id' => $request->ticket_id,
-            'user_id' => $request->user_id,
-            'pesan' => $request->pesan,
-            'lampiran' => $lampiranPath,
-        ]);
-    }
-
-    protected function TeruskanPesan($pesan)
-    {
-        // Bisa diarahkan ke notifikasi admin, misalnya
-        \Log::info('Pesan diteruskan ke admin', ['pesan_id' => $pesan->id]);
+        return view('chat', compact('messages', 'ticket', 'userID'));
     }
 }
