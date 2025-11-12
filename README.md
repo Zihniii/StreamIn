@@ -1,11 +1,12 @@
 # 🎬 Stream.in — Integrated Digital Entertainment Subscription Management Platform  
 
 > **Kelompok 10 PPPL C**  
-> 👩‍💻 Zihni Aryanto P. R. — 5026231012 — [@Zihnii](https://github.com/Zihnii)  
-> 👨‍💻 Bagas Rafi D. — 5026231091 — [@Bagas-Rafi-Dewantara](https://github.com/Bagas-Rafi-Dewantara)  
-> 👩‍💻 Auliya Malika I. — 5026231142 — [@auliamalik](https://github.com/auliamalik)  
-> 👨‍💻 M. Naufal Erwin E. — 5026231152 — [@NopalErwin](https://github.com/NopalErwin)  
-> 👩‍💻 Adifa Fajri S. — 5026231178 — [@adifafajri](https://github.com/adifafajri)
+> **Kelompok 10 PPPL C**  
+> 👩‍💻 Zihni Aryanto P. R. — 5026231012 — [@Zihnii](https://github.com/Zihnii) — *(branch: zihni)*  
+> 👨‍💻 Bagas Rafi D. — 5026231091 — [@Bagas-Rafi-Dewantara](https://github.com/Bagas-Rafi-Dewantara) — *(branch: bagas)*  
+> 👩‍💻 Auliya Malika I. — 5026231142 — [@auliamalik](https://github.com/auliamalik) — *(branch: auliya)*  
+> 👨‍💻 M. Naufal Erwin E. — 5026231152 — [@NopalErwin](https://github.com/NopalErwin) — *(branch: nopal)*  
+> 👩‍💻 Adifa Fajri S. — 5026231178 — [@adifafajri](https://github.com/adifafajri) — *(branch: adifa)*  
 
 ---
 
