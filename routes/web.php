@@ -58,3 +58,16 @@ Route::get('chatphoto', function () {
 Route::get('homepage', function () {
 	return view('homepage');
 });
+
+Route::get('package', function () {
+	return view('package');
+});
+
+Route::get('payment', function () {
+	return view('payment');
+});
+
+
+
+
+
