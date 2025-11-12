@@ -1,11 +1,11 @@
-# 🎬 Stream.in — Integrated Digital Subscription Management Platform  
+# 🎬 Stream.in — Integrated Digital Entertainment Subscription Management Platform  
 
 > **Kelompok 10 PPPL C**  
-> 👩‍💻 Zihni Aryanto P. R. (5026231012)  
-> 👨‍💻 Bagas Rafi D. (5026231091)  
-> 👩‍💻 Auliya Malika I. (5026231142)  
-> 👨‍💻 M. Naufal Erwin E. (5026231152)  
-> 👩‍💻 Adifa Fajri S. (5026231178)
+> 👩‍💻 Zihni Aryanto P. R. — 5026231012 — [@Zihnii](https://github.com/Zihnii)  
+> 👨‍💻 Bagas Rafi D. — 5026231091 — [@Bagas-Rafi-Dewantara](https://github.com/Bagas-Rafi-Dewantara)  
+> 👩‍💻 Auliya Malika I. — 5026231142 — [@auliamalik](https://github.com/auliamalik)  
+> 👨‍💻 M. Naufal Erwin E. — 5026231152 — [@NopalErwin](https://github.com/NopalErwin)  
+> 👩‍💻 Adifa Fajri S. — 5026231178 — [@adifafajri](https://github.com/adifafajri)
 
 ---
 
