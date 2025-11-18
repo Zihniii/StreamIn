@@ -2,7 +2,7 @@
 
 > **Kelompok 10 PPPL C**  
 > **Kelompok 10 PPPL C**  
-> 👩‍💻 Zihni Aryanto P. R. — 5026231012 — [@Zihnii](https://github.com/Zihnii) — *(branch: zihni)*  
+> 👩‍💻 Zihni Aryanto P. R. — 5026231012 — [@Zihnii](https://github.com/Zihniii) — *(branch: zihni)*  
 > 👨‍💻 Bagas Rafi D. — 5026231091 — [@Bagas-Rafi-Dewantara](https://github.com/Bagas-Rafi-Dewantara) — *(branch: bagas)*  
 > 👩‍💻 Auliya Malika I. — 5026231142 — [@auliamalik](https://github.com/auliamalik) — *(branch: auliya)*  
 > 👨‍💻 M. Naufal Erwin E. — 5026231152 — [@NopalErwin](https://github.com/NopalErwin) — *(branch: nopal)*  
