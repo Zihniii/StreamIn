@@ -20,19 +20,19 @@
 
             <form id="loginForm" method="POST" action="{{ route('login') }}" onsubmit="return handleLogin(event)">
                 @csrf
-                
+
                 <div class="form-group">
                     <label class="form-label">
                         Email Address<span class="required">*</span>
                     </label>
                     <div class="input-wrapper">
-                        <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                               id="loginEmail" name="email" value="{{ old('email') }}" 
-                               placeholder="Input your username" required>
+                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                            id="loginEmail" name="email" value="{{ old('email') }}"
+                            placeholder="Input your username" required>
                         <span class="input-icon success" id="loginEmailIcon" style="display: none;">✓</span>
                     </div>
                     @error('email')
-                        <div class="error-message">{{ $message }}</div>
+                    <div class="error-message">{{ $message }}</div>
                     @enderror
                 </div>
 
@@ -43,16 +43,13 @@
                         </label>
                         <a class="forgot-link" href="{{ route('password.request') }}">Forgot Password?</a>
                     </div>
-                    
+
                     <div class="input-wrapper">
-                        <input type="password" class="form-control @error('password') is-invalid @enderror" 
-                               id="loginPassword" name="password" placeholder="Input your password" required>
-                        <span class="input-icon" onclick="togglePassword('loginPassword', this)">
-                            <img src="{{ asset('img/eye-close.png') }}" alt="toggle password">
-                        </span>
+                        <input type="password" class="form-control @error('password') is-invalid @enderror"
+                            id="loginPassword" name="password" placeholder="Input your password" required>
                     </div>
                     @error('password')
-                        <div class="error-message">{{ $message }}</div>
+                    <div class="error-message">{{ $message }}</div>
                     @enderror
                     <div class="error-message" id="loginError" style="display: none;">Invalid Email or Password</div>
                 </div>
@@ -67,4 +64,3 @@
     </div>
 </div>
 @endsection
-

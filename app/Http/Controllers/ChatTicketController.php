@@ -7,16 +7,19 @@ use App\Models\ChatTicket;
 
 class ChatTicketController extends Controller
 {
-    // Cari tiket aktif atau buat baru kalau belum ada
+    // ======================================
+    //  CARI TIKET OPEN ATAU BUAT BARU
+    // ======================================
     public function getOrCreateTicket($userID, $issueCategory = null, $issueSubCategory = null)
     {
-        // Cek apakah user punya tiket dengan status open
+        // Cari tiket open milik user
         $ticket = ChatTicket::where('userID', $userID)
             ->where('status', 'open')
-            ->latest()
+            ->orderBy('createdAt', 'desc') // GANTI created_at → createdAt
             ->first();
 
-        // Kalau tidak ada tiket aktif, buat baru
+
+        // Kalau tidak ada tiket open = buat baru
         if (!$ticket) {
             $ticket = ChatTicket::create([
                 'userID' => $userID,
@@ -30,12 +33,13 @@ class ChatTicketController extends Controller
         return $ticket;
     }
 
-    // ✅ Menutup tiket secara manual (misalnya saat kasus sudah selesai)
+    // ======================================
+    //  TUTUP TIKET
+    // ======================================
     public function close($id)
     {
         $ticket = ChatTicket::findOrFail($id);
 
-        // Cek dulu biar gak error kalau udah closed
         if ($ticket->status !== 'closed') {
             $ticket->update(['status' => 'closed']);
         }

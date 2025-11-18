@@ -159,7 +159,7 @@ body {
 
 .form-control {
     width: 100%;
-    padding: 14px 50px 14px 16px;
+    padding: 14px 16px 14px 24px;
     border: 1.5px solid #e0e0e0;
     border-radius: 10px;
     font-size: 14px;
@@ -176,6 +176,15 @@ body {
 .form-control.is-valid {
     background-image: none !important;
     border-color: var(--success-color);
+    border-color: var(--error-color);
+    
+    /* Geser ikon tanda seru (!) ke kiri sejauh 45px 
+       supaya tidak tertutup ikon mata bawaan browser */
+    background-position: right 45px center;
+    
+    /* Tambah ruang kosong di kanan supaya teks panjang 
+       tidak menabrak kedua ikon tersebut */
+    padding-right: 70px;
 }
 
 .form-control.is-invalid {
