@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,40 +49,6 @@ Route::get('homepage', function () {
     return view('homepage');
 });
 
-// Dashboard Preview dengan Dummy Data
-Route::get('dashboard', function () {
-    // Dummy user data
-    $dummyUser = (object)[
-        'name' => 'John Doe',
-        'avatar' => null,
-        'points' => 250,
-        'badge' => 'The Watcher'
-    ];
-
-    // Dummy active packages
-    $activePackages = collect([
-        (object)[
-            'id' => 1,
-            'platform_name' => 'Netflix',
-            'duration' => 3,
-            'expires_at' => '2025-04-31 15:20:00',
-            'status' => 'active'
-        ],
-        (object)[
-            'id' => 2,
-            'platform_name' => 'Prime Video',
-            'duration' => 3,
-            'expires_at' => '2025-04-24 15:20:00',
-            'status' => 'active'
-        ],
-        (object)[
-            'id' => 3,
-            'platform_name' => 'Viu',
-            'duration' => 3,
-            'expires_at' => '2025-04-22 13:20:00',
-            'status' => 'active'
-        ],
-    ]);
-
-    return view('dashboard', compact('activePackages', 'dummyUser'));
-})->name('dashboard');
+Route::get('package', function () {
+    return view('package');
+});

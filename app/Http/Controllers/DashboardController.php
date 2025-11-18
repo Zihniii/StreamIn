@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Subscription;
-use App\Models\Package;
 use App\Models\Order;
+use App\Models\Package;
+use App\Models\Subscription;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     /**
      * Create a new controller instance.
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 
     /**
      * Display the dashboard with active packages
@@ -40,10 +39,11 @@ class DashboardController extends Controller
         // Get packages expiring soon (within 3 days)
         $expiringPackages = $activePackages->filter(function ($subscription) {
             $daysUntilExpiry = Carbon::now()->diffInDays($subscription->expires_at, false);
+
             return $daysUntilExpiry <= 3 && $daysUntilExpiry >= 0;
         });
 
-        return view('dashboard', compact(
+        return view('dashboard.dashboard', compact(
             'activePackages',
             'totalActivePackages',
             'expiringPackages'
@@ -62,7 +62,7 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('orders.history', compact('orders'));
+        return view('dashboard.history', compact('orders'));
     }
 
     /**
@@ -149,7 +149,7 @@ class DashboardController extends Controller
 
         return response()->json([
             'success' => true,
-            'expired_count' => $expiredPackages->count()
+            'expired_count' => $expiredPackages->count(),
         ]);
     }
 
@@ -174,7 +174,7 @@ class DashboardController extends Controller
                 ->where('status', 'active')
                 ->where('expires_at', '>', Carbon::now())
                 ->where('expires_at', '<=', Carbon::now()->addDays(3))
-                ->count()
+                ->count(),
         ];
 
         return response()->json($stats);
