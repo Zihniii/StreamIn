@@ -30,4 +30,10 @@ class Subscription extends Model
     {
         return $this->hasMany(WishlistPackage::class, 'subscriptionID');
     }
+
+    // Relasi: Subscription dimiliki oleh banyak AccountPackage (1-N)
+    public function accountPackages()
+    {
+        return $this->hasMany(AccountPackage::class, 'subscriptionID', 'subscriptionID');
+    }
 }

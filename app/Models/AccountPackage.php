@@ -24,4 +24,10 @@ class AccountPackage extends Model
     {
         return $this->belongsTo(User::class, 'userID');
     }
+
+    // Relasi ke Subscription (N-1)
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class, 'subscriptionID', 'subscriptionID');
+    }
 }
