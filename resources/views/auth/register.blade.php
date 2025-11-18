@@ -47,9 +47,6 @@
                     <div class="input-wrapper">
                         <input type="password" class="form-control @error('password') is-invalid @enderror" 
                                id="signupPassword" name="password" placeholder="Enter your password" required>
-                        <span class="input-icon" onclick="togglePassword('signupPassword', this)">
-                            <img src="{{ asset('img/eye-close.png') }}" alt="toggle password">
-                        </span>
                     </div>
                     @error('password')
                         <div class="error-message">{{ $message }}</div>
@@ -65,9 +62,6 @@
                     <div class="input-wrapper">
                         <input type="password" class="form-control" id="signupConfirmPassword" 
                                name="password_confirmation" placeholder="Repeat your password" required>
-                        <span class="input-icon" onclick="togglePassword('signupConfirmPassword', this)">
-                            <img src="{{ asset('img/eye-close.png') }}" alt="toggle password">
-                        </span>
                     </div>
                     <div class="error-message" id="signupConfirmError" style="display: none;">
                         The Password Confirmation does not match

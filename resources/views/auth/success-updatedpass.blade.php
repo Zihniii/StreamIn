@@ -19,8 +19,8 @@
                 <div class="welcome-section">
                     <h1 class="welcome-title">Password Successfully<br>Updated!</h1>
                 </div>
-
-                <button class="btn-primary-custom" onclick="window.location.href='{{ route('login') }}">Go to Log In</button>
+                <a href="{{ route('login') }}" class="btn-primary-custom" style="text-decoration: none; display: inline-block;">Go to Log In</a>
+                <!-- <button class="btn-primary-custom" onclick="window.location.href='{{ route('login') }}'">Go to Log In</button> -->
             </div>
         </div>
     </div>
