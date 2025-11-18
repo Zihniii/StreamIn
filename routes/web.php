@@ -94,13 +94,17 @@ Route::middleware('auth')->group(function () {
 // })->name('success-updatedpass');
 
 
-Route::get('chat', function () {
-	return view('chatcs.chat');
-});
+// Halaman utama chat
+Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
 
-Route::get('chatphoto', function () {
-	return view('chatcs.chatphoto');
-});
+// Kirim pesan teks
+Route::post('/chat/send', [ChatMessageController::class, 'store'])->name('chat.send');
+
+// Halaman upload foto
+Route::post('/chat/photo/send', [ChatMessageController::class, 'storePhoto'])->name('chat.send.photo');
+
+// Kirim foto
+Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
 
 Route::get('homepage', function () {
 	return view('homepage');
