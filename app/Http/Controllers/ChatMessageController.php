@@ -38,6 +38,15 @@ class ChatMessageController extends Controller
             'sentAt' => now(),
         ]);
 
+        // Setelah simpan pesan user
+        ChatMessage::create([
+            'sender' => 'cs',
+            'messageText' => 'I understand. Could you please provide detail information about your problems?',
+            'ticketID' => $ticket->ticketID,
+            'sentAt' => now(),
+        ]);
+
+
         return redirect()->back()->with('success', 'Pesan berhasil dikirim.');
     }
 
@@ -62,15 +71,16 @@ class ChatMessageController extends Controller
 
         // Jika tidak ada pesan → kirim auto message dari CS
         if ($messages->count() == 0) {
+
             ChatMessage::create([
                 'sender' => 'cs',
-                'messageText' => 'How can I help?',
+                'messageText' => 'How can I help you?',
                 'attachment' => null,
                 'sentAt' => now(),
                 'ticketID' => $ticket->ticketID
             ]);
 
-            // Refresh supaya pesan muncul
+            // reload supaya pesan muncul
             return redirect()->route('chat.index');
         }
 
