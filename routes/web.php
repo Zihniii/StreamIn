@@ -1,4 +1,3 @@
-
 <?php
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -7,7 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ChatMessageController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SupportPemilihanController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,7 +24,6 @@ Route::get('/', function () {
     return view('auth.welcome');
 })->name('welcome');
 
-
 /*
 |--------------------------------------------------------------------------
 | GUEST ROUTES (HANYA UNTUK USER YANG BELUM LOGIN)
@@ -34,6 +32,7 @@ Route::get('/', function () {
 
 Route::middleware('guest')->group(function () {
 
+    // Login
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
 
@@ -52,8 +51,13 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/password-reset-success', [ResetPasswordController::class, 'showSuccessPage'])->name('password.success');
 
-// Logout
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+/*
+|--------------------------------------------------------------------------
+| LOGOUT ROUTE
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -68,74 +72,12 @@ Route::middleware('auth')->group(function () {
         return view('homepage');
     })->name('homepage');
 
-    //search bar
+    // search bar
     Route::get('/search', function () {
         return view('search');
     })->name('search');
 
-/*
-|-------------------------
-| PROFILE (Sesuai Diagram)
-|-------------------------
-*/
-Route::middleware('auth')->group(function () {
-
-    Route::get('/profile', [SupportPemilihanController::class, 'profile'])->name('profile');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | CHAT SYSTEM
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
-    Route::post('/chat/send', [ChatMessageController::class, 'store'])->name('chat.send');
-    Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
-});
-
-
-/*
-|--------------------------------------------------------------------------
-| OPTIONAL PAGES (KALO ADA FILE NYA)
-|--------------------------------------------------------------------------
-*/
-
-// Halaman utama chat
-Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
-
-// Kirim pesan teks
-Route::post('/chat/send', [ChatMessageController::class, 'store'])->name('chat.send');
-
-// Halaman upload foto
-Route::post('/chat/photo/send', [ChatMessageController::class, 'storePhoto'])->name('chat.send.photo');
-
-// Kirim foto
-Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
-// Halaman utama chat
-Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
-
-// Kirim pesan teks
-Route::post('/chat/send', [ChatMessageController::class, 'store'])->name('chat.send');
-
-// Halaman upload foto
-Route::post('/chat/photo/send', [ChatMessageController::class, 'storePhoto'])->name('chat.send.photo');
-
-// Kirim foto
-Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
-
-Route::get('homepage', function () {
-    return view('homepage');
-});
-
-Route::get('package', function () {
-    return view('package');
-});
-
-Route::get('payment', function () {
-    return view('payment');
-});
-
-Route::middleware(['auth'])->group(function () {
+    // Dashboard
     // Dashboard utama
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -157,4 +99,25 @@ Route::middleware(['auth'])->group(function () {
 
     // Get dashboard stats (AJAX)
     Route::get('dashboard/stats', [DashboardController::class, 'getStats'])->name('dashboard.stats');
+
+    // Profile
+    Route::get('/profile', [UserController::class, 'show'])->name('profile');
+
+    /*
+    |--------------------------------------------------------------------------
+    | CHAT SYSTEM
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
+    Route::post('/chat/send', [ChatMessageController::class, 'store'])->name('chat.send');
+    Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
 });
+
+/*
+|--------------------------------------------------------------------------
+| OPTIONAL PAGES (KALO ADA FILE NYA)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/package', fn () => view('package'))->middleware('auth')->name('package');
+Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('payment');

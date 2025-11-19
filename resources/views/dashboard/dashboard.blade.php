@@ -364,10 +364,10 @@
                         <div class="badge-text" style="font-weight: 600;">{{ $badgeName }}</div>
                     </div>
                 </div>
-                {{-- <a href="{{ route('order.history') ?? '#' }}" class="order-history-btn">
+                <a href="{{ route('dashboard.orders') ?? '#' }}" class="order-history-btn">
                     <i class="fas fa-history"></i>
                     Order History
-                </a> --}}
+                </a>
             </div>
         </div>
 
