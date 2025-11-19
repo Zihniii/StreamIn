@@ -1,126 +1,450 @@
-homepage.blade.php
-
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Subscription App</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Homepage</title>
+
+    <!-- Tambahkan ini biar icon muncul -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #b91d4e 0%, #e85d8a 100%);
-            --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
         }
+
+
 
         body {
-            background: linear-gradient(135deg, #b91d4e 0%, #e85d8a 100%);
-            min-height: 100vh;
+
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+            background: #f5f5f5;
+
+            overflow-x: hidden;
+
         }
+
+
+
+        .container {
+
+            max-width: 430px;
+
+            margin: 0 auto;
+
+            background: white;
+
+            min-height: 100vh;
+
+            position: relative;
+
+            padding-bottom: 80px;
+
+        }
+
+
+
+        /* Header */
 
         .header {
-            padding: 1rem 1.25rem;
+
+            background: linear-gradient(135deg, #9B1636 0%, #E23C64 100%);
+
+            padding: 30px 24px 24px;
+
+            border-radius: 0 0 24px 24px;
+
             color: white;
+
+            position: relative;
+
         }
 
-        .time {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
 
-        .greeting {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-top: 1rem;
-            margin-bottom: 0;
-        }
 
-        .header-icons {
+        .status-bar {
+
             display: flex;
-            gap: 0.75rem;
-        }
 
-        .icon-wrapper {
-            display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+
             align-items: center;
+
+            margin-bottom: 12px;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
         }
+
+
+
+        .status-icons {
+
+            display: flex;
+
+            gap: 4px;
+
+            align-items: center;
+
+        }
+
+
+
+        .status-icons span {
+
+            font-size: 12px;
+
+        }
+
+
+
+        .user-section {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 40px;
+
+        }
+
+
+
+        .user-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+
+        .user-avatar {
+
+            width: 48px;
+
+            height: 48px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            overflow: hidden;
+
+        }
+
+
+
+        .user-avatar img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+        }
+
+
+
+        .user-name {
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+        }
+
+
+
+        .header-actions {
+
+            display: flex;
+
+            gap: 16px;
+
+        }
+
+
 
         .icon-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.2);
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 4px;
+
+            background: none;
+
             border: none;
+
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
+
+            cursor: pointer;
+
         }
 
-        .icon-label {
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
-            text-align: center;
-            white-space: nowrap;
-        }
 
-        .content-area {
-            background: #f8f9fa;
-            border-radius: 24px 24px 0 0;
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-            min-height: calc(100vh - 180px);
-        }
 
-        .package-card {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 1rem;
-        }
+        .icon-btn-circle {
 
-        .netflix-logo {
-            width: 48px;
-            height: 48px;
-            background: #E50914;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            color: white;
-            font-size: 2rem;
-        }
+            width: 40px;
 
-        .carousel-indicators {
-            margin-bottom: 0.5rem;
-        }
+            height: 40px;
 
-        .carousel-indicators button {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin: 0 4px;
-        }
-
-        .time-badge {
-            background: #f8f9fa;
             border-radius: 12px;
-            padding: 0.75rem 1.25rem;
-            display: inline-flex;
+
+            background: rgba(255, 255, 255, 0.2);
+
+            display: flex;
+
             align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            font-weight: 600;
-            color: #333;
+
+            justify-content: center;
+
+            font-size: 20px;
+
         }
 
+
+
+        .icon-btn-text {
+
+            font-size: 11px;
+
+            font-weight: 500;
+
+        }
+
+
+
+        /* Active Package Card */
+
+        .active-package {
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 20px;
+
+            margin: -40px 24px 0;
+
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+            position: relative;
+
+            z-index: 10;
+
+        }
+
+
+
+        .active-package-title {
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            color: #333;
+
+            margin-bottom: 16px;
+
+        }
+
+
+
+        .package-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 16px;
+
+            background: #FAFAFA;
+
+            border-radius: 16px;
+
+            margin-bottom: 12px;
+
+            cursor: pointer;
+
+        }
+
+
+
+        .package-content {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+        }
+
+
+
+        .package-logo {
+
+            width: 56px;
+
+            height: 56px;
+
+            background: white;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 8px;
+
+        }
+
+
+
+        .package-logo img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: contain;
+
+        }
+
+
+
+        .package-info h3 {
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            color: #333;
+
+            margin-bottom: 4px;
+
+        }
+
+
+
+        .package-info p {
+
+            font-size: 14px;
+
+            color: #999;
+
+        }
+
+
+
+        .package-arrow {
+
+            font-size: 24px;
+
+            color: #DDD;
+
+        }
+
+
+
+        .package-dots {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 6px;
+
+            margin-bottom: 16px;
+
+        }
+
+
+
+        .dot {
+
+            width: 6px;
+
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #E0E0E0;
+
+        }
+
+
+
+        .dot.active {
+
+            background: #C93866;
+
+            width: 20px;
+
+            border-radius: 3px;
+
+        }
+
+
+
+        .package-timer {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 12px;
+
+            background: #FAFAFA;
+
+            border-radius: 12px;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            color: #333;
+
+        }
+
+
+
+        /* Search */
         .search-box {
             background: white;
             border: none;
@@ -144,75 +468,367 @@ homepage.blade.php
             margin: 1.5rem 0 1rem 0;
         }
 
-        .app-icon {
-            width: 72px;
-            height: 72px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 0.5rem;
+
+        /* Applications */
+        .applications-section {
+
+            padding: 0 24px 24px;
+
         }
+
+
+
+        .section-title {
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            color: #333;
+
+            margin-bottom: 16px;
+
+        }
+
+
+
+        .apps-grid {
+
+            display: flex;
+
+            gap: 16px;
+
+            overflow-x: auto;
+
+            padding-bottom: 8px;
+
+            scrollbar-width: none;
+
+        }
+
+
+
+        .apps-grid::-webkit-scrollbar {
+
+            display: none;
+
+        }
+
+
 
         .app-item {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 8px;
+
+            min-width: 80px;
+
+            cursor: pointer;
+
+        }
+
+
+
+        .app-icon {
+
+            width: 64px;
+
+            height: 64px;
+
+            border-radius: 16px;
+
+            background: white;
+
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 12px;
+
+        }
+
+
+
+        .app-icon img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: contain;
+
+        }
+
+
+
+        .app-name {
+
+            font-size: 13px;
+
+            font-weight: 500;
+
+            color: #333;
+
             text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
+
         }
 
-        .filter-tabs .btn {
+
+
+        /* Recommended */
+
+        .recommended-section {
+
+            padding: 0 24px 24px;
+
+        }
+
+
+
+        .filter-tabs {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-bottom: 16px;
+
+        }
+
+
+
+        .filter-tab {
+
+            padding: 10px 24px;
+
             border-radius: 24px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
+
             border: none;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: all 0.3s;
+
         }
 
-        .filter-tabs .btn-primary {
-            background: #b91d4e;
+
+
+        .filter-tab.active {
+
+            background: #C93866;
+
+            color: white;
+
         }
 
-        .filter-tabs .btn-light {
-            background: #e9ecef;
+
+
+        .filter-tab:not(.active) {
+
+            background: #F0F0F0;
+
             color: #999;
+
         }
+
+
+
+        .recommendations-grid {
+
+            display: flex;
+
+            gap: 16px;
+
+            overflow-x: auto;
+
+            padding-bottom: 8px;
+
+            scrollbar-width: none;
+
+        }
+
+
+
+        .recommendations-grid::-webkit-scrollbar {
+
+            display: none;
+
+        }
+
+
 
         .recommendation-card {
+
+            min-width: 200px;
+
             background: white;
+
             border-radius: 16px;
+
             overflow: hidden;
-            box-shadow: var(--card-shadow);
+
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+            cursor: pointer;
+
         }
 
-        .recommendation-card img {
-            width: 100%;
+
+
+        .recommendation-image {
+
+            width: 200px;
+
             height: 200px;
-            object-fit: cover;
+
+            position: relative;
+
+            overflow: hidden;
+
         }
+
+
+
+        .recommendation-image img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+        }
+
+
+
+        .recommendation-overlay {
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            right: 0;
+
+            bottom: 0;
+
+            background: rgba(0, 0, 0, 0.3);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+
+        .recommendation-logo {
+
+            width: 80px;
+
+            height: 80px;
+
+            background: rgba(255, 255, 255, 0.95);
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 16px;
+
+        }
+
+
+
+        .recommendation-logo img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: contain;
+
+        }
+
+
 
         .recommendation-info {
-            padding: 1rem;
+
+            padding: 16px;
+
         }
 
-        .recommendation-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
+
+
+        .recommendation-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 8px;
+
         }
+
+
+
+        .recommendation-name {
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            color: #333;
+
+        }
+
+
 
         .recommendation-duration {
-            color: #666;
-            font-size: 0.9rem;
+
+            font-size: 13px;
+
+            color: #999;
+
         }
+
+
 
         .recommendation-price {
-            color: #b91d4e;
+
+            font-size: 18px;
+
             font-weight: 700;
-            font-size: 1.25rem;
-            margin-top: 0.5rem;
+
+            color: #C93866;
+
         }
 
+
+
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -241,69 +857,127 @@ homepage.blade.php
         .nav-item i {
             font-size: 1.5rem;
             margin-bottom: 0.25rem;
-        }
+        }
+
     </style>
+
 </head>
 
 <body>
-    <div class="container-fluid p-0" style="max-width: 480px; margin: 0 auto;">
+
+    <div class="container">
+
         <!-- Header -->
+
         <div class="header">
-        </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <div class="d-flex align-items-center">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" alt="Profile"
-                    style="width: 48px; height: 48px; border-radius: 50%; margin-right: 1rem;">
-                <h1 class="greeting mb-0">Hai, John Doe!</h1>
-            </div>
-            <div class="header-icons">
-                <div class="icon-wrapper">
-                    <button class="icon-btn">
-                        <i class="far fa-bookmark"></i>
-                    </button>
-                    <div class="icon-label">Saved</div>
-                </div>
-                <div class="icon-wrapper">
-                    <button class="icon-btn">
-                        <i class="far fa-envelope"></i>
-                    </button>
-                    <div class="icon-label">Inbox</div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Content Area -->
-    <div class="content-area">
-        <!-- Active Package Card -->
-        <div class="package-card">
-            <div id="packageCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#packageCarousel" data-bs-slide-to="0"
-                        class="active"></button>
-                    <button type="button" data-bs-target="#packageCarousel" data-bs-slide-to="1"></button>
-                    <button type="button" data-bs-target="#packageCarousel" data-bs-slide-to="2"></button>
-                </div>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <div class="netflix-logo me-3">N</div>
-                                <h3 class="mb-0" style="font-weight: 700;">Netflix</h3>
-                            </div>
-                            <i class="fas fa-chevron-right text-muted"></i>
-                        </div>
+
+
+
+            <div class="user-section">
+
+                <div class="user-info">
+
+                    <div class="user-avatar">
+
+                        <img src="{{ asset('img/img_profile.png') }}" alt="Profile">
+
                     </div>
+
+                    <div class="user-name">Hai, John Doe!</div>
+
                 </div>
+
+                <button class="icon-btn">
+
+                    <div class="icon-btn-circle">
+
+                        <span class="material-symbols-outlined">bookmark</span>
+
+                    </div>
+
+                    <div class="icon-btn-text">Saved</div>
+
+                </button>
+
+
+
+                <button class="icon-btn">
+
+                    <div class="icon-btn-circle">
+
+                        <span class="material-symbols-outlined">mail</span>
+
+                    </div>
+
+                    <div class="icon-btn-text">Inbox</div>
+
+                </button>
+
             </div>
-            <div class="text-center">
-                <span class="time-badge">
-                    <i class="far fa-clock"></i>
-                    1d 22h 48m
-                </span>
-            </div>
+
         </div>
+
+
+
+        <!-- Active Package -->
+
+        <div class="active-package">
+
+            <div class="active-package-title">Active Package</div>
+
+
+
+            <div class="package-item">
+
+                <div class="package-content">
+
+                    <div class="package-logo">
+
+                        <img src="{{ asset('img/logo_netflix.png') }}" alt="Netflix">
+
+                    </div>
+
+                    <div class="package-info">
+
+                        <h3>Netflix</h3>
+
+                        <p>3 days package</p>
+
+                    </div>
+
+                </div>
+
+                <div class="package-arrow">›</div>
+
+            </div>
+
+
+
+            <div class="package-dots">
+
+                <div class="dot active"></div>
+
+                <div class="dot"></div>
+
+                <div class="dot"></div>
+
+            </div>
+
+
+
+            <div class="package-timer">
+
+                <span class="material-symbols-outlined">schedule</span>
+
+                <span>1d 22h 48m</span>
+
+            </div>
+
+        </div>
+
+
 
         <!-- Search Box -->
         <div class="position-relative" onclick="window.location.href='{{ route('search') }}'" style="cursor:pointer;">
@@ -311,111 +985,224 @@ homepage.blade.php
             <input type="text" class="form-control search-box" placeholder="Search your package" readonly>
         </div>
 
-        <!-- Applications Section -->
-        <h2 class="section-title">Applications</h2>
-        <div class="d-flex gap-3 mb-4 overflow-auto pb-2" style="scrollbar-width: none; -ms-overflow-style: none;">
-            <div class="app-item" style="min-width: 72px;">
-                <div class="app-icon">
-                    <div class="netflix-logo" style="width: 100%; height: 100%; font-size: 2.5rem;">N</div>
+        <!-- Applications -->
+        <div class="applications-section">
+            <div class="section-title">Applications</div>
+            <div class="apps-grid">
+                <div class="app-item">
+                    <div class="app-icon">
+                        <img src="{{ asset('img/logo_netflix.png') }}" alt="Netflix">
+                    </div>
+                    <div class="app-name">Netflix</div>
                 </div>
-                <div>Netflix</div>
-            </div>
-            <div class="app-item" style="min-width: 72px;">
-                <div class="app-icon">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg"
-                        alt="Prime" style="width: 80%; height: auto;">
+                <div class="app-item">
+                    <div class="app-icon">
+                        <img src="{{ asset('img/logo_prime.png') }}" alt="Prime">
+                    </div>
+                    <div class="app-name">Prime</div>
                 </div>
-                <div>Prime</div>
-            </div>
-            <div class="app-item" style="min-width: 72px;">
-                <div class="app-icon">
-                    <i class="fas fa-play-circle" style="font-size: 2.5rem; color: #FFD700;"></i>
+                <div class="app-item">
+                    <div class="app-icon">
+                        <img src="{{ asset('img/logo_viu.png') }}" alt="VIU">
+                    </div>
+                    <div class="app-name">VIU</div>
                 </div>
-                <div>VIU</div>
-            </div>
-            <div class="app-item" style="min-width: 72px;">
-                <div class="app-icon">
-                    <i class="fas fa-play-circle" style="font-size: 2.5rem; color: #E50914;"></i>
+                <div class="app-item">
+                    <div class="app-icon">
+                        <img src="{{ asset('img/logo_vidio.png') }}" alt="Vidio">
+                    </div>
+                    <div class="app-name">Vidio</div>
                 </div>
-                <div>Vidio</div>
-            </div>
-            <div class="app-item" style="min-width: 72px;">
-                <div class="app-icon">
-                    <i class="fas fa-star" style="font-size: 2.5rem; color: #00A8E1;"></i>
+
+                <div class="app-item">
+
+                    <div class="app-icon">
+
+                        <img src="{{ asset('img/logo_disney.png') }}" alt="Hotstar">
+
+                    </div>
+
+                    <div class="app-name">Hotstar</div>
+
                 </div>
-                <div>Hotstar</div>
+
             </div>
+
         </div>
 
-        <!-- Recommended Section -->
-        <h2 class="section-title">Recommended for You</h2>
-        <div class="filter-tabs d-flex gap-2 mb-3">
-            <button class="btn btn-primary">Hourly</button>
-            <button class="btn btn-light">Daily</button>
-            <button class="btn btn-light">Monthly</button>
-        </div>
 
-        <div class="row g-3" style="margin-bottom: 100px;">
-            <div class="col-6">
+
+        <!-- Recommended -->
+
+        <div class="recommended-section">
+
+            <div class="section-title">Recomended for You</div>
+
+
+
+            <div class="filter-tabs">
+
+                <button class="filter-tab active">Hourly</button>
+
+                <button class="filter-tab">Daily</button>
+
+                <button class="filter-tab">Monthly</button>
+
+            </div>
+
+
+
+            <div class="recommendations-grid">
+
                 <div class="recommendation-card">
-                    <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400&h=300&fit=crop"
-                        alt="Netflix">
-                    <div class="recommendation-info">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="recommendation-title">Netflix</div>
-                            <div class="recommendation-duration">1 Hour</div>
+
+                    <div class="recommendation-image">
+
+                        <img src="{{ asset('img/banner_netflix.png') }}" alt="Netflix Content">
+
+                        <div class="recommendation-overlay">
+
+                            <div class="recommendation-logo">
+
+                                <img src="{{ asset('img/logo_netflix.png') }}" alt="Netflix">
+
+                            </div>
+
                         </div>
+
+                    </div>
+
+                    <div class="recommendation-info">
+
+                        <div class="recommendation-header">
+
+                            <span class="recommendation-name">Netflix</span>
+
+                            <span class="recommendation-duration">1 Hour</span>
+
+                        </div>
+
                         <div class="recommendation-price">Rp 3.000</div>
+
                     </div>
+
                 </div>
-            </div>
-            <div class="col-6">
+
+
+
                 <div class="recommendation-card">
-                    <img src="https://images.unsplash.com/photo-1595769816263-9b910be24d5f?w=400&h=300&fit=crop"
-                        alt="Prime Video">
-                    <div class="recommendation-info">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="recommendation-title">Prime Video</div>
-                            <div class="recommendation-duration">3 Hour</div>
+
+                    <div class="recommendation-image">
+
+                        <img src="{{ asset('img/banner_prime.png') }}" alt="Prime Content">
+
+                        <div class="recommendation-overlay">
+
+                            <div class="recommendation-logo">
+
+                                <img src="{{ asset('img/logo_prime.png') }}" alt="Prime">
+
+                            </div>
+
                         </div>
-                        <div class="recommendation-price">Rp 5.000</div>
+
                     </div>
+
+                    <div class="recommendation-info">
+
+                        <div class="recommendation-header">
+
+                            <span class="recommendation-name">Prime Video</span>
+
+                            <span class="recommendation-duration">3 Hour</span>
+
+                        </div>
+
+                        <div class="recommendation-price">Rp 5.000</div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="recommendation-card">
+
+                    <div class="recommendation-image">
+
+                        <img src="{{ asset('img/banner_viu.png') }}" alt="VIU Content">
+
+                        <div class="recommendation-overlay">
+
+                            <div class="recommendation-logo">
+
+                                <img src="{{ asset('img/logo_viu.png') }}" alt="VIU">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="recommendation-info">
+
+                        <div class="recommendation-header">
+
+                            <span class="recommendation-name">VIU</span>
+
+                            <span class="recommendation-duration">2 Hour</span>
+
+                        </div>
+
+                        <div class="recommendation-price">Rp 4.000</div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="row g-0">
+                <div class="col">
+                    <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-chart-bar"></i>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="{{ route('chat.index') }}" class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
+                        <i class="fas fa-comments"></i>
+                        Chat
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <div class="row g-0">
-            <div class="col">
-                <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
-                    <i class="fas fa-home"></i>
-                    Home
-                </a>
-            </div>
-            <div class="col">
-                <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-chart-bar"></i>
-                    Dashboard
-                </a>
-            </div>
-            <div class="col">
-                <a href="{{ route('chat.index') }}" class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
-                    <i class="fas fa-comments"></i>
-                    Chat
-                </a>
-            </div>
-            <div class="col">
-                <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
-                    <i class="fas fa-user"></i>
-                    Profile
-                </a>
-            </div>
-        </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script>
 
-</html>
+        // Filter tabs functionality
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
