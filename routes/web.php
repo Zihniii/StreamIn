@@ -1,22 +1,13 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\AccountPackageController;
-use App\Http\Controllers\ChatMessageController;
-use App\Http\Controllers\ChatTicketController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PaymentMethodController;
-use App\Http\Controllers\ReportissueController;
-use App\Http\Controllers\SubcriptionController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WishlistPackageController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ChatMessageController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SupportPemilihanController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +22,7 @@ Route::get('/', function () {
 
 // Guest routes
 Route::middleware('guest')->group(function () {
-    
+
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
 
@@ -51,7 +42,6 @@ Route::get('/password-reset-success', [ResetPasswordController::class, 'showSucc
 // Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-
 /*
 |--------------------------------------------------------------------------
 | AUTHENTICATED ROUTES
@@ -66,11 +56,12 @@ Route::middleware('auth')->group(function () {
 
 });
 
-    /*
-    |-------------------------
-    | PROFILE (Sesuai Diagram)
-    |-------------------------
-    */
+/*
+|-------------------------
+| PROFILE (Sesuai Diagram)
+|-------------------------
+*/
+Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [SupportPemilihanController::class, 'profile'])->name('profile');
 
@@ -116,10 +107,33 @@ Route::get('homepage', function () {
 });
 
 Route::get('package', function () {
-	return view('package');
+    return view('package');
 });
 
 Route::get('payment', function () {
-	return view('payment');
+    return view('payment');
 });
 
+Route::middleware(['auth'])->group(function () {
+    // Dashboard utama
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Order history
+    Route::get('dashboard/orders', [DashboardController::class, 'orderHistory'])->name('dashboard.orders');
+
+    // Detail package
+    Route::get('dashboard/packages/{id}', [DashboardController::class, 'packagedetails'])->name('dashboard.packages.detail');
+
+    // Browse available packages
+    Route::get('dashboard/packages', [DashboardController::class, 'browsePackages'])->name('dashboard.packages.browse');
+
+    // User profile
+    Route::get('profile', [DashboardController::class, 'profile'])->name('profile');
+
+    // Check expired packages (AJAX)
+    Route::post('dashboard/check-expired', [DashboardController::class, 'checkExpiredPackages'])
+        ->name('dashboard.checkExpired');
+
+    // Get dashboard stats (AJAX)
+    Route::get('dashboard/stats', [DashboardController::class, 'getStats'])->name('dashboard.stats');
+});

@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - {{ config('app.name', 'Stream.in') }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* Reset & Base */
         * {
             margin: 0;
             padding: 0;
@@ -15,559 +14,422 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #F9FAFB;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            max-width: 480px;
+            margin: 0 auto;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 600;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
             padding-bottom: 80px;
         }
 
-        /* Dashboard Wrapper */
-        .dashboard-wrapper {
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 16px;
-        }
-
-        /* Profile Card */
         .profile-card {
-            background: linear-gradient(135deg, #A41E3F 0%, #FF5E5E 100%);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 20px rgba(185, 28, 46, 0.25);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-card::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        .profile-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .avatar-container {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: white;
-            padding: 3px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .profile-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            margin: 0;
-        }
-
-        .profile-points {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: white;
-            font-size: 14px;
-        }
-
-        .point-badge {
-            font-size: 8px;
-            color: white;
-        }
-
-        .btn-order-history {
-            background: white;
-            border: none;
-            border-radius: 24px;
-            padding: 10px 18px;
-            color: #B91C2E;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-order-history:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .icon-history {
-            width: 16px;
-            height: 16px;
-        }
-
-        .profile-badges {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .badge-label {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            padding: 6px 14px;
+            background: linear-gradient(135deg, #e85d75 0%, #d63851 100%);
             border-radius: 16px;
+            padding: 20px;
             color: white;
-            font-size: 12px;
-            font-weight: 500;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(230, 93, 117, 0.3);
         }
 
-        .badge-name {
-            background: #DC2626;
-            padding: 8px 18px;
-            border-radius: 20px;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
-        }
-
-        /* Packages Section */
-        .packages-section {
-            margin-top: 24px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1F2937;
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 16px;
         }
 
-        .packages-list {
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-pic-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .profile-info h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            font-size: 14px;
+            opacity: 0.95;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .point-icon {
+            width: 6px;
+            height: 6px;
+            background-color: #ffd700;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .profile-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        .badge-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .badge-icon {
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .badge-text {
+            font-size: 12px;
+            opacity: 0.95;
+        }
+
+        .order-history-btn {
+            background-color: white;
+            color: #e85d75;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .order-history-btn:hover {
+            opacity: 0.9;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .package-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        /* Package Item */
         .package-item {
-            background: white;
-            border-radius: 16px;
+            background-color: white;
+            border-radius: 12px;
             padding: 16px;
             display: flex;
             align-items: center;
             gap: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            border: 1px solid #F3F4F6;
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: inherit;
         }
 
-        .package-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-            border-color: #E5E7EB;
+        .package-item:active {
+            transform: scale(0.98);
         }
 
-        .package-logo-wrapper {
-            width: 60px;
-            height: 60px;
+        .package-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #F9FAFB;
-            border-radius: 14px;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
-        .package-logo {
-            width: 44px;
-            height: 44px;
+        .package-icon img {
+            width: 100%;
+            height: 100%;
             object-fit: contain;
         }
 
         .package-details {
             flex: 1;
-            min-width: 0;
         }
 
-        .package-title {
-            font-size: 17px;
+        .package-name {
+            font-size: 15px;
             font-weight: 600;
-            color: #1F2937;
-            margin: 0 0 4px 0;
+            margin-bottom: 4px;
+            color: #1a1a1a;
         }
 
         .package-duration {
             font-size: 13px;
-            color: #6B7280;
-            margin: 0 0 8px 0;
+            color: #666;
+            margin-bottom: 6px;
         }
 
         .package-expiry {
+            font-size: 12px;
+            color: #999;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .expiry-date {
-            font-size: 12px;
-            color: #DC2626;
-            font-weight: 500;
+        .calendar-icon {
+            width: 14px;
+            height: 14px;
+            color: #dc3545;
         }
 
-        .package-chevron {
+        .arrow-right {
+            width: 8px;
+            height: 8px;
+            border-top: 2px solid #ccc;
+            border-right: 2px solid #ccc;
+            transform: rotate(45deg);
             flex-shrink: 0;
-            opacity: 0.4;
         }
 
-        /* Empty State */
         .empty-packages {
             text-align: center;
-            padding: 60px 20px;
-        }
-
-        .empty-image {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 20px;
-            opacity: 0.6;
+            padding: 40px 20px;
         }
 
         .empty-text {
-            color: #6B7280;
-            font-size: 15px;
-            margin-bottom: 24px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
         }
 
         .btn-browse {
-            background: linear-gradient(135deg, #B91C2E 0%, #E85D6F 100%);
+            background: linear-gradient(135deg, #e85d75 0%, #d63851 100%);
             color: white;
             border: none;
             border-radius: 12px;
-            padding: 14px 32px;
-            font-size: 15px;
+            padding: 12px 24px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(185, 28, 46, 0.3);
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn-browse:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(185, 28, 46, 0.4);
+            opacity: 0.9;
         }
 
-        /* Bottom Navigation */
-        .bottom-navigation {
+        .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
+            max-width: 480px;
+            margin: 0 auto;
             background: white;
+            padding: 0.75rem 0 1.5rem 0;
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-container {
             display: flex;
-            justify-content: space-around;
-            padding: 12px 0 20px;
-            box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.08);
-            z-index: 1000;
-            border-top: 1px solid #F3F4F6;
+            text-align: center;
         }
 
         .nav-item {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            color: #999;
             text-decoration: none;
-            color: #9CA3AF;
-            transition: color 0.3s ease;
-            padding: 8px 16px;
-            border-radius: 12px;
-            min-width: 70px;
-        }
-
-        .nav-item:hover {
-            color: #6B7280;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0.5rem;
         }
 
         .nav-item.active {
-            color: #B91C2E;
-            background: rgba(185, 28, 46, 0.08);
+            color: #b91d4e;
         }
 
-        .nav-icon {
-            width: 24px;
-            height: 24px;
-        }
-
-        .nav-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: capitalize;
-        }
-
-        /* Bootstrap Gap Utilities */
-        .gap-3 {
-            gap: 1rem !important;
-        }
-
-        .d-flex {
-            display: flex !important;
-        }
-
-        .justify-content-between {
-            justify-content: space-between !important;
-        }
-
-        .align-items-start {
-            align-items: flex-start !important;
-        }
-
-        .align-items-center {
-            align-items: center !important;
-        }
-
-        .flex-grow-1 {
-            flex-grow: 1 !important;
-        }
-
-        .mb-1 {
-            margin-bottom: 0.25rem !important;
-        }
-
-        .mb-3 {
-            margin-bottom: 1rem !important;
-        }
-
-        /* Responsive Design */
-        @media (min-width: 768px) {
-            .dashboard-wrapper {
-                padding: 24px;
-            }
-
-            .bottom-navigation {
-                max-width: 480px;
-                left: 50%;
-                transform: translateX(-50%);
-                border-radius: 24px 24px 0 0;
-            }
-        }
-
-        @media (max-width: 375px) {
-            .profile-card {
-                padding: 20px;
-            }
-
-            .btn-order-history {
-                padding: 8px 14px;
-                font-size: 12px;
-            }
-
-            .package-item {
-                padding: 14px;
-            }
-
-            .nav-item {
-                padding: 6px 12px;
-                min-width: 60px;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .package-item {
-            animation: fadeInUp 0.4s ease-out;
-        }
-
-        .package-item:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .package-item:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .package-item:nth-child(3) {
-            animation-delay: 0.3s;
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
         }
     </style>
 </head>
 
 <body>
-    <div class="dashboard-wrapper">
-        <!-- Profile Card -->
+
+    <header>Dashboard</header>
+
+    <div class="content">
         <div class="profile-card">
-            <div class="profile-content">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="avatar-container">
-                            @php
-                                $avatar = null;
-                                if (Auth::check()) {
-                                    $avatar = Auth::user()->fotoProfil;
-                                } elseif (isset($dummyUser)) {
-                                    $avatar = $dummyUser->avatar ?? null;
-                                }
-                            @endphp
-                            <img src="{{ $avatar ?? asset('img/profile-pict.png') }}" alt="Avatar"
-                                class="user-avatar">
-                        </div>
-                        <div>
-                            @php
-                                $userName = 'Guest';
-                                $userPoints = 250;
-
-                                if (Auth::check()) {
-                                    $userName = Auth::user()->usernamePengguna;
-                                    $userPoints = Auth::user()->points ?? 250;
-                                } elseif (isset($dummyUser)) {
-                                    $userName = $dummyUser->name;
-                                    $userPoints = $dummyUser->points ?? 250;
-                                }
-                            @endphp
-                            <h2 class="profile-name mb-1">{{ $userName }}</h2>
-                            <div class="profile-points">
-                                <span class="point-badge">●</span>
-                                <span>{{ $userPoints }} Point</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn-order-history" onclick="window.location.href='#'">
-                        <img src="{{ asset('img/history-icon.png') }}" alt="history" class="icon-history"
-                            onerror="this.style.display='none'">
-                        Order History
-                    </button>
-                </div>
-
-                <div class="profile-badges">
-                    <span class="badge-label">Badge</span>
+            <div class="profile-header">
+                <div class="profile-pic">
                     @php
+                        $avatar = null;
+                        $userName = 'Guest';
+                        $userPoints = 0;
                         $badgeName = 'The Watcher';
-                        if (Auth::check() && isset(Auth::user()->badge)) {
-                            $badgeName = Auth::user()->badge;
-                        } elseif (isset($dummyUser->badge)) {
-                            $badgeName = $dummyUser->badge;
+
+                        if (Auth::check()) {
+                            $avatar = Auth::user()->fotoProfil;
+                            $userName = Auth::user()->usernamePengguna;
+                            $userPoints = Auth::user()->points ?? 0;
+                            $badgeName = Auth::user()->badge ?? 'The Watcher';
+                        } elseif (isset($dummyUser)) {
+                            $avatar = $dummyUser->avatar ?? null;
+                            $userName = $dummyUser->name ?? 'Guest';
+                            $userPoints = $dummyUser->points ?? 0;
+                            $badgeName = $dummyUser->badge ?? 'The Watcher';
                         }
                     @endphp
-                    <span class="badge-name">{{ $badgeName }}</span>
+
+                    @if ($avatar)
+                        <img src="{{ $avatar }}" alt="Avatar">
+                    @else
+                        <div class="profile-pic-placeholder">
+                            {{ strtoupper(substr($userName, 0, 2)) }}
+                        </div>
+                    @endif
                 </div>
+                <div class="profile-info">
+                    <h2>{{ $userName }}</h2>
+                    <p><span class="point-icon"></span> {{ $userPoints }} Point</p>
+                </div>
+            </div>
+
+            <div class="profile-footer">
+                <div class="badge-section">
+                    <div class="badge-icon">🏆</div>
+                    <div>
+                        <div class="badge-text">Badge</div>
+                        <div class="badge-text" style="font-weight: 600;">{{ $badgeName }}</div>
+                    </div>
+                </div>
+                {{-- <a href="{{ route('order.history') ?? '#' }}" class="order-history-btn">
+                    <i class="fas fa-history"></i>
+                    Order History
+                </a> --}}
             </div>
         </div>
 
-        <!-- Active Packages Section -->
-        <div class="packages-section">
-            <h3 class="section-title">Active package</h3>
+        <h3 class="section-title">Active package</h3>
 
-            <div class="packages-list">
-                @forelse($activePackages ?? [] as $package)
-                    <div class="package-item" onclick="window.location.href='#'">
-                        <div class="package-logo-wrapper">
-                            <img src="{{ asset('img/platforms/' . strtolower($package->platform_name) . '.png') }}"
-                                alt="{{ $package->platform_name }}" class="package-logo"
-                                onerror="this.src='{{ asset('img/netflix-logo.png') }}'">
+        <div class="package-list">
+            @forelse($activePackages ?? [] as $package)
+                <a href="{{ route('dashboard.packages.detail', $package->id ?? '#') }}" class="package-item">
+                    <div class="package-icon">
+                        <img src="{{ asset('img/' . $package->package->logoSubscription) }}"
+                            alt="{{ $package->package->serviceName }}"
+                            onerror="this.src='{{ asset('img/default-platform.png') }}'">
+                    </div>
+                    <div class="package-details">
+                        <div class="package-name">{{ $package->package->serviceName }}</div>
+
+                        <div class="package-duration">
+                            {{ $package->package->descriptionDurasi ?? $package->package->durasiPackage . ' days' }}
                         </div>
 
-                        <div class="package-details flex-grow-1">
-                            <h4 class="package-title">{{ $package->platform_name }}</h4>
-                            <p class="package-duration">{{ $package->duration }} days package</p>
-                            <div class="package-expiry">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DC2626"
-                                    stroke-width="2">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2">
-                                    </rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span
-                                    class="expiry-date">{{ \Carbon\Carbon::parse($package->expires_at)->format('d F Y H.i') }}</span>
-                            </div>
-                        </div>
-
-                        <div class="package-chevron">
-                            <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
-                                <path d="M1 1L7 7L1 13" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
+                        <div class="package-expiry">
+                            <svg class="calendar-icon" ...></svg>
+                            <span>{{ \Carbon\Carbon::parse($package->endDate)->format('d F Y H.i') }}</span>
                         </div>
                     </div>
-                @empty
-                    <div class="empty-packages">
-                        <img src="{{ asset('img/empty-box.png') }}" alt="No packages" class="empty-image"
-                            onerror="this.style.display='none'">
-                        <p class="empty-text">You don't have any active packages</p>
-                        <button class="btn-browse" onclick="window.location.href='#'">
-                            Browse Packages
-                        </button>
-                    </div>
-                @endforelse
-            </div>
+                    <div class="arrow-right"></div>
+                </a>
+            @empty
+                <div class="empty-packages">
+                    <p class="empty-text">You don't have any active packages</p>
+                    <a href="{{ route('homepage') ?? '#' }}" class="btn-browse">
+                        Browse Packages
+                    </a>
+                </div>
+            @endforelse
         </div>
     </div>
 
     <!-- Bottom Navigation -->
-    <nav class="bottom-navigation">
-        <a href="#" class="nav-item">
-            <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <span class="nav-label">Home</span>
-        </a>
+    <div class="bottom-nav">
+        <div class="nav-container">
+            <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
 
-        <a href="#" class="nav-item active">
-            <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="3" width="7" height="7" rx="1" fill="currentColor" />
-                <rect x="14" y="3" width="7" height="7" rx="1" fill="currentColor" />
-                <rect x="14" y="14" width="7" height="7" rx="1" fill="currentColor" />
-                <rect x="3" y="14" width="7" height="7" rx="1" fill="currentColor" />
-            </svg>
-            <span class="nav-label">Dashboard</span>
-        </a>
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <i class="fas fa-chart-bar"></i>
+                Dashboard
+            </a>
 
-        <a href="#" class="nav-item">
-            <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <span class="nav-label">Chat</span>
-        </a>
+            <a href="{{ route('chat.index') }}"
+                class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
+                <i class="fas fa-comments"></i>
+                Chat
+            </a>
 
-        <a href="#" class="nav-item">
-            <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <span class="nav-label">Profile</span>
-        </a>
-    </nav>
+            <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
+        </div>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

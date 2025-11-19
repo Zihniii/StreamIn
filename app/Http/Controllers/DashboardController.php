@@ -2,45 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use App\Models\Package;
-use App\Models\Subscription;
+use App\Models\Payment;
+use App\Models\UserSubscription;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     /**
-     * Create a new controller instance.
-     */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
-
-    /**
-     * Display the dashboard with active packages
+     * Dashboard main page
      */
     public function index()
     {
         $user = Auth::user();
 
-        // Get active subscriptions/packages
-        $activePackages = Subscription::where('user_id', $user->id)
+        // Ambil semua subscription aktif yg belum expired
+        $activePackages = UserSubscription::where('userID', $user->userID)
             ->where('status', 'active')
-            ->where('expires_at', '>', Carbon::now())
+            ->where('endDate', '>', Carbon::now())
             ->with('package')
-            ->orderBy('expires_at', 'asc')
+            ->orderBy('endDate', 'asc')
             ->get();
 
-        // Calculate total active packages
         $totalActivePackages = $activePackages->count();
 
-        // Get packages expiring soon (within 3 days)
-        $expiringPackages = $activePackages->filter(function ($subscription) {
-            $daysUntilExpiry = Carbon::now()->diffInDays($subscription->expires_at, false);
+        // Expiring soon (3 days)
+        $expiringPackages = $activePackages->filter(function ($s) {
+            $days = Carbon::now()->diffInDays($s->endDate, false);
 
-            return $daysUntilExpiry <= 3 && $daysUntilExpiry >= 0;
+            return $days <= 3 && $days >= 0;
         });
 
         return view('dashboard.dashboard', compact(
@@ -51,79 +42,65 @@ class DashboardController extends Controller
     }
 
     /**
-     * Show order history
+     * Order history (payment history)
      */
     public function orderHistory()
     {
         $user = Auth::user();
 
-        $orders = Order::where('user_id', $user->id)
-            ->with(['package', 'payment'])
-            ->orderBy('created_at', 'desc')
+        $orders = Payment::where('userID', $user->userID)
+            ->with('package')
+            ->orderBy('paymentDate', 'desc')
             ->paginate(10);
 
         return view('dashboard.history', compact('orders'));
     }
 
     /**
-     * Show package detail
+     * Package detail page
      */
     public function packageDetail($id)
     {
         $user = Auth::user();
 
-        $subscription = Subscription::where('id', $id)
-            ->where('user_id', $user->id)
+        $subscription = UserSubscription::where('userSubscriptionID', $id)
+            ->where('userID', $user->userID)
             ->with('package')
             ->firstOrFail();
 
-        // Calculate days remaining
-        $daysRemaining = Carbon::now()->diffInDays($subscription->expires_at, false);
+        $daysRemaining = Carbon::now()->diffInDays($subscription->endDate, false);
 
-        // Get usage history if available
-        $usageHistory = $subscription->usageHistory()
-            ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get();
-
-        return view('packages.detail', compact(
+        return view('dashboard.activepackage', compact(
             'subscription',
-            'daysRemaining',
-            'usageHistory'
+            'daysRemaining'
         ));
     }
 
     /**
-     * Browse available packages
+     * Browse all available packages
      */
     public function browsePackages()
     {
-        $packages = Package::where('is_active', true)
-            ->orderBy('platform_name', 'asc')
-            ->get();
+        $packages = Package::orderBy('serviceName', 'asc')->get();
 
-        // Group packages by platform
-        $packagesByPlatform = $packages->groupBy('platform_name');
+        $packagesByPlatform = $packages->groupBy('serviceName');
 
         return view('packages.browse', compact('packages', 'packagesByPlatform'));
     }
 
     /**
-     * Show user profile
+     * User profile summary
      */
     public function profile()
     {
         $user = Auth::user();
 
-        // Get total subscriptions
-        $totalSubscriptions = Subscription::where('user_id', $user->id)->count();
+        $totalSubscriptions = UserSubscription::where('userID', $user->userID)->count();
 
-        // Get total orders
-        $totalOrders = Order::where('user_id', $user->id)->count();
+        $totalOrders = Payment::where('userID', $user->userID)->count();
 
-        // Get total spent
-        $totalSpent = Order::where('user_id', $user->id)
-            ->where('status', 'completed')
+        $totalSpent = Payment::where('userID', $user->userID)
+            ->where('paymentStatus', 'completed')
             ->sum('amount');
 
         return view('profile', compact(
@@ -135,45 +112,43 @@ class DashboardController extends Controller
     }
 
     /**
-     * Check and update expired packages
+     * Auto-mark expired packages
      */
     public function checkExpiredPackages()
     {
-        $expiredPackages = Subscription::where('status', 'active')
-            ->where('expires_at', '<=', Carbon::now())
+        $expired = UserSubscription::where('status', 'active')
+            ->where('endDate', '<=', Carbon::now())
             ->get();
 
-        foreach ($expiredPackages as $subscription) {
-            $subscription->update(['status' => 'expired']);
+        foreach ($expired as $sub) {
+            $sub->update(['status' => 'expired']);
         }
 
         return response()->json([
             'success' => true,
-            'expired_count' => $expiredPackages->count(),
+            'expired_count' => $expired->count(),
         ]);
     }
 
     /**
-     * Get dashboard statistics (for AJAX)
+     * AJAX dashboard stats
      */
     public function getStats()
     {
         $user = Auth::user();
 
         $stats = [
-            'active_packages' => Subscription::where('user_id', $user->id)
+            'active_packages' => UserSubscription::where('userID', $user->userID)
                 ->where('status', 'active')
-                ->where('expires_at', '>', Carbon::now())
+                ->where('endDate', '>', Carbon::now())
                 ->count(),
 
-            'total_orders' => Order::where('user_id', $user->id)->count(),
+            'total_orders' => Payment::where('userID', $user->userID)->count(),
 
-            'points' => $user->points ?? 0,
-
-            'expiring_soon' => Subscription::where('user_id', $user->id)
+            'expiring_soon' => UserSubscription::where('userID', $user->userID)
                 ->where('status', 'active')
-                ->where('expires_at', '>', Carbon::now())
-                ->where('expires_at', '<=', Carbon::now()->addDays(3))
+                ->where('endDate', '>', Carbon::now())
+                ->where('endDate', '<=', Carbon::now()->addDays(3))
                 ->count(),
         ];
 

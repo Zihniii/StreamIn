@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -481,38 +482,39 @@
         }
     </style>
 </head>
+
 <body>
-        <div class="top-nav">
-            <div class="back-btn">
-                <div class="back-arrow"></div>
-            </div>
-            <div class="page-title">Active Package</div>
+    <div class="top-nav">
+        <div class="back-btn" onclick="window.location.href='{{ route('dashboard') }}'">
+            <div class="back-arrow"></div>
         </div>
+        <div class="page-title">Active Package</div>
+    </div>
 
-        <div class="package-card-container">
-            <div class="package-card">
-                <div class="package-header">
-                    <div class="package-icon">
-                        <span class="prime-text">prime</span>
-                        <span class="video-text">video</span>
-                    </div>
-                    <div class="package-info">
-                        <h2>Prime Video</h2>
-                        <div class="package-duration">3 days package</div>
-                        <div class="package-expiry">
-                            <div class="calendar-icon"></div>
-                            31 April 2025  15:20
-                        </div>
+    <div class="package-card-container">
+        <div class="package-card">
+            <div class="package-header">
+                <div class="package-icon">
+                    <span class="prime-text">prime</span>
+                    <span class="video-text">video</span>
+                </div>
+                <div class="package-info">
+                    <h2>Prime Video</h2>
+                    <div class="package-duration">3 days package</div>
+                    <div class="package-expiry">
+                        <div class="calendar-icon"></div>
+                        31 April 2025 15:20
                     </div>
                 </div>
+            </div>
 
-                <div class="time-remaining-section">
-                    <div class="clock-icon"></div>
-                    <div class="time-remaining-label">Time Remaining</div>
-                    <div class="time-value">1d 22h 48m</div>
-                </div>
+            <div class="time-remaining-section">
+                <div class="clock-icon"></div>
+                <div class="time-remaining-label">Time Remaining</div>
+                <div class="time-value">1d 22h 48m</div>
             </div>
         </div>
+    </div>
     </div>
 
     <div class="content">
@@ -569,4 +571,5 @@
         </div>
     </div>
 </body>
+
 </html>

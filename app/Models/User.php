@@ -43,6 +43,11 @@ class User extends Authenticatable
     }
 
     // Relationships
+     public function subscriptions()
+    {
+        return $this->hasMany(UserSubscription::class, 'userID');
+    }
+    
     public function accountPackages()
     {
         return $this->hasMany(AccountPackage::class, 'userID', 'userID');
