@@ -66,8 +66,8 @@ Route::middleware('auth')->group(function () {
 	// Dashboard or Home Page
     Route::get('/home', function () {
         return view('homepage');
-    })->name('homepage'); 
-    
+    })->name('homepage');
+
 });
 
 // Route::get('/', function () {
@@ -94,6 +94,17 @@ Route::middleware('auth')->group(function () {
 // })->name('success-updatedpass');
 
 
+// Halaman utama chat
+Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
+
+// Kirim pesan teks
+Route::post('/chat/send', [ChatMessageController::class, 'store'])->name('chat.send');
+
+// Halaman upload foto
+Route::post('/chat/photo/send', [ChatMessageController::class, 'storePhoto'])->name('chat.send.photo');
+
+// Kirim foto
+Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
 // Halaman utama chat
 Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
 
