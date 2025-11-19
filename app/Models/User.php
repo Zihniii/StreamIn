@@ -25,19 +25,32 @@ class User extends Authenticatable
         'passwordPengguna',
     ];
 
-    // Override default auth column names
+    // Override default auth identifier
     public function getAuthIdentifierName()
     {
         return 'userID';
     }
 
+    // Override default auth password column
     public function getAuthPassword()
     {
         return $this->passwordPengguna;
     }
 
-    // Untuk reset password
+    // For password reset
     public function getEmailForPasswordReset()
+    {
+        return $this->emailPengguna;
+    }
+
+    // Accessor agar bisa pakai $user->name
+    public function getNameAttribute()
+    {
+        return $this->usernamePengguna;
+    }
+
+    // Accessor agar bisa pakai $user->email
+    public function getEmailAttribute()
     {
         return $this->emailPengguna;
     }

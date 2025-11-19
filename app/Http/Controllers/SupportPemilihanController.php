@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
 class SupportPemilihanController extends Controller
@@ -11,13 +12,7 @@ class SupportPemilihanController extends Controller
     public function profile()
     {
         $user = Auth::user();
-        return view('profile', compact('user'));
-    }
-
-    public function uploadForm()
-    {
-        $user = Auth::user();
-        return view('profile-upload', compact('user'));
+        return view('profile', compact('user')); // <-- WAJIB BEGITU
     }
 
     public function uploadImage(Request $request)
@@ -28,19 +23,22 @@ class SupportPemilihanController extends Controller
 
         $user = Auth::user();
 
-        // Ambil file
-        $file = $request->file('foto');
-        
-        // Generate nama file unik
-        $fileName = time().'_'.$file->getClientOriginalName();
-        
-        // Simpan ke storage/app/public/profile
-        $file->storeAs('public/profile', $fileName);
+        $folder = public_path('img/profile');
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
 
-        // Simpan ke database pada kolom fotoProfil
+        if ($user->fotoProfil && file_exists($folder . '/' . $user->fotoProfil)) {
+            unlink($folder . '/' . $user->fotoProfil);
+        }
+
+        $file = $request->file('foto');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move($folder, $fileName);
+
         $user->fotoProfil = $fileName;
         $user->save();
 
-        return redirect()->route('profile')->with('success', 'Foto profil berhasil diperbarui.');
+        return redirect()->route('profile')->with('success', 'Foto berhasil diperbarui!');
     }
 }
