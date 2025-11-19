@@ -57,7 +57,8 @@
 
     <!-- Header -->
     <div class="header">
-        <button class="back-btn" onclick="window.location.href='{{ url('/') }}'">
+        <button class="back-btn" onclick="window.location.href='{{ route('homepage') }}'">
+
             <i class="bi bi-chevron-left"></i>
         </button>
         <div class="header-content">
@@ -147,6 +148,13 @@
             if (this.files.length > 0) {
                 document.getElementById('photoForm').submit();
             }
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let chat = document.getElementById("chatArea");
+            chat.scrollTop = chat.scrollHeight;
         });
     </script>
 

@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -11,32 +12,44 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Authentication Routes
+| Web Routes
 |--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
 */
 
-// Welcome page (public)
 Route::get('/', function () {
     return view('auth.welcome');
 })->name('welcome');
 
-// Guest routes
+
+/*
+|--------------------------------------------------------------------------
+| GUEST ROUTES (HANYA UNTUK USER YANG BELUM LOGIN)
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('guest')->group(function () {
 
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
 
+    // Register
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register']);
 
+    // Forgot Password
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
     Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
+    // Reset Password
     Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
-// Success page
 Route::get('/password-reset-success', [ResetPasswordController::class, 'showSuccessPage'])->name('password.success');
 
 // Logout
@@ -44,17 +57,21 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->midd
 
 /*
 |--------------------------------------------------------------------------
-| AUTHENTICATED ROUTES
+| AUTHENTICATED ROUTES (SETELAH LOGIN)
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->group(function () {
 
+    // Home / Homepage
     Route::get('/home', function () {
         return view('homepage');
     })->name('homepage');
 
-});
+    //search bar
+    Route::get('/search', function () {
+        return view('search');
+    })->name('search');
 
 /*
 |-------------------------
@@ -65,17 +82,21 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [SupportPemilihanController::class, 'profile'])->name('profile');
 
-    Route::get('/editProfile', [SupportPemilihanController::class, 'edit'])->name('profile.edit');
 
-    Route::get('/unggahGambar', [SupportPemilihanController::class, 'uploadForm'])->name('profile.upload');
-
-    Route::post('/unggahGambar', [SupportPemilihanController::class, 'uploadImage'])->name('profile.upload.post');
-
+    /*
+    |--------------------------------------------------------------------------
+    | CHAT SYSTEM
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
+    Route::post('/chat/send', [ChatMessageController::class, 'store'])->name('chat.send');
+    Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
 });
+
 
 /*
 |--------------------------------------------------------------------------
-| OTHER ROUTES (optional)
+| OPTIONAL PAGES (KALO ADA FILE NYA)
 |--------------------------------------------------------------------------
 */
 

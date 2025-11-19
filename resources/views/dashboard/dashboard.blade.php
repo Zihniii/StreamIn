@@ -295,6 +295,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            justify-content: center;
             color: #999;
             text-decoration: none;
             font-size: 0.85rem;
@@ -303,6 +304,7 @@
         }
 
         .nav-item.active {
+            color: #b91d4e;
             color: #b91d4e;
         }
 
