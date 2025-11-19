@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <!-- Tambahkan ini biar icon muncul -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -333,38 +335,31 @@
         .bottom-nav {
             position: fixed;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 375px;
-            width: 100%;
-            background-color: white;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0 20px 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 0.75rem 0 1.5rem 0;
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            cursor: pointer;
+            justify-content: center;
             color: #999;
-            font-size: 10px;
-            padding: 8px 20px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .nav-item.active {
-            color: #e85d75;
+            color: #b91d4e;
         }
 
-        .nav-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .home-icon {
@@ -458,7 +453,7 @@
         <h3 class="section-title">Active package</h3>
 
         <div class="package-list">
-            <div class="package-item">
+            <a href="{{ route('active.package') }}" class="package-item" style="text-decoration:none; color:inherit;">
                 <div class="package-icon netflix-icon">N</div>
                 <div class="package-details">
                     <div class="package-name">Netflix</div>
@@ -466,9 +461,9 @@
                     <div class="package-price">Rp 15.000 - Rp 8k</div>
                 </div>
                 <div class="arrow-right"></div>
-            </div>
+            </a>
 
-            <div class="package-item">
+            <a href="{{ route('active.package') }}" class="package-item" style="text-decoration:none; color:inherit;">
                 <div class="package-icon prime-icon">
                     <span class="prime-text">prime</span>
                     <span class="video-text">video</span>
@@ -479,9 +474,9 @@
                     <div class="package-price">Rp 15.000 - Rp 8k</div>
                 </div>
                 <div class="arrow-right"></div>
-            </div>
+            </a>
 
-            <div class="package-item">
+            <a href="{{ route('active.package') }}" class="package-item" style="text-decoration:none; color:inherit;">
                 <div class="package-icon viu-icon">▶</div>
                 <div class="package-details">
                     <div class="package-name">Viu</div>
@@ -489,40 +484,44 @@
                     <div class="package-price">Rp 15.000 - Rp 8k</div>
                 </div>
                 <div class="arrow-right"></div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="row g-0" style="display:flex; text-align:center;">
+            <div class="col" style="flex:1;">
+                <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+            </div>
+
+            <div class="col" style="flex:1;">
+                <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-chart-bar"></i>
+                    Dashboard
+                </a>
+            </div>
+
+            <div class="col" style="flex:1;">
+                <a href="{{ route('chat.index') }}" class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
+                    <i class="fas fa-comments"></i>
+                    Chat
+                </a>
+            </div>
+
+            <div class="col" style="flex:1;">
+                <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
             </div>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <div class="nav-item">
-            <div class="nav-icon">
-                <div class="home-icon"></div>
-            </div>
-            <span>Home</span>
-        </div>
-        <div class="nav-item active">
-            <div class="nav-icon">
-                <div class="dashboard-icon">
-                    <div class="dashboard-dot"></div>
-                    <div class="dashboard-dot"></div>
-                    <div class="dashboard-dot"></div>
-                    <div class="dashboard-dot"></div>
-                </div>
-            </div>
-            <span>Dashboard</span>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">
-                <div class="chat-icon"></div>
-            </div>
-            <span>Chat</span>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">
-                <div class="profile-icon"></div>
-            </div>
-            <span>Profile</span>
-        </div>
-    </nav>
+
+
 </body>
 </html>

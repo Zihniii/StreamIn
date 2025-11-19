@@ -483,7 +483,7 @@
 </head>
 <body>
         <div class="top-nav">
-            <div class="back-btn">
+            <div class="back-btn" onclick="window.location.href='{{ route('dashboard') }}'">
                 <div class="back-arrow"></div>
             </div>
             <div class="page-title">Active Package</div>
