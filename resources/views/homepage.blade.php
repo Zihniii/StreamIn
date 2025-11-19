@@ -1,3 +1,5 @@
+homepage.blade.php
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -304,9 +306,9 @@
         </div>
 
         <!-- Search Box -->
-        <div class="position-relative">
+        <div class="position-relative" onclick="window.location.href='{{ route('search') }}'" style="cursor:pointer;">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" class="form-control search-box" placeholder="Search your package">
+            <input type="text" class="form-control search-box" placeholder="Search your package" readonly>
         </div>
 
         <!-- Applications Section -->
@@ -387,31 +389,30 @@
     <div class="bottom-nav">
         <div class="row g-0">
             <div class="col">
-                <a href="#" class="nav-item active">
+                <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
                     <i class="fas fa-home"></i>
                     Home
                 </a>
             </div>
             <div class="col">
-                <a href="#" class="nav-item">
+                <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     <i class="fas fa-chart-bar"></i>
                     Dashboard
                 </a>
             </div>
             <div class="col">
-                <a href="#" class="nav-item">
+                <a href="{{ route('chat.index') }}" class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
                     <i class="fas fa-comments"></i>
                     Chat
                 </a>
             </div>
             <div class="col">
-                <a href="#" class="nav-item">
+                <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
                     <i class="fas fa-user"></i>
                     Profile
                 </a>
             </div>
         </div>
-    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
