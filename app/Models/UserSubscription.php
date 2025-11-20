@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class UserSubscription extends Model
 {
     protected $table = 'user_subscriptions';
-
     protected $primaryKey = 'userSubscriptionID';
-
     public $timestamps = false;
 
     protected $fillable = [
         'userID',
         'packageID',
+        'accountPackageID',
         'startDate',
         'endDate',
         'status',
@@ -28,5 +27,10 @@ class UserSubscription extends Model
     public function package()
     {
         return $this->belongsTo(Package::class, 'packageID');
+    }
+
+    public function accountPackage()
+    {
+        return $this->belongsTo(AccountPackage::class, 'accountPackageID');
     }
 }
