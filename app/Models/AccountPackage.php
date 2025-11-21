@@ -6,28 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class AccountPackage extends Model
 {
-    protected $table = 'AccountPackage';
+    protected $table = 'accountpackage';
+
     protected $primaryKey = 'accountPackageID';
+
     public $timestamps = false;
 
     protected $fillable = [
         'usernamePackage',
         'passwordPackage',
         'validityPackage',
-        'startDate',
-        'endDate',
         'status',
-        'userID'
     ];
 
-    public function user()
+    // AccountPackage -> UserSubscription (1 - many)
+    public function subscriptions()
     {
-        return $this->belongsTo(User::class, 'userID');
-    }
-
-    // Relasi ke Subscription (N-1)
-    public function subscription()
-    {
-        return $this->belongsTo(Subscription::class, 'subscriptionID', 'subscriptionID');
+        return $this->hasMany(UserSubscription::class, 'accountPackageID');
     }
 }

@@ -6,13 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChatTicket extends Model
 {
-    protected $table = 'ChatTicket';
+    protected $table = 'chatticket';
     protected $primaryKey = 'ticketID';
     public $timestamps = false;
 
     protected $fillable = [
-        'issueCategory',
-        'issueSubCategory',
         'status',
         'createdAt',
         'userID',

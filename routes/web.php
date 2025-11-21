@@ -17,7 +17,6 @@ use App\Http\Controllers\WishlistPackageController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 
@@ -107,17 +106,27 @@ Route::middleware('auth')->group(function () {
 
 
     // Dashboard
-    Route::get('/dashboard', function () {
-        return view('dashboard.dashboard');
-    })->name('dashboard');
+    // Dashboard utama
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Order history
+    Route::get('dashboard/orders', [DashboardController::class, 'orderHistory'])->name('dashboard.orders');
 
-    // Active Package
-    Route::get('/active-package', function () {
-        return view('dashboard.activepackage');
-    })->name('active.package');
+    // Detail package
+    Route::get('dashboard/packages/{id}', [DashboardController::class, 'packagedetails'])->name('dashboard.packages.detail');
 
+    // Browse available packages
+    Route::get('dashboard/packages', [DashboardController::class, 'browsePackages'])->name('dashboard.packages.browse');
 
+    // User profile
+    Route::get('profile', [DashboardController::class, 'profile'])->name('profile');
+
+    // Check expired packages (AJAX)
+    Route::post('dashboard/check-expired', [DashboardController::class, 'checkExpiredPackages'])
+        ->name('dashboard.checkExpired');
+
+    // Get dashboard stats (AJAX)
+    Route::get('dashboard/stats', [DashboardController::class, 'getStats'])->name('dashboard.stats');
 
 
     /*
