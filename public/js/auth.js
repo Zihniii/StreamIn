@@ -36,23 +36,38 @@ function handleLogin(e) {
 
 // Handle Signup Form - Client-side validation only
 function handleSignup(e) {
+    const emailInput = document.getElementById('signupEmail');
+    const emailVal = emailInput.value;
     const password = document.getElementById('signupPassword').value;
     const confirm = document.getElementById('signupConfirmPassword').value;
     
     let isValid = true;
     
-    // Reset errors
+    // 1. Reset semua error dulu
+    document.getElementById('signupEmailError').style.display = 'none'; // Reset error email JS
     document.getElementById('signupPasswordError').style.display = 'none';
     document.getElementById('signupConfirmError').style.display = 'none';
     
-    // Validate password
+    // Hapus class invalid jika ada
+    emailInput.classList.remove('is-invalid');
+    document.getElementById('signupPassword').classList.remove('is-invalid');
+    document.getElementById('signupConfirmPassword').classList.remove('is-invalid');
+
+    // 2. Validasi Email (TAMBAHAN BARU)
+    if (!isValidEmail(emailVal)) {
+        document.getElementById('signupEmailError').style.display = 'block';
+        emailInput.classList.add('is-invalid');
+        isValid = false;
+    }
+    
+    // 3. Validate password
     if (password.length < 8 || !/\d/.test(password) || !/[!@#$%^&*]/.test(password)) {
         document.getElementById('signupPasswordError').style.display = 'block';
         document.getElementById('signupPassword').classList.add('is-invalid');
         isValid = false;
     }
     
-    // Validate password match
+    // 4. Validate password match
     if (password !== confirm) {
         document.getElementById('signupConfirmError').style.display = 'block';
         document.getElementById('signupConfirmPassword').classList.add('is-invalid');
@@ -61,10 +76,40 @@ function handleSignup(e) {
     
     if (!isValid) {
         e.preventDefault();
-        return false;
+        return false; // Stop form submission
     }
     
     return true; // Allow form submission to Laravel
+
+    // const password = document.getElementById('signupPassword').value;
+    // const confirm = document.getElementById('signupConfirmPassword').value;
+    
+    // let isValid = true;
+    
+    // // Reset errors
+    // document.getElementById('signupPasswordError').style.display = 'none';
+    // document.getElementById('signupConfirmError').style.display = 'none';
+    
+    // // Validate password
+    // if (password.length < 8 || !/\d/.test(password) || !/[!@#$%^&*]/.test(password)) {
+    //     document.getElementById('signupPasswordError').style.display = 'block';
+    //     document.getElementById('signupPassword').classList.add('is-invalid');
+    //     isValid = false;
+    // }
+    
+    // // Validate password match
+    // if (password !== confirm) {
+    //     document.getElementById('signupConfirmError').style.display = 'block';
+    //     document.getElementById('signupConfirmPassword').classList.add('is-invalid');
+    //     isValid = false;
+    // }
+    
+    // if (!isValid) {
+    //     e.preventDefault();
+    //     return false;
+    // }
+    
+    // return true; // Allow form submission to Laravel
 }
 
 // Real-time Email Validation

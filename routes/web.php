@@ -13,8 +13,9 @@ use App\Http\Controllers\ReportissueController;
 use App\Http\Controllers\SubcriptionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistPackageController;
+use App\Http\Controllers\DashboardController;
 
-
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -127,6 +128,9 @@ Route::middleware('auth')->group(function () {
 
     // Get dashboard stats (AJAX)
     Route::get('dashboard/stats', [DashboardController::class, 'getStats'])->name('dashboard.stats');
+
+    // Order history detail bagas 24/11/2025
+    Route::get('dashboard/orders/{id}', [DashboardController::class, 'orderHistoryDetail'])->name('dashboard.orders.detail');
 
 
     /*
