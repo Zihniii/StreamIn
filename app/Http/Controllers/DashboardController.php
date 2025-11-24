@@ -154,4 +154,40 @@ class DashboardController extends Controller
 
         return response()->json($stats);
     }
+
+     /**
+     * Order history detail - bagas 24/11/2005
+     */
+    public function orderHistoryDetail($id)
+    {
+        $user = Auth::user();
+
+        // Ambil data subscription
+        $subscription = UserSubscription::where('userSubscriptionID', $id)
+            ->where('userID', $user->userID)
+            ->with(['package', 'accountPackage'])
+            ->firstOrFail();
+
+        // Ambil payment terkait subscription ini
+        $payment = Payment::where('userID', $user->userID)
+            ->where('packageID', $subscription->packageID)
+            ->with(['package', 'paymentMethod', 'discount'])
+            ->orderBy('paymentDate', 'desc')
+            ->first();
+
+        // Jika tidak ada payment, buat dummy data
+        if (!$payment) {
+            $payment = new Payment([
+                'paymentID' => 0,
+                'amount' => $subscription->package->hargaPackage ?? 0,
+                'adminFee' => 0,
+                'paymentDate' => $subscription->startDate,
+                'paymentStatus' => 'completed',
+            ]);
+            $payment->package = $subscription->package;
+            $payment->paymentMethod = (object)['methodName' => 'N/A'];
+        }
+
+        return view('dashboard.historydetail', compact('payment', 'subscription'));
+    }
 }
