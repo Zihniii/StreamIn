@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChatMessage;
-use App\Models\ChatTicket;
 use Illuminate\Http\Request;
+use App\Models\ChatMessage;
+use App\Http\Controllers\ChatTicketController;
+use App\Models\ChatTicket;
 
 class ChatMessageController extends Controller
 {
+
     // ==========================
     //   TEXT MESSAGE
     // ==========================
-    public function store(Request $request)
+    public function sendTextMessage(Request $request)
     {
         $request->validate([
             'message' => 'required|string|max:500',
@@ -21,7 +23,7 @@ class ChatMessageController extends Controller
         ]);
 
         // 🔹 Panggil fungsi getOrCreateTicket() dari ChatTicketController
-        $ticketController = new ChatTicketController;
+        $ticketController = new ChatTicketController();
         $ticket = $ticketController->getOrCreateTicket(
             $request->userID,
             $request->input('issueCategory'),
@@ -52,15 +54,15 @@ class ChatMessageController extends Controller
     //   PAGE CHAT
     // ==========================
     // 🔹 Menampilkan halaman chat beserta semua pesan di tiket aktif
-    public function index(Request $request)
+    public function showChatPage(Request $request)
     {
         $userID = 1; // contoh hardcode user sementara
         $ticket = ChatTicket::where('userID', $userID)
-            ->where('status', 'open')
-            ->orderBy('createdAt', 'desc')
-            ->first();
+                    ->where('status', 'open')
+                    ->orderBy('createdAt', 'desc')
+                    ->first();
 
-        if (! $ticket) {
+        if (!$ticket) {
             return redirect()->route('chat.ticket.create');
         }
 
@@ -75,7 +77,7 @@ class ChatMessageController extends Controller
                 'messageText' => 'How can I help you?',
                 'attachment' => null,
                 'sentAt' => now(),
-                'ticketID' => $ticket->ticketID,
+                'ticketID' => $ticket->ticketID
             ]);
 
             // reload supaya pesan muncul
@@ -84,6 +86,7 @@ class ChatMessageController extends Controller
 
         return view('chatcs.chat', compact('messages', 'userID', 'ticket'));
     }
+
 
     // ==========================
     //   PAGE FOTO
@@ -95,6 +98,7 @@ class ChatMessageController extends Controller
         return view('chatcs.chatphoto', compact('userID'));
     }
 
+
     // ==========================
     //   SEND FOTO
     // ==========================
@@ -102,10 +106,10 @@ class ChatMessageController extends Controller
     {
         $request->validate([
             'attachment' => 'required|image|max:2048',
-            'userID' => 'required|integer',
+            'userID' => 'required|integer'
         ]);
 
-        $ticketController = new ChatTicketController;
+        $ticketController = new ChatTicketController();
         $ticket = $ticketController->getOrCreateTicket(
             $request->userID,
             null,
@@ -130,11 +134,11 @@ class ChatMessageController extends Controller
     {
         $request->validate([
             'attachment' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'userID' => 'required|integer',
+            'userID' => 'required|integer'
         ]);
 
         // Ambil / buat tiket
-        $ticketController = new ChatTicketController;
+        $ticketController = new ChatTicketController();
         $ticket = $ticketController->getOrCreateTicket(
             $request->userID,
             $request->input('issueCategory'),
@@ -142,7 +146,7 @@ class ChatMessageController extends Controller
         );
 
         // Simpan file
-        $filename = time().'_'.$request->file('attachment')->getClientOriginalName();
+        $filename = time() . '_' . $request->file('attachment')->getClientOriginalName();
         $request->file('attachment')->move(public_path('uploads'), $filename);
 
         // Simpan pesan berupa gambar
@@ -156,4 +160,5 @@ class ChatMessageController extends Controller
 
         return redirect()->back()->with('success', 'Gambar berhasil dikirim!');
     }
+
 }
