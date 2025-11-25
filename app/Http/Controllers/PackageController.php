@@ -90,7 +90,6 @@ class PackageController extends Controller
         // Kelompokkan paket berdasarkan tipe
         $groupedPackages = $packages->groupBy('packageType');
 
-        // Deskripsi default (bisa dikustomisasi per service)
         $descriptions = [
             'Netflix' => 'Nikmati pengalaman menonton tanpa batas dengan paket Netflix khusus.',
             'Prime Video' => 'Akses ribuan film dan series eksklusif dengan Amazon Prime Video.',

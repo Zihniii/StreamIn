@@ -20,7 +20,7 @@
             color: #333;
         }
 
-        /* Desktop: Container dengan max-width dan centered */
+        /* Desktop: Container d */
         .container {
             max-width: 100%;
             margin: 0 auto;
