@@ -69,7 +69,6 @@ class PackageController extends Controller
 
     /**
      * Menampilkan halaman paket untuk service lainnya (generic)
-     * Bisa digunakan untuk Prime Video, Viu, dll
      */
     public function showPackage($service)
     {

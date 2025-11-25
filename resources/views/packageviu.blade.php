@@ -526,7 +526,6 @@
             console.log('Selected Package ID:', selectedPackageId);
             console.log('Selected Package Price:', selectedPackagePrice);
 
-            // Contoh: redirect ke halaman checkout
             window.location.href = `/checkout?package=${selectedPackageId}&price=${selectedPackagePrice}`;
         }
     </script>
