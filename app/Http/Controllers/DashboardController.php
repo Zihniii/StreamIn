@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\UserSubscription;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -190,4 +191,25 @@ class DashboardController extends Controller
 
         return view('dashboard.historydetail', compact('payment', 'subscription'));
     }
+
+    /**
+     * Search by keyword - auliya 25/11/2005
+     */
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+
+        // Jika tidak ada keyword, tampilkan semua package
+        if (!$query) {
+            $packages = Package::all();
+        } else {
+            $packages = Package::where('serviceName', 'LIKE', "%{$query}%")
+                ->orWhere('packageType', 'LIKE', "%{$query}%")
+                ->orWhere('descriptionPackage', 'LIKE', "%{$query}%")
+                ->get();
+        }
+
+        return view('search', compact('packages', 'query'));
+    }
+
 }

@@ -102,9 +102,8 @@ Route::middleware('auth')->group(function () {
 
 
     // Search
-    Route::get('/search', function () {
-        return view('search');
-    })->name('search');
+    Route::get('/search', [DashboardController::class, 'search'])->name('search');
+
 
 
     // Dashboard
@@ -158,8 +157,8 @@ Route::middleware('auth')->group(function () {
     */
 
 
-    Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
-    Route::post('/chat/send', [ChatMessageController::class, 'store'])->name('chat.send');
+    Route::get('/chat', [ChatMessageController::class, 'showChatPage'])->name('chat.index');
+    Route::post('/chat/send', [ChatMessageController::class, 'sendTextMessage'])->name('chat.send');
     Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
 });
 
