@@ -14,6 +14,7 @@ use App\Http\Controllers\SubcriptionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistPackageController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PackageController;
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
@@ -174,3 +175,13 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/package', fn () => view('package'))->middleware('auth')->name('package');
 Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('payment');
+
+/*
+|--------------------------------------------------------------------------
+| PACKAGE - ADIFA 5026231178
+|--------------------------------------------------------------------------
+*/
+Route::get('/package/netflix', [PackageController::class, 'showNetflix'])->name('package.netflix');
+
+// Route untuk paket streaming lainnya (untuk pengembangan kedepan)
+Route::get('/package/{service}', [PackageController::class, 'showPackage'])->name('package.show');
