@@ -466,7 +466,7 @@
 
                 <div class="button-container">
                     <button class="choose-button" id="chooseButton" onclick="submitPackage()" disabled>
-                        Pilih Paket
+                        Choose Package
                     </button>
                 </div>
             </div>

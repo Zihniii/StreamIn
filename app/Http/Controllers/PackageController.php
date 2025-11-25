@@ -29,6 +29,44 @@ class PackageController extends Controller
         ]);
     }
 
+    public function showPrime()
+    {
+        // Ambil semua paket Netflix dari database
+        $packages = DB::table('package')
+            ->where('serviceName', 'Prime Video')
+            ->orderByRaw("FIELD(packageType, 'Hourly', 'Daily', 'Monthly')")
+            ->orderBy('durasiPackage', 'asc')
+            ->get();
+
+        // Kelompokkan paket berdasarkan tipe (Hourly, Daily, Monthly)
+        $groupedPackages = $packages->groupBy('packageType');
+
+        return view('packageprime', [
+            'packages' => $groupedPackages,
+            'serviceName' => 'Prime Video',
+            'serviceDescription' => 'Nikmati pengalaman menonton tanpa batas dengan paket Prime Video khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia. Tidak ada iklan, tidak ada gangguan, hanya hiburan berkualitas untuk setiap momen.'
+        ]);
+    }
+
+    public function showViu()
+    {
+        // Ambil semua paket Netflix dari database
+        $packages = DB::table('package')
+            ->where('serviceName', 'Viu')
+            ->orderByRaw("FIELD(packageType, 'Hourly', 'Daily', 'Monthly')")
+            ->orderBy('durasiPackage', 'asc')
+            ->get();
+
+        // Kelompokkan paket berdasarkan tipe (Hourly, Daily, Monthly)
+        $groupedPackages = $packages->groupBy('packageType');
+
+        return view('packageviu', [
+            'packages' => $groupedPackages,
+            'serviceName' => 'Viu',
+            'serviceDescription' => 'Nikmati pengalaman menonton tanpa batas dengan paket Viu khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia. Tidak ada iklan, tidak ada gangguan, hanya hiburan berkualitas untuk setiap momen.'
+        ]);
+    }
+
     /**
      * Menampilkan halaman paket untuk service lainnya (generic)
      * Bisa digunakan untuk Prime Video, Viu, dll
