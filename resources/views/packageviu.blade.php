@@ -549,7 +549,7 @@
             return;
         }
 
-        // Redirect ke halaman payment details
+        // Redirect ke halaman payment detailss
             window.location.href = '{{ route("payment.details") }}?package=' + selectedPackageId;
         }
     </script>

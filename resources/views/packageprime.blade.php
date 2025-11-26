@@ -536,7 +536,7 @@
                 return;
             }
 
-            // Redirect ke halaman checkout atau proses selanjutnya
+            // Redirect ke halaman checkout atau proses selanjutnyaaa
             console.log('Selected Package ID:', selectedPackageId);
             console.log('Selected Package Price:', selectedPackagePrice);
 
