@@ -529,6 +529,16 @@
             // Contoh: redirect ke halaman checkout
             window.location.href = `/checkout?package=${selectedPackageId}&price=${selectedPackagePrice}`;
         }
+
+        function submitPackage() {
+            if (!selectedPackageId) {
+            alert('Silakan pilih paket terlebih dahulu');
+            return;
+        }
+
+        // Redirect ke halaman payment details
+            window.location.href = '{{ route("payment.details") }}?package=' + selectedPackageId;
+        }
     </script>
 </body>
 </html>

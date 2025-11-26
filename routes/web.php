@@ -181,6 +181,24 @@ Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('paym
 |--------------------------------------------------------------------------
 */
 Route::get('/package/netflix', [PackageController::class, 'showNetflix'])->name('package.netflix');
+Route::get('/package/primevideo', [PackageController::class, 'showPrime'])->name('package.prime');
+Route::get('/package/viu', [PackageController::class, 'showViu'])->name('package.viu');
 
 // Route untuk paket streaming lainnya (untuk pengembangan kedepan)
 Route::get('/package/{service}', [PackageController::class, 'showPackage'])->name('package.show');
+
+/*
+|--------------------------------------------------------------------------
+| PAYMENT - ADIFA 5026231178
+|--------------------------------------------------------------------------
+*/
+
+
+// Route untuk payment details
+Route::get('/payment/details', [PaymentController::class, 'showPaymentDetails'])->name('payment.details');
+
+// Route untuk process checkout
+Route::post('/payment/checkout', [PaymentController::class, 'processCheckout'])->name('payment.checkout');
+
+// Route untuk calculate discount (AJAX)
+Route::post('/payment/calculate-discount', [PaymentController::class, 'calculateDiscount'])->name('payment.calculate');
