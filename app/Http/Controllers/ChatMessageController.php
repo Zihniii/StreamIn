@@ -13,7 +13,7 @@ class ChatMessageController extends Controller
     // ==========================
     //   TEXT MESSAGE
     // ==========================
-    public function store(Request $request)
+    public function sendTextMessage(Request $request)
     {
         $request->validate([
             'message' => 'required|string|max:500',
@@ -54,7 +54,7 @@ class ChatMessageController extends Controller
     //   PAGE CHAT
     // ==========================
     // 🔹 Menampilkan halaman chat beserta semua pesan di tiket aktif
-    public function index(Request $request)
+    public function showChatPage(Request $request)
     {
         $userID = 1; // contoh hardcode user sementara
         $ticket = ChatTicket::where('userID', $userID)
@@ -160,7 +160,5 @@ class ChatMessageController extends Controller
 
         return redirect()->back()->with('success', 'Gambar berhasil dikirim!');
     }
-
-
 
 }

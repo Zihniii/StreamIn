@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Subscription extends Model
+class Package extends Model
 {
-    protected $table = 'Subscription';
-    protected $primaryKey = 'subscriptionID';
+    protected $table = 'Package';
+    protected $primaryKey = 'packageID';
     public $timestamps = false;
 
     protected $fillable = [
@@ -21,19 +21,24 @@ class Subscription extends Model
         'descriptionDurasi'
     ];
 
+     public function userSubscriptions()
+    {
+        return $this->hasMany(UserSubscription::class, 'packageID');
+    }
+
     public function payments()
     {
-        return $this->hasMany(Payment::class, 'subscriptionID');
+        return $this->hasMany(Payment::class, 'packageID');
     }
 
     public function wishlistPackages()
     {
-        return $this->hasMany(WishlistPackage::class, 'subscriptionID');
+        return $this->hasMany(WishlistPackage::class, 'packageID');
     }
 
     // Relasi: Subscription dimiliki oleh banyak AccountPackage (1-N)
     public function accountPackages()
     {
-        return $this->hasMany(AccountPackage::class, 'subscriptionID', 'subscriptionID');
+        return $this->hasMany(AccountPackage::class, 'packageID', 'packageID');
     }
 }

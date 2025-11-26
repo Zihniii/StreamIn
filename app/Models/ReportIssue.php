@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReportIssue extends Model
 {
-    protected $table = 'ReportIssue';
+    protected $table = 'reportissue';
     protected $primaryKey = 'reportID';
-    public $timestamps = false;
+    public $timestamps = false; 
 
     protected $fillable = [
         'issueCategory',
@@ -17,11 +17,17 @@ class ReportIssue extends Model
         'createdAt',
         'updatedAt',
         'attachment',
-        'userID'
+        'userID',
+        'userSubscriptionID',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'userID');
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(UserSubscription::class, 'userSubscriptionID');
     }
 }

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <!-- Tambahkan ini biar icon muncul -->
+    <title>Dashboard - {{ config('app.name', 'Stream.in') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
@@ -16,31 +16,11 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background-color: #f5f5f5;
-            max-width: 375px;
+            max-width: 480px;
             margin: 0 auto;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-        }
-
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 20px;
-            background-color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .status-icons {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .status-icons span {
-            font-size: 12px;
         }
 
         header {
@@ -87,6 +67,12 @@
             justify-content: center;
         }
 
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .profile-pic-placeholder {
             width: 100%;
             height: 100%;
@@ -121,28 +107,11 @@
             display: inline-block;
         }
 
-        .balance-section {
-            background-color: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
-        }
-
-        .balance-label {
-            font-size: 12px;
-            opacity: 0.9;
-            margin-bottom: 4px;
-        }
-
-        .balance-amount {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
         .profile-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-top: 16px;
         }
 
         .badge-section {
@@ -180,25 +149,11 @@
             align-items: center;
             gap: 6px;
             cursor: pointer;
+            text-decoration: none;
         }
 
-        .search-icon {
-            width: 14px;
-            height: 14px;
-            border: 2px solid #e85d75;
-            border-radius: 50%;
-            position: relative;
-        }
-
-        .search-icon::after {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 6px;
-            background-color: #e85d75;
-            bottom: -4px;
-            right: -3px;
-            transform: rotate(45deg);
+        .order-history-btn:hover {
+            opacity: 0.9;
         }
 
         .section-title {
@@ -224,6 +179,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             cursor: pointer;
             transition: transform 0.2s;
+            text-decoration: none;
+            color: inherit;
         }
 
         .package-item:active {
@@ -238,39 +195,13 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-weight: 700;
+            overflow: hidden;
         }
 
-        .netflix-icon {
-            background-color: #e50914;
-            color: white;
-            font-size: 26px;
-            font-weight: 800;
-        }
-
-        .prime-icon {
-            background-color: #00a8e1;
-            color: white;
-            font-size: 9px;
-            flex-direction: column;
-            line-height: 1;
-        }
-
-        .prime-text {
-            font-weight: 700;
-            font-size: 11px;
-        }
-
-        .video-text {
-            font-weight: 400;
-            font-size: 8px;
-        }
-
-        .viu-icon {
-            background-color: #ffd400;
-            color: white;
-            font-size: 24px;
-            font-weight: 700;
+        .package-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .package-details {
@@ -290,12 +221,6 @@
             margin-bottom: 6px;
         }
 
-        .package-price {
-            font-size: 12px;
-            color: #e50914;
-            font-weight: 600;
-        }
-
         .package-expiry {
             font-size: 12px;
             color: #999;
@@ -305,22 +230,9 @@
         }
 
         .calendar-icon {
-            width: 12px;
-            height: 12px;
-            background-color: #dc3545;
-            border-radius: 2px;
-            position: relative;
-        }
-
-        .calendar-icon::before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
-            background-color: white;
-            border-radius: 1px;
+            width: 14px;
+            height: 14px;
+            color: #dc3545;
         }
 
         .arrow-right {
@@ -332,28 +244,67 @@
             flex-shrink: 0;
         }
 
+        .empty-packages {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-text {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .btn-browse {
+            background: linear-gradient(135deg, #e85d75 0%, #d63851 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-browse:hover {
+            opacity: 0.9;
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
+            max-width: 480px;
+            margin: 0 auto;
             background: white;
             padding: 0.75rem 0 1.5rem 0;
             box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
         }
 
+        .nav-container {
+            display: flex;
+            text-align: center;
+        }
+
         .nav-item {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             justify-content: center;
             color: #999;
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
+            padding: 0.5rem;
         }
 
         .nav-item.active {
+            color: #b91d4e;
             color: #b91d4e;
         }
 
@@ -361,59 +312,9 @@
             font-size: 1.5rem;
             margin-bottom: 0.25rem;
         }
-
-        .home-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            background-color: currentColor;
-            opacity: 0.5;
-        }
-
-        .dashboard-icon {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3px;
-            width: 20px;
-            height: 20px;
-        }
-
-        .dashboard-dot {
-            width: 8px;
-            height: 8px;
-            background-color: currentColor;
-            border-radius: 2px;
-        }
-
-        .chat-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: currentColor;
-            opacity: 0.5;
-            position: relative;
-        }
-
-        .chat-icon::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            right: 2px;
-            width: 6px;
-            height: 6px;
-            background-color: currentColor;
-            transform: rotate(45deg);
-        }
-
-        .profile-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: currentColor;
-            opacity: 0.5;
-        }
     </style>
 </head>
+
 <body>
 
     <header>Dashboard</header>
@@ -422,17 +323,37 @@
         <div class="profile-card">
             <div class="profile-header">
                 <div class="profile-pic">
-                    <div class="profile-pic-placeholder">JD</div>
+                    @php
+                        $avatar = null;
+                        $userName = 'Guest';
+                        $userPoints = 0;
+                        $badgeName = 'The Watcher';
+
+                        if (Auth::check()) {
+                            $avatar = Auth::user()->fotoProfil;
+                            $userName = Auth::user()->usernamePengguna;
+                            $userPoints = Auth::user()->points ?? 0;
+                            $badgeName = Auth::user()->badge ?? 'The Watcher';
+                        } elseif (isset($dummyUser)) {
+                            $avatar = $dummyUser->avatar ?? null;
+                            $userName = $dummyUser->name ?? 'Guest';
+                            $userPoints = $dummyUser->points ?? 0;
+                            $badgeName = $dummyUser->badge ?? 'The Watcher';
+                        }
+                    @endphp
+
+                    @if ($avatar)
+                        <img src="{{ $avatar }}" alt="Avatar">
+                    @else
+                        <div class="profile-pic-placeholder">
+                            {{ strtoupper(substr($userName, 0, 2)) }}
+                        </div>
+                    @endif
                 </div>
                 <div class="profile-info">
-                    <h2>John Doe</h2>
-                    <p><span class="point-icon"></span> 250 Point</p>
+                    <h2>{{ $userName }}</h2>
+                    <p><span class="point-icon"></span> {{ $userPoints }} Point</p>
                 </div>
-            </div>
-
-            <div class="balance-section">
-                <div class="balance-label">Balance</div>
-                <div class="balance-amount">Rp 0</div>
             </div>
 
             <div class="profile-footer">
@@ -440,88 +361,77 @@
                     <div class="badge-icon">🏆</div>
                     <div>
                         <div class="badge-text">Badge</div>
-                        <div class="badge-text" style="font-weight: 600;">The Watcher</div>
+                        <div class="badge-text" style="font-weight: 600;">{{ $badgeName }}</div>
                     </div>
                 </div>
-                <button class="order-history-btn">
-                    <div class="search-icon"></div>
+                <a href="{{ route('dashboard.orders') ?? '#' }}" class="order-history-btn">
+                    <i class="fas fa-history"></i>
                     Order History
-                </button>
+                </a>
             </div>
         </div>
 
         <h3 class="section-title">Active package</h3>
 
         <div class="package-list">
-            <a href="{{ route('active.package') }}" class="package-item" style="text-decoration:none; color:inherit;">
-                <div class="package-icon netflix-icon">N</div>
-                <div class="package-details">
-                    <div class="package-name">Netflix</div>
-                    <div class="package-duration">3 days package</div>
-                    <div class="package-price">Rp 15.000 - Rp 8k</div>
-                </div>
-                <div class="arrow-right"></div>
-            </a>
+            @forelse($activePackages ?? [] as $package)
+                <a href="{{ route('dashboard.packages.detail', $package->id ?? '#') }}" class="package-item">
+                    <div class="package-icon">
+                        <img src="{{ asset('img/' . $package->package->logoSubscription) }}"
+                            alt="{{ $package->package->serviceName }}"
+                            onerror="this.src='{{ asset('img/default-platform.png') }}'">
+                    </div>
+                    <div class="package-details">
+                        <div class="package-name">{{ $package->package->serviceName }}</div>
 
-            <a href="{{ route('active.package') }}" class="package-item" style="text-decoration:none; color:inherit;">
-                <div class="package-icon prime-icon">
-                    <span class="prime-text">prime</span>
-                    <span class="video-text">video</span>
-                </div>
-                <div class="package-details">
-                    <div class="package-name">Prime Video</div>
-                    <div class="package-duration">3 days package</div>
-                    <div class="package-price">Rp 15.000 - Rp 8k</div>
-                </div>
-                <div class="arrow-right"></div>
-            </a>
+                        <div class="package-duration">
+                            {{ $package->package->descriptionDurasi ?? $package->package->durasiPackage . ' days' }}
+                        </div>
 
-            <a href="{{ route('active.package') }}" class="package-item" style="text-decoration:none; color:inherit;">
-                <div class="package-icon viu-icon">▶</div>
-                <div class="package-details">
-                    <div class="package-name">Viu</div>
-                    <div class="package-duration">3 days package</div>
-                    <div class="package-price">Rp 15.000 - Rp 8k</div>
+                        <div class="package-expiry">
+                            <svg class="calendar-icon" ...></svg>
+                            <span>{{ \Carbon\Carbon::parse($package->endDate)->format('d F Y H.i') }}</span>
+                        </div>
+                    </div>
+                    <div class="arrow-right"></div>
+                </a>
+            @empty
+                <div class="empty-packages">
+                    <p class="empty-text">You don't have any active packages</p>
+                    <a href="{{ route('homepage') ?? '#' }}" class="btn-browse">
+                        Browse Packages
+                    </a>
                 </div>
-                <div class="arrow-right"></div>
-            </a>
+            @endforelse
         </div>
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <div class="row g-0" style="display:flex; text-align:center;">
-            <div class="col" style="flex:1;">
-                <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
-                    <i class="fas fa-home"></i>
-                    Home
-                </a>
-            </div>
+        <div class="nav-container">
+            <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
 
-            <div class="col" style="flex:1;">
-                <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-chart-bar"></i>
-                    Dashboard
-                </a>
-            </div>
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <i class="fas fa-chart-bar"></i>
+                Dashboard
+            </a>
 
-            <div class="col" style="flex:1;">
-                <a href="{{ route('chat.index') }}" class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
-                    <i class="fas fa-comments"></i>
-                    Chat
-                </a>
-            </div>
+            <a href="{{ route('chat.index') }}"
+                class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
+                <i class="fas fa-comments"></i>
+                Chat
+            </a>
 
-            <div class="col" style="flex:1;">
-                <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
-                    <i class="fas fa-user"></i>
-                    Profile
-                </a>
-            </div>
+            <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
+                <i class="fas fa-user"></i>
+                Profile
+            </a>
         </div>
     </div>
 
-
-
 </body>
+
 </html>

@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class WishlistPackage extends Model
 {
     protected $table = 'WishlistPackage';
+
     protected $primaryKey = 'wishlistID';
+
     public $timestamps = false;
 
     protected $fillable = [
         'userID',
-        'subscriptionID'
+        'packageID',
     ];
 
     public function user()
@@ -20,8 +22,8 @@ class WishlistPackage extends Model
         return $this->belongsTo(User::class, 'userID');
     }
 
-    public function subscription()
+    public function package()
     {
-        return $this->belongsTo(Subscription::class, 'subscriptionID');
+        return $this->belongsTo(Package::class, 'packageID');
     }
 }
