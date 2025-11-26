@@ -20,7 +20,6 @@
             color: #333;
         }
 
-        /* Desktop: Container dengan max-width dan centered */
         .container {
             max-width: 100%;
             margin: 0 auto;
@@ -28,7 +27,6 @@
             min-height: 100vh;
         }
 
-        /* Desktop: Card wrapper dengan max-width */
         .card-wrapper {
             max-width: 1000px;
             margin: 0 auto;
@@ -183,7 +181,6 @@
             display: grid;
         }
 
-        /* Desktop: 2 columns grid */
         @media (min-width: 768px) {
             .package-list.active {
                 grid-template-columns: repeat(2, 1fr);
@@ -323,9 +320,7 @@
             opacity: 0.3;
         }
 
-        /* Mobile Responsive */
         @media (max-width: 767px) {
-            /* Mobile: Full screen tanpa max-width */
             .card-wrapper {
                 max-width: 100%;
             }
@@ -392,7 +387,6 @@
             }
         }
 
-        /* Extra small devices */
         @media (max-width: 380px) {
             .package-info-left {
                 flex-direction: column;
@@ -419,7 +413,7 @@
             <div class="content">
                 <div class="banner-section">
                     <div class="banner">
-                        <img src="{{ asset('img/banner_netflix.png') }}" alt="{{ $serviceName }} Banner">
+                        <img src="{{ asset('img/banner_netflix.png') }}" alt="Netflix Banner">
                     </div>
                 </div>
 
@@ -445,7 +439,9 @@
                 @foreach($packages as $type => $items)
                     <div class="package-list {{ $loop->first ? 'active' : '' }}" id="{{ strtolower($type) }}-list">
                         @forelse($items as $package)
-                            <div class="package-item" onclick="selectPackage(this, {{ $package->packageID }}, {{ $package->hargaPackage }})">
+                            <div class="package-item" 
+                                 data-duration="{{ $package->durasiPackage }}"
+                                 onclick="selectPackage(this, {{ $package->packageID }}, {{ $package->hargaPackage }})">
                                 <div class="package-info-left">
                                     <div class="duration-badge">
                                         <span class="material-icons">schedule</span>
@@ -474,73 +470,113 @@
     </div>
 
     <script>
-        let selectedPackageId = null;
-        let selectedPackagePrice = null;
+    let selectedPackageId = null;
+    let selectedPackagePrice = null;
 
-        function switchTab(tabName, event) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
 
-            // Update package lists
-            document.querySelectorAll('.package-list').forEach(list => {
-                list.classList.remove('active');
-            });
-            document.getElementById(tabName + '-list').classList.add('active');
+    function switchTab(tabName, event) {
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
 
-            // Reset selection
-            selectedPackageId = null;
-            selectedPackagePrice = null;
-            document.getElementById('chooseButton').disabled = true;
-            document.querySelectorAll('.package-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-        }
+        document.querySelectorAll('.package-list').forEach(list => {
+            list.classList.remove('active');
+        });
+        document.getElementById(tabName + '-list').classList.add('active');
 
-        function selectPackage(element, packageId, price) {
-            // Remove selection from all items
-            document.querySelectorAll('.package-item').forEach(item => {
-                item.classList.remove('selected');
-            });
+        selectedPackageId = null;
+        selectedPackagePrice = null;
+        document.getElementById('chooseButton').disabled = true;
+        document.querySelectorAll('.package-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+    }
 
-            // Add selection to clicked item
-            element.classList.add('selected');
+    function selectPackage(element, packageId, price) {
+        document.querySelectorAll('.package-item').forEach(item => {
+            item.classList.remove('selected');
+        });
 
-            // Store selected package data
-            selectedPackageId = packageId;
-            selectedPackagePrice = price;
+        element.classList.add('selected');
+        selectedPackageId = packageId;
+        selectedPackagePrice = price;
+        document.getElementById('chooseButton').disabled = false;
+    }
 
-            // Enable choose button
-            document.getElementById('chooseButton').disabled = false;
-        }
-
-        function submitPackage() {
-            if (!selectedPackageId) {
-                alert('Silakan pilih paket terlebih dahulu');
-                return;
-            }
-
-            // Redirect ke halaman checkout atau proses selanjutnya
-            console.log('Selected Package ID:', selectedPackageId);
-            console.log('Selected Package Price:', selectedPackagePrice);
-
-            // Contoh: redirect ke halaman checkout
-            window.location.href = `/checkout?package=${selectedPackageId}&price=${selectedPackagePrice}`;
-        }
-
-        function submitPackage() {
-            if (!selectedPackageId) {
+    function submitPackage() {
+        if (!selectedPackageId) {
             alert('Silakan pilih paket terlebih dahulu');
             return;
         }
+        window.location.href = '{{ route("payment.details") }}?package=' + selectedPackageId;
+    }
 
-        // Redirect ke halaman payment detailsss
-            window.location.href = '{{ route("payment.details") }}?package=' + selectedPackageId;
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabParam = getUrlParameter('tab');
+        const durationParam = getUrlParameter('duration');
+        
+        console.log('=== NETFLIX AUTO-SELECT DEBUG ===');
+        console.log('URL Parameters - Tab:', tabParam, 'Duration:', durationParam);
+        
+        if (tabParam) {
+            const tabName = tabParam.charAt(0).toUpperCase() + tabParam.slice(1).toLowerCase();
+            const tabs = document.querySelectorAll('.tab-button');
+            let foundTab = null;
+            
+            tabs.forEach(tab => {
+                if (tab.textContent.trim() === tabName) {
+                    foundTab = tab;
+                }
+            });
+            
+            if (foundTab) {
+                tabs.forEach(t => t.classList.remove('active'));
+                foundTab.classList.add('active');
+                
+                document.querySelectorAll('.package-list').forEach(list => {
+                    list.classList.remove('active');
+                });
+                
+                const listId = tabParam.toLowerCase() + '-list';
+                const targetList = document.getElementById(listId);
+                
+                if (targetList) {
+                    targetList.classList.add('active');
+                    
+                    if (durationParam) {
+                        setTimeout(() => {
+                            const packageItems = targetList.querySelectorAll('.package-item');
+                            
+                            packageItems.forEach((item) => {
+                                const itemDuration = item.getAttribute('data-duration');
+                                
+                                if (itemDuration === durationParam || itemDuration == durationParam) {
+                                    console.log('✅ MATCH FOUND! Auto-selecting Netflix package');
+                                    item.click();
+                                    
+                                    setTimeout(() => {
+                                        item.scrollIntoView({ 
+                                            behavior: 'smooth', 
+                                            block: 'center' 
+                                        });
+                                    }, 100);
+                                }
+                            });
+                        }, 300);
+                    }
+                }
+            }
         }
+        
+        console.log('=== END DEBUG ===');
+    });
     </script>
 </body>
 </html>
-
-

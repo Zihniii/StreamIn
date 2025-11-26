@@ -12,14 +12,12 @@ class PackageController extends Controller
      */
     public function showNetflix()
     {
-        // Ambil semua paket Netflix dari database
         $packages = DB::table('package')
             ->where('serviceName', 'Netflix')
             ->orderByRaw("FIELD(packageType, 'Hourly', 'Daily', 'Monthly')")
             ->orderBy('durasiPackage', 'asc')
             ->get();
 
-        // Kelompokkan paket berdasarkan tipe (Hourly, Daily, Monthly)
         $groupedPackages = $packages->groupBy('packageType');
 
         return view('packagenetflix', [
@@ -31,14 +29,12 @@ class PackageController extends Controller
 
     public function showPrime()
     {
-        // Ambil semua paket Netflix dari database
         $packages = DB::table('package')
             ->where('serviceName', 'Prime Video')
             ->orderByRaw("FIELD(packageType, 'Hourly', 'Daily', 'Monthly')")
             ->orderBy('durasiPackage', 'asc')
             ->get();
 
-        // Kelompokkan paket berdasarkan tipe (Hourly, Daily, Monthly)
         $groupedPackages = $packages->groupBy('packageType');
 
         return view('packageprime', [
@@ -50,14 +46,12 @@ class PackageController extends Controller
 
     public function showViu()
     {
-        // Ambil semua paket Netflix dari database
         $packages = DB::table('package')
             ->where('serviceName', 'Viu')
             ->orderByRaw("FIELD(packageType, 'Hourly', 'Daily', 'Monthly')")
             ->orderBy('durasiPackage', 'asc')
             ->get();
 
-        // Kelompokkan paket berdasarkan tipe (Hourly, Daily, Monthly)
         $groupedPackages = $packages->groupBy('packageType');
 
         return view('packageviu', [
@@ -68,7 +62,8 @@ class PackageController extends Controller
     }
 
     /**
-     * Menampilkan halaman paket untuk service lainnya (generic)
+     * FIXED: Menampilkan halaman paket untuk service lainnya (generic)
+     * Sekarang return view yang sesuai dengan service
      */
     public function showPackage($service)
     {
@@ -90,13 +85,27 @@ class PackageController extends Controller
         // Kelompokkan paket berdasarkan tipe
         $groupedPackages = $packages->groupBy('packageType');
 
-        $descriptions = [
-            'Netflix' => 'Nikmati pengalaman menonton tanpa batas dengan paket Netflix khusus.',
-            'Prime Video' => 'Akses ribuan film dan series eksklusif dengan Amazon Prime Video.',
-            'Viu' => 'Tonton drama Asia terbaik dan konten eksklusif di Viu.',
+        // FIXED: Mapping service name ke view file yang sesuai
+        $viewMap = [
+            'Netflix' => 'packagenetflix',
+            'Prime Video' => 'packageprime',
+            'Viu' => 'packageviu',
+            'Vidio' => 'packagevidio',  // Jika ada
+            'Hotstar' => 'packagehotstar',  // Jika ada
         ];
 
-        return view('packagenetflix', [
+        $descriptions = [
+            'Netflix' => 'Nikmati pengalaman menonton tanpa batas dengan paket Netflix khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia.',
+            'Prime Video' => 'Akses ribuan film dan series eksklusif dengan Amazon Prime Video. Tonton konten original dan blockbuster terbaik.',
+            'Viu' => 'Tonton drama Asia terbaik dan konten eksklusif di Viu. Streaming tanpa batas untuk hiburan Anda.',
+            'Vidio' => 'Streaming konten lokal dan internasional terbaik di Vidio. Hiburan untuk seluruh keluarga.',
+            'Hotstar' => 'Nikmati konten premium dari Disney, Marvel, Star Wars, dan lainnya di Disney+ Hotstar.',
+        ];
+
+        // FIXED: Gunakan view yang sesuai, fallback ke packagenetflix jika tidak ada
+        $viewName = $viewMap[$serviceName] ?? 'packagenetflix';
+
+        return view($viewName, [
             'packages' => $groupedPackages,
             'serviceName' => $serviceName,
             'serviceDescription' => $descriptions[$serviceName] ?? 'Nikmati streaming berkualitas tinggi.'
