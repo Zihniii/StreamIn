@@ -223,7 +223,7 @@
     <div class="content">
         <div class="order-list">
             @forelse($orderHistory ?? [] as $order)
-                <a href="{{ route('dashboard.packages.detail', $order->id) }}" class="order-item">
+                <a href="{{ route('dashboard.orders.detail', $order->userSubscriptionID) }}" class="order-item">
                     <div class="order-icon">
                         <img src="{{ asset('img/' . $order->package->logoSubscription) }}"
                             alt="{{ $order->package->serviceName }}"
