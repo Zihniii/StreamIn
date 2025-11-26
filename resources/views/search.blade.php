@@ -139,11 +139,18 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
         }
+        .last-search-item {
+            width: 100%;
+        }
         .last-search-item img {
             width: 100%;
             aspect-ratio: 1;
             border-radius: 8px;
             object-fit: cover;
+            display: block;
+        }
+        .last-search-item > div {
+            margin-top: 6px;
         }
         .recent-search-item {
             padding: 12px 16px;
@@ -174,7 +181,7 @@
     <!-- Search Header -->
     <div class="search-header">
         <div class="search-input-group">
-            <button class="back-btn" onclick="window.location.href='{{ route('homepage') }}'">
+            <button class="back-btn" onclick="window.history.back()">
                 <i class="bi bi-chevron-left"></i>
             </button>
             <div class="search-input-wrapper">
@@ -198,22 +205,22 @@
                 <div class="last-search-title">Last Search</div>
 
                 <div class="last-search-grid">
-                    <div>
-                        <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=200">
+                    <div class="last-search-item">
+                        <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=200" alt="Netflix">
                         <div style="font-size:13px;font-weight:600;">Netflix</div>
                         <div style="font-size:11px;color:#666;">1 Hour</div>
                         <div style="color:#8b2332;font-weight:600;">Rp 3.000</div>
                     </div>
 
-                    <div>
-                        <img src="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=200">
+                    <div class="last-search-item">
+                        <img src="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=200" alt="Prime Video">
                         <div style="font-size:13px;font-weight:600;">Prime Video</div>
                         <div style="font-size:11px;color:#666;">3 Hour</div>
                         <div style="color:#8b2332;font-weight:600;">Rp 5.000</div>
                     </div>
 
-                    <div>
-                        <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=200">
+                    <div class="last-search-item">
+                        <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=200" alt="Viu">
                         <div style="font-size:13px;font-weight:600;">Viu</div>
                         <div style="font-size:11px;color:#666;">5 Hour</div>
                         <div style="color:#8b2332;font-weight:600;">Rp 8.000</div>
@@ -276,9 +283,9 @@
         document.getElementById("lastSearchSection").style.display = "none";
 
         resultsDiv.innerHTML = items.map(pkg => `
-            <a href="{{ route('package') }}" style="text-decoration:none; color:inherit;">
+            <a href="#" style="text-decoration:none; color:inherit;">
                 <div class="package-card">
-                    <img src="${pkg.image}" class="package-image">
+                    <img src="${pkg.image}" class="package-image" alt="${pkg.name}">
                     <div>
                         <div class="package-title">${pkg.name}</div>
                         <div class="package-duration"><i class="bi bi-clock"></i> ${pkg.duration}</div>
