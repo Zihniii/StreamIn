@@ -146,5 +146,8 @@ Route::get('/package/{service}', [PackageController::class, 'showPackage'])->nam
 */
 
 Route::get('/payment/details', [PaymentController::class, 'showPaymentDetails'])->name('payment.details');
-Route::post('/payment/checkout', [PaymentController::class, 'processCheckout'])->name('payment.checkout');
-Route::post('/payment/calculate-discount', [PaymentController::class, 'calculateDiscount'])->name('payment.calculate');
+Route::post('/payment', [PaymentController::class, 'showPayment'])->name('payment.show');
+Route::post('/payment/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
+Route::get('/payment/success', [PaymentController::class, 'showSuccess'])->name('payment.success');
+// Route untuk check payment timeout (AJAX)
+Route::get('/payment/check-timeout', [PaymentController::class, 'checkTimeout'])->name('payment.check.timeout');
