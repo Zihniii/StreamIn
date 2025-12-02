@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
+        /* CSS Anda tidak berubah, dihilangkan untuk keringkasan */
         * {
             margin: 0;
             padding: 0;
@@ -435,6 +437,7 @@
             from {
                 transform: translateY(100%);
             }
+
             to {
                 transform: translateY(0);
             }
@@ -612,10 +615,10 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="card-wrapper">
-            <!-- Progress Steps -->
             <div class="progress-steps">
                 <div class="step active">
                     <div class="step-circle">
@@ -636,7 +639,6 @@
                 </div>
             </div>
 
-            <!-- Header -->
             <div class="header">
                 <button class="back-btn" onclick="history.back()">
                     <span class="material-icons">chevron_left</span>
@@ -644,9 +646,7 @@
                 <h1 class="header-title">Payment Details</h1>
             </div>
 
-            <!-- Content -->
             <div class="content">
-                <!-- Package Info -->
                 <div class="package-info">
                     <div class="package-logo">
                         <img src="{{ asset('img/' . $package->logoSubscription) }}" alt="{{ $package->serviceName }}">
@@ -658,13 +658,14 @@
                     <button class="change-package-btn" onclick="history.back()">Change Package</button>
                 </div>
 
-                <!-- Payment Method Section -->
                 <div class="section">
                     <h2 class="section-title">Payment Method</h2>
-                    @foreach($paymentMethods as $method)
-                        <div class="payment-method-item" onclick="selectPaymentMethod(this, {{ $method->paymentMethodID }})">
+                    @foreach ($paymentMethods as $method)
+                        <div class="payment-method-item"
+                            onclick="selectPaymentMethod(this, {{ $method->paymentMethodID }})">
                             <div class="payment-method-left">
-                                <img src="{{ asset('img/' . $method->icon) }}" alt="{{ $method->methodName }}" class="payment-icon">
+                                <img src="{{ asset('img/' . $method->icon) }}" alt="{{ $method->methodName }}"
+                                    class="payment-icon">
                                 <span class="payment-name">{{ $method->methodName }}</span>
                             </div>
                             <div class="radio-button"></div>
@@ -672,7 +673,6 @@
                     @endforeach
                 </div>
 
-                <!-- Voucher Section -->
                 <div class="section">
                     <div class="voucher-card" onclick="openVoucherModal()">
                         <div class="voucher-left">
@@ -685,13 +685,14 @@
                     </div>
                 </div>
 
-                <!-- Payment Detail Summary -->
                 <div class="section">
                     <h2 class="section-title">Payment Detail</h2>
                     <div class="payment-summary">
                         <div class="summary-row">
-                            <span class="summary-label">{{ $package->serviceName }} ({{ $package->descriptionDurasi }})</span>
-                            <span class="summary-value" id="originalPrice">Rp{{ number_format($originalPrice, 0, ',', '.') }}</span>
+                            <span class="summary-label">{{ $package->serviceName }}
+                                ({{ $package->descriptionDurasi }})</span>
+                            <span class="summary-value"
+                                id="originalPrice">Rp{{ number_format($originalPrice, 0, ',', '.') }}</span>
                         </div>
                         <div class="summary-row" id="discountRow" style="display: none;">
                             <span class="summary-label">Discount Voucher</span>
@@ -700,13 +701,13 @@
                         <div class="summary-divider"></div>
                         <div class="total-row">
                             <span class="total-label">Total Price</span>
-                            <span class="total-value" id="totalPrice">Rp{{ number_format($originalPrice, 0, ',', '.') }}</span>
+                            <span class="total-value"
+                                id="totalPrice">Rp{{ number_format($originalPrice, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Bottom Fixed Checkout -->
             <div class="bottom-fixed">
                 <button class="checkout-button" id="checkoutBtn" onclick="processCheckout()" disabled>
                     Checkout
@@ -715,7 +716,6 @@
         </div>
     </div>
 
-    <!-- Voucher Modal -->
     <div class="modal" id="voucherModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -725,23 +725,23 @@
                 </button>
             </div>
 
-            <!-- Referral Code Input -->
             <div class="referral-input-wrapper">
                 <label class="referral-label">Referral Code</label>
-                <input type="text" class="referral-input" placeholder="Insert your referral code" id="referralCodeInput">
+                <input type="text" class="referral-input" placeholder="Insert your referral code"
+                    id="referralCodeInput">
             </div>
 
-            <!-- Your Voucher List -->
             <h4 class="voucher-section-title">Your Voucher</h4>
-            @foreach($discounts as $discount)
-                <div class="discount-item" onclick="selectDiscount(this, {{ $discount->discountID }}, '{{ $discount->discountType }}', {{ $discount->discountValue }})">
+            @foreach ($discounts as $discount)
+                <div class="discount-item"
+                    onclick="selectDiscount(this, {{ $discount->discountID }}, '{{ $discount->discountType }}', {{ $discount->discountValue }})">
                     <div class="discount-left">
                         <div class="discount-icon">
                             <span class="material-icons" style="font-size: 18px;">local_offer</span>
                         </div>
                         <div class="discount-info">
                             <h4>
-                                @if($discount->discountType === 'percentage')
+                                @if ($discount->discountType === 'percentage')
                                     {{ $discount->discountValue }}% Off
                                 @elseif($discount->discountType === 'cashback')
                                     Rp{{ number_format($discount->discountValue * 1000, 0, ',', '.') }} Cashback
@@ -765,7 +765,7 @@
         let selectedDiscountType = null;
         let selectedDiscountValue = 0;
         const originalPrice = {{ $originalPrice }};
-        const packageId = {{ $package->packageID }};
+        const packageID = {{ $package->packageID }}; // Diubah dari packageId ke packageID
         let referralCode = '';
 
         // Select Payment Method
@@ -802,12 +802,13 @@
         // Confirm Voucher
         function confirmVoucher() {
             referralCode = document.getElementById('referralCodeInput').value;
-            
+
             // Calculate discount
             let discountAmount = 0;
             if (selectedDiscountType === 'percentage') {
                 discountAmount = (originalPrice * selectedDiscountValue) / 100;
             } else if (selectedDiscountType === 'cashback') {
+                // Assuming $discountValue represents value in thousands (e.g., 50 -> Rp50,000)
                 discountAmount = selectedDiscountValue * 1000;
             }
 
@@ -818,13 +819,19 @@
                 document.getElementById('discountRow').style.display = 'flex';
                 document.getElementById('discountValue').textContent = '-Rp' + formatNumber(discountAmount);
                 document.getElementById('totalPrice').textContent = 'Rp' + formatNumber(finalPrice);
-                
+
                 // Update voucher text
                 if (selectedDiscountType === 'percentage') {
                     document.getElementById('voucherText').textContent = `Discount ${selectedDiscountValue}% applied`;
                 } else {
-                    document.getElementById('voucherText').textContent = `Cashback Rp${formatNumber(discountAmount)} applied`;
+                    document.getElementById('voucherText').textContent =
+                        `Cashback Rp${formatNumber(discountAmount)} applied`;
                 }
+            } else {
+                // Reset if no discount applied
+                document.getElementById('discountRow').style.display = 'none';
+                document.getElementById('totalPrice').textContent = 'Rp' + formatNumber(originalPrice);
+                document.getElementById('voucherText').textContent = 'Use your voucher and special offers';
             }
 
             closeVoucherModal();
@@ -848,7 +855,7 @@
                 return;
             }
 
-            // Calculate final price
+            // Calculate final price (recalculated here to ensure accuracy for submission)
             let discountAmount = 0;
             if (selectedDiscountType === 'percentage') {
                 discountAmount = (originalPrice * selectedDiscountValue) / 100;
@@ -860,7 +867,7 @@
             // Create form and submit
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '{{ route("payment.show") }}';
+            form.action = '{{ route('payment.show') }}';
 
             // Add CSRF token
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -870,15 +877,15 @@
             csrfInput.value = csrfToken;
             form.appendChild(csrfInput);
 
-            // Add data
+            // Add data - MENGUBAH NAMA FIELDS KE CAMELCASE
             const fields = {
-                package_id: packageId,
-                payment_method_id: selectedPaymentMethodId,
-                discount_id: selectedDiscountId,
-                referral_code: referralCode,
-                final_price: finalPrice,
-                original_price: originalPrice,
-                discount_amount: discountAmount
+                packageID: packageID, // package_id -> packageID
+                paymentMethodID: selectedPaymentMethodId, // payment_method_id -> paymentMethodID
+                discountID: selectedDiscountId, // discount_id -> discountID
+                referralCode: referralCode, // referral_code -> referralCode
+                finalPrice: finalPrice, // final_price -> finalPrice
+                originalPrice: originalPrice, // original_price -> originalPrice
+                discountAmount: discountAmount // discount_amount -> discountAmount
             };
 
             for (const [key, value] of Object.entries(fields)) {
@@ -895,7 +902,9 @@
 
         // Format Number
         function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            // Ensure num is rounded before formatting to prevent floating point issues
+            const roundedNum = Math.round(num);
+            return roundedNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
         // Close modal when clicking outside
@@ -906,4 +915,5 @@
         });
     </script>
 </body>
+
 </html>
