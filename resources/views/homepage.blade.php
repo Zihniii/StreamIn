@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Homepage</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    
     <style>
         * {
             margin: 0;
@@ -27,12 +27,81 @@
             background: white;
             min-height: 100vh;
             position: relative;
-            padding-bottom: 80px;
+            padding-bottom: 120px; /* biar aman tidak ketutup navbar profile-style */
+        }
+
+        /* RESPONSIVE UNTUK LAPTOP */
+        @media (min-width: 768px) {
+            body {
+                background: white;
+            }
+
+            .container {
+                max-width: 100% !important;
+                padding-bottom: 140px !important;
+                min-height: 100vh !important;
+            }
+
+            .header {
+                border-radius: 0 !important;
+            }
+
+            .active-package {
+                margin: -32px 24px 24px !important;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+                border: none;
+            }
+
+            .apps-grid {
+                display: grid !important;
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 24px;
+                overflow-x: visible !important;
+            }
+
+            .recommendations-grid {
+                display: grid !important;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 24px;
+                overflow-x: visible !important;
+            }
+
+            .recommendation-card {
+                min-width: auto !important;
+            }
+
+            /* NAVBAR profile-style tetap fixed bawah */
+            .bottom-nav {
+                position: fixed !important;
+                bottom: 0 !important;
+            }
+        }
+
+        /* RESPONSIVE UNTUK TABLET */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .apps-grid {
+                grid-template-columns: repeat(5, 1fr) !important;
+            }
+
+            .recommendations-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+        }
+
+        /* RESPONSIVE UNTUK DESKTOP BESAR */
+        @media (min-width: 1400px) {
+            .apps-grid {
+                grid-template-columns: repeat(6, 1fr) !important;
+            }
+
+            .recommendations-grid {
+                grid-template-columns: repeat(5, 1fr) !important;
+            }
         }
 
         .header {
             background: linear-gradient(135deg, #9B1636 0%, #E23C64 100%);
-            padding: 30px 24px 24px;
+            padding: 24px 24px 48px;
             border-radius: 0 0 24px 24px;
             color: white;
             position: relative;
@@ -42,7 +111,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 40px;
         }
 
         .user-info {
@@ -106,7 +174,7 @@
             background: white;
             border-radius: 20px;
             padding: 20px;
-            margin: -40px 24px 0;
+            margin: -32px 24px 0;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             position: relative;
             z-index: 10;
@@ -203,25 +271,32 @@
             color: #333;
         }
 
+        .search-section {
+            padding: 0 24px;
+            margin-top: 24px;
+            margin-bottom: 24px;
+        }
+
         .search-box {
             background: white;
             border: none;
             border-radius: 16px;
             padding: 1rem 1rem 1rem 3rem;
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-            margin: 1.5rem 0;
+            width: 100%;
         }
 
         .search-icon {
             position: absolute;
-            left: 1.25rem;
+            left: 2.5rem;
             top: 50%;
             transform: translateY(-50%);
             color: #999;
         }
 
         .applications-section {
-            padding: 0 24px 24px;
+            padding: 0 24px;
+            margin-bottom: 24px;
         }
 
         .section-title {
@@ -287,7 +362,8 @@
         }
 
         .recommended-section {
-            padding: 0 24px 24px;
+            padding: 0 24px;
+            margin-bottom: 24px;
         }
 
         .filter-tabs {
@@ -348,7 +424,7 @@
         }
 
         .recommendation-image {
-            width: 200px;
+            width: 100%;
             height: 200px;
             position: relative;
             overflow: hidden;
@@ -417,59 +493,116 @@
             color: #C93866;
         }
 
+        /* =========================================================
+           NAVBAR HOMEPAGE -> DISAMAKAN PERSIS DENGAN NAVBAR PROFILE
+           (Override navbar homepage yang lama biar ga bentrok)
+        ========================================================= */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             background: white;
-            padding: 0.75rem 0 1.5rem 0;
-            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+            padding: 10px 0 18px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
         }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        @media (min-width: 768px) {
+            .bottom-nav {
+                padding: 18px 0 25px 0;
+            }
+        }
+
+        .bottom-nav .container-nav {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        @media (min-width: 768px) {
+            .bottom-nav .container-nav {
+                max-width: 100%;
+                padding: 0 80px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .bottom-nav .container-nav {
+                padding: 0 120px;
+            }
+        }
+
+        .bottom-nav .nav-item {
+            text-align: center;
             color: #999;
+            font-size: 13px;
             text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
+            display: block;
+            transition: color 0.2s;
         }
 
-        .nav-item.active {
+        @media (min-width: 768px) {
+            .bottom-nav .nav-item {
+                font-size: 15px;
+            }
+            .bottom-nav .nav-item:hover {
+                color: #b91d4e;
+            }
+        }
+
+        .bottom-nav .nav-item.active {
             color: #b91d4e;
         }
 
-        .nav-item i {
-            font-size: 1.5rem;
-            margin-bottom: 0.25rem;
+        .bottom-nav i {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
         }
+
+        @media (min-width: 768px) {
+            .bottom-nav i {
+                font-size: 24px;
+                margin-bottom: 6px;
+            }
+        }
+        /* ===================== END NAVBAR PROFILE STYLE ===================== */
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <div class="user-section">
                 <div class="user-info">
                     <div class="user-avatar">
-                        <img src="{{ asset('img/img_profile.png') }}" alt="Profile">
+                        @php
+                            $fotoPath = public_path('img/profile/' . Auth::user()->fotoProfil);
+                        @endphp
+
+                        @if (Auth::user()->fotoProfil && file_exists($fotoPath))
+                            <img src="{{ asset('img/profile/' . Auth::user()->fotoProfil) }}" alt="Profile">
+                        @else
+                            <img src="https://i.pravatar.cc/150?u={{ Auth::user()->userID }}" alt="Profile">
+                        @endif
                     </div>
-                    <div class="user-name">Hai, John Doe!</div>
+                    <div class="user-name">Hai, {{ Auth::user()->name }}!</div>
                 </div>
-                <button class="icon-btn">
-                    <div class="icon-btn-circle">
-                        <span class="material-symbols-outlined">bookmark</span>
-                    </div>
-                    <div class="icon-btn-text">Saved</div>
-                </button>
-                <button class="icon-btn">
-                    <div class="icon-btn-circle">
-                        <span class="material-symbols-outlined">mail</span>
-                    </div>
-                    <div class="icon-btn-text">Inbox</div>
-                </button>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="window.location.href='{{ route('saved.index') }}'">
+                        <div class="icon-btn-circle">
+                            <span class="material-symbols-outlined">bookmark</span>
+                        </div>
+                        <div class="icon-btn-text">Saved</div>
+                    </button>
+                    <button class="icon-btn">
+                        <div class="icon-btn-circle">
+                            <span class="material-symbols-outlined">mail</span>
+                        </div>
+                        <div class="icon-btn-text">Inbox</div>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -498,7 +631,7 @@
             </div>
         </div>
 
-        <div class="position-relative px-3" onclick="window.location.href='{{ route('search') }}'" style="cursor:pointer;">
+        <div class="search-section position-relative" onclick="window.location.href='{{ route('search') }}'" style="cursor:pointer;">
             <i class="fas fa-search search-icon"></i>
             <input type="text" class="form-control search-box" placeholder="Search your package" readonly>
         </div>
@@ -522,7 +655,7 @@
                     <div class="app-icon">
                         <img src="{{ asset('img/logo_viu.png') }}" alt="VIU">
                     </div>
-                    <div class="app-name">VIU</div>
+                    <div class="app-name">Viu</div>
                 </div>
                 <div class="app-item" onclick="goToPackageDetails('Vidio')">
                     <div class="app-icon">
@@ -541,52 +674,47 @@
 
         <div class="recommended-section">
             <div class="section-title">Recommended for You</div>
-
+            
             <div class="filter-tabs">
                 <button class="filter-tab active" data-type="Hourly">Hourly</button>
                 <button class="filter-tab" data-type="Daily">Daily</button>
                 <button class="filter-tab" data-type="Monthly">Monthly</button>
             </div>
-
-            <div class="recommendations-grid" id="recommendationsGrid">
-                <!-- Akan diisi oleh JavaScript -->
-            </div>
+            
+            <div class="recommendations-grid" id="recommendationsGrid"></div>
         </div>
 
+        <!-- BOTTOM NAV (SAMA PERSIS SEPERTI PROFILE) -->
         <div class="bottom-nav">
-            <div class="row g-0">
-                <div class="col">
-                    <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
-                        <i class="fas fa-home"></i>
-                        Home
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-chart-bar"></i>
-                        Dashboard
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="{{ route('chat.index') }}" class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
-                        <i class="fas fa-comments"></i>
-                        Chat
-                    </a>
-                </div>
-                <div class="col">
-                    <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
-                        <i class="fas fa-user"></i>
-                        Profile
-                    </a>
+            <div class="container-nav">
+                <div class="row text-center">
+                    <div class="col">
+                        <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                            <i class="fas fa-chart-bar"></i> Dashboard
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="{{ route('chat.index') }}" class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
+                            <i class="fas fa-comments"></i> Chat
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- END BOTTOM NAV -->
     </div>
 
     <script>
-        // CREATED BY NAUFAL 152: Enhanced Dynamic Package System with Fixed Routing
-        
-        // Service route mapping untuk mendapatkan route yang benar
         const serviceRouteMap = {
             'Netflix': 'netflix',
             'Prime Video': 'prime-video',
@@ -595,18 +723,9 @@
             'Hotstar': 'hotstar'
         };
         
-        // Fungsi untuk redirect ke halaman package details
         function goToPackageDetails(serviceName, packageType = null, duration = null) {
-            console.log('=== NAVIGATION DEBUG ===');
-            console.log('Service:', serviceName);
-            console.log('Type:', packageType); 
-            console.log('Duration:', duration);
-            
-            // Gunakan mapping untuk route yang benar
             const serviceSlug = serviceRouteMap[serviceName] || serviceName.toLowerCase().replace(/\s+/g, '-');
-            console.log('Route slug:', serviceSlug);
             
-            // Build URL dengan parameter
             let url = `/package/${serviceSlug}`;
             const params = [];
             
@@ -615,23 +734,17 @@
             }
             
             if (duration) {
-                // Extract hanya angka dari duration string
                 const durationValue = typeof duration === 'string' ? duration.split(' ')[0] : duration;
                 params.push(`duration=${durationValue}`);
-                console.log('Duration value:', durationValue);
             }
             
             if (params.length > 0) {
                 url += '?' + params.join('&');
             }
             
-            console.log('Final URL:', url);
-            console.log('=== END NAVIGATION DEBUG ===');
-            
             window.location.href = url;
         }
         
-        // Data packages
         const packagesData = {
             "Hourly": [
                 {
