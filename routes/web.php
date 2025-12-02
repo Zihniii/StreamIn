@@ -10,6 +10,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportIssueController;
 use App\Http\Controllers\SupportPemilihanController;
+use App\Http\Controllers\WishlistPackageController;
 use Illuminate\Support\Facades\Route;
 
 /*

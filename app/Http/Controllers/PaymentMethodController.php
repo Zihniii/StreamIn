@@ -12,12 +12,15 @@ class PaymentMethodController extends Controller
      */
     public function index()
     {
+        // Mengambil semua metode pembayaran dari database
         $methods = PaymentMethod::all();
-        // Jika Anda punya view admin untuk list payment method:
-        // return view('admin.payment_methods.index', compact('methods'));
         
-        // Untuk saat ini return json atau debug dulu
-        return response()->json($methods);
+        // Bisa dikembalikan sebagai JSON (untuk API)
+        // atau View (untuk halaman Admin)
+        return response()->json([
+            'success' => true,
+            'data' => $methods
+        ]);
     }
 
     /**
@@ -25,20 +28,25 @@ class PaymentMethodController extends Controller
      */
     public function show($id)
     {
-        $method = PaymentMethod::findOrFail($id);
-        return response()->json($method);
+        $method = PaymentMethod::find($id);
+
+        if (!$method) {
+            return response()->json(['success' => false, 'message' => 'Method not found'], 404);
+        }
+
+        return response()->json(['success' => true, 'data' => $method]);
     }
 
     /**
      * (Opsional) Tambah Metode Pembayaran Baru
-     * Berguna jika Anda membuat halaman Admin
+     * Berguna jika Anda membuat halaman Admin untuk menambah opsi pembayaran
      */
     public function store(Request $request)
     {
         $request->validate([
             'methodName' => 'required|string|max:100',
             'detail' => 'nullable|string',
-            'icon' => 'nullable|string' // misal path gambar
+            'icon' => 'nullable|string' // misal path gambar/icon class
         ]);
 
         $newMethod = PaymentMethod::create([
@@ -48,6 +56,7 @@ class PaymentMethodController extends Controller
         ]);
 
         return response()->json([
+            'success' => true,
             'message' => 'Payment method created successfully',
             'data' => $newMethod
         ]);
