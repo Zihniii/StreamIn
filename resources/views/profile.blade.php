@@ -304,6 +304,17 @@
         min-height: 100vh;
         padding: 20px;
         color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* ✅ FULL RED BACKGROUND (NO WHITE AREA) */
+    .photo-screen::before{
+        content:"";
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #a94064 0%, #c85a7a 100%);
+        z-index: -1;
     }
 
     @media (min-width: 768px) {
@@ -387,13 +398,14 @@
 
     .photo-action-btn {
         width: 100%;
+        display: block;              /* ✅ center works reliably */
         padding: 16px;
         background: white;
         color: #a94064;
         font-weight: 700;
         border-radius: 30px;
         text-align: center;
-        margin-top: 40px;
+        margin: 40px auto 0;         /* ✅ auto center */
         cursor: pointer;
         border: none;
         transition: all 0.2s;
@@ -403,10 +415,8 @@
         .photo-action-btn {
             padding: 22px;
             font-size: 19px;
-            margin-top: 50px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 50px auto 0;     /* ✅ auto center */
+            max-width: 500px;        /* ✅ nice desktop width */
         }
 
         .photo-action-btn:hover {

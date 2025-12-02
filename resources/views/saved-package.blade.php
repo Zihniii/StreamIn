@@ -223,6 +223,14 @@
                 max-width: 1400px;
             }
         }
+        /* Center empty state vertically + horizontally */
+.package-list.has-empty {
+    min-height: calc(100vh - 81px); /* 81px kira2 tinggi header */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
     </style>
 </head>
 <body>
@@ -267,12 +275,20 @@
                         <i class="fas fa-bookmark"></i>
                     </button>
                 </div>
-            @empty
-                <div class="empty-state">
-                    <i class="fas fa-bookmark"></i>
-                    <p>No saved packages yet</p>
-                </div>
-            @endforelse
+           @empty
+    <div class="empty-state w-100">
+        <i class="fas fa-bookmark"></i>
+        <p>No saved packages yet</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const list = document.querySelector('.package-list');
+            if (list) list.classList.add('has-empty');
+        });
+    </script>
+@endforelse
+
         </div>
     </div>
 
