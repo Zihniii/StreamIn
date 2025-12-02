@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -616,7 +615,6 @@
 <body>
     <div class="container">
         <div class="card-wrapper">
-            <!-- 5026231178 Adifa -->
             <!-- Progress Steps -->
             <div class="progress-steps">
                 <div class="step active">
@@ -862,7 +860,7 @@
             // Create form and submit
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '{{ route("payment.checkout") }}';
+            form.action = '{{ route("payment.show") }}';
 
             // Add CSRF token
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -878,7 +876,9 @@
                 payment_method_id: selectedPaymentMethodId,
                 discount_id: selectedDiscountId,
                 referral_code: referralCode,
-                final_price: finalPrice
+                final_price: finalPrice,
+                original_price: originalPrice,
+                discount_amount: discountAmount
             };
 
             for (const [key, value] of Object.entries(fields)) {
