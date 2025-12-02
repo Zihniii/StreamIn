@@ -11,7 +11,7 @@ class ChatMessageController extends Controller
 {
 
     // ==========================
-    //   TEXT MESSAGE
+    //   TEXT MESSAGE - auliya 16/11/2025
     // ==========================
     public function sendTextMessage(Request $request)
     {
@@ -51,7 +51,7 @@ class ChatMessageController extends Controller
     }
 
     // ==========================
-    //   PAGE CHAT
+    //   PAGE CHAT - auliya 16/11/2025
     // ==========================
     // 🔹 Menampilkan halaman chat beserta semua pesan di tiket aktif
     public function showChatPage(Request $request)
@@ -89,7 +89,7 @@ class ChatMessageController extends Controller
 
 
     // ==========================
-    //   PAGE FOTO
+    //   PAGE FOTO - auliya 16/11/2025
     // ==========================
     public function photoPage()
     {
@@ -100,7 +100,7 @@ class ChatMessageController extends Controller
 
 
     // ==========================
-    //   SEND FOTO
+    //   SEND FOTO - auliya 16/11/2025
     // ==========================
     public function sendPhoto(Request $request)
     {

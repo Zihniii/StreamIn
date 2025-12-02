@@ -20,7 +20,6 @@
             color: #333;
         }
 
-        /* Desktop: Container dengan max-width dan centered */
         .container {
             max-width: 100%;
             margin: 0 auto;
@@ -28,7 +27,6 @@
             min-height: 100vh;
         }
 
-        /* Desktop: Card wrapper dengan max-width */
         .card-wrapper {
             max-width: 1000px;
             margin: 0 auto;
@@ -112,23 +110,6 @@
             color: #333;
         }
 
-        .bookmark-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            color: #999;
-            transition: color 0.3s ease;
-        }
-
-        .bookmark-btn:hover {
-            color: #c1184a;
-        }
-
-        .bookmark-btn .material-icons {
-            font-size: 24px;
-        }
-
         .service-description {
             font-size: 14px;
             color: #666;
@@ -183,7 +164,6 @@
             display: grid;
         }
 
-        /* Desktop: 2 columns grid */
         @media (min-width: 768px) {
             .package-list.active {
                 grid-template-columns: repeat(2, 1fr);
@@ -200,6 +180,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: white;
+            position: relative;
         }
 
         .package-item:hover {
@@ -210,6 +191,21 @@
         .package-item.selected {
             border-color: #c1184a;
             background: #fff5f8;
+        }
+
+        /* Badge untuk package yang sudah disave */
+        .package-item.is-saved::after {
+            content: 'SAVED';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #4caf50;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .package-info-left {
@@ -280,12 +276,12 @@
             padding: 24px;
             background: white;
             border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 12px;
         }
 
-        .choose-button {
-            width: 100%;
-            background: #c1184a;
-            color: white;
+        .action-button {
+            flex: 1;
             padding: 16px;
             border: none;
             border-radius: 12px;
@@ -297,6 +293,28 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+        }
+
+        .save-button {
+            background: white;
+            color: #c1184a;
+            border: 2px solid #c1184a;
+        }
+
+        .save-button:hover:not(:disabled) {
+            background: #fff5f8;
+        }
+
+        .save-button:disabled {
+            background: #f5f5f5;
+            color: #ccc;
+            border-color: #e0e0e0;
+            cursor: not-allowed;
+        }
+
+        .choose-button {
+            background: #c1184a;
+            color: white;
         }
 
         .choose-button:hover:not(:disabled) {
@@ -323,9 +341,36 @@
             opacity: 0.3;
         }
 
-        /* Mobile Responsive */
+        .toast-notification {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: bottom 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .toast-notification.show {
+            bottom: 24px;
+        }
+
+        .toast-notification.success {
+            background: #4caf50;
+        }
+
+        .toast-notification.error {
+            background: #f44336;
+        }
+
         @media (max-width: 767px) {
-            /* Mobile: Full screen tanpa max-width */
             .card-wrapper {
                 max-width: 100%;
             }
@@ -384,15 +429,15 @@
 
             .button-container {
                 padding: 16px;
+                flex-direction: column;
             }
 
-            .choose-button {
+            .action-button {
                 padding: 14px;
                 font-size: 15px;
             }
         }
 
-        /* Extra small devices */
         @media (max-width: 380px) {
             .package-info-left {
                 flex-direction: column;
@@ -404,6 +449,10 @@
                 font-size: 10px;
             }
         }
+
+        /* TAMBAHAN: perbandingan lebar tombol Save : Choose Package = 1 : 2 */
+        .button-container .save-button { flex: 1; }
+        .button-container .choose-button { flex: 2; }
     </style>
 </head>
 <body>
@@ -419,16 +468,13 @@
             <div class="content">
                 <div class="banner-section">
                     <div class="banner">
-                        <img src="{{ asset('img/banner_netflix.png') }}" alt="{{ $serviceName }} Banner">
+                        <img src="{{ asset('img/banner_netflix.png') }}" alt="Netflix Banner">
                     </div>
                 </div>
 
                 <div class="service-info">
                     <div class="service-title-row">
                         <h2 class="service-title">{{ $serviceName }}</h2>
-                        <button class="bookmark-btn">
-                            <span class="material-icons">bookmark_border</span>
-                        </button>
                     </div>
                     <p class="service-description">{{ $serviceDescription }}</p>
                 </div>
@@ -445,7 +491,11 @@
                 @foreach($packages as $type => $items)
                     <div class="package-list {{ $loop->first ? 'active' : '' }}" id="{{ strtolower($type) }}-list">
                         @forelse($items as $package)
-                            <div class="package-item" onclick="selectPackage(this, {{ $package->packageID }}, {{ $package->hargaPackage }})">
+                            <div class="package-item {{ in_array($package->packageID, $savedPackageIds ?? []) ? 'is-saved' : '' }}" 
+                                 data-duration="{{ $package->durasiPackage }}"
+                                 data-package-id="{{ $package->packageID }}"
+                                 onclick="selectPackage(this, {{ $package->packageID }}, {{ $package->hargaPackage }})">
+                                
                                 <div class="package-info-left">
                                     <div class="duration-badge">
                                         <span class="material-icons">schedule</span>
@@ -465,7 +515,11 @@
                 @endforeach
 
                 <div class="button-container">
-                    <button class="choose-button" id="chooseButton" onclick="submitPackage()" disabled>
+                    <button class="action-button save-button" id="saveButton" onclick="savePackage()" disabled>
+                        <span class="material-icons">bookmark</span>
+                        Save
+                    </button>
+                    <button class="action-button choose-button" id="chooseButton" onclick="submitPackage()" disabled>
                         Choose Package
                     </button>
                 </div>
@@ -474,73 +528,192 @@
     </div>
 
     <script>
-        let selectedPackageId = null;
-        let selectedPackagePrice = null;
+    let selectedPackageId = null;
+    let selectedPackagePrice = null;
 
-        function switchTab(tabName, event) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
 
-            // Update package lists
-            document.querySelectorAll('.package-list').forEach(list => {
-                list.classList.remove('active');
-            });
-            document.getElementById(tabName + '-list').classList.add('active');
+    function switchTab(tabName, event) {
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
 
-            // Reset selection
-            selectedPackageId = null;
-            selectedPackagePrice = null;
-            document.getElementById('chooseButton').disabled = true;
-            document.querySelectorAll('.package-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-        }
+        document.querySelectorAll('.package-list').forEach(list => {
+            list.classList.remove('active');
+        });
+        document.getElementById(tabName + '-list').classList.add('active');
 
-        function selectPackage(element, packageId, price) {
-            // Remove selection from all items
-            document.querySelectorAll('.package-item').forEach(item => {
-                item.classList.remove('selected');
-            });
+        selectedPackageId = null;
+        selectedPackagePrice = null;
+        document.getElementById('chooseButton').disabled = true;
+        document.getElementById('saveButton').disabled = true;
+        document.querySelectorAll('.package-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+    }
 
-            // Add selection to clicked item
-            element.classList.add('selected');
+    function selectPackage(element, packageId, price) {
+        document.querySelectorAll('.package-item').forEach(item => {
+            item.classList.remove('selected');
+        });
 
-            // Store selected package data
-            selectedPackageId = packageId;
-            selectedPackagePrice = price;
+        element.classList.add('selected');
+        selectedPackageId = packageId;
+        selectedPackagePrice = price;
+        
+        // Enable both buttons
+        document.getElementById('chooseButton').disabled = false;
+        document.getElementById('saveButton').disabled = false;
+    }
 
-            // Enable choose button
-            document.getElementById('chooseButton').disabled = false;
-        }
-
-        function submitPackage() {
-            if (!selectedPackageId) {
-                alert('Silakan pilih paket terlebih dahulu');
-                return;
-            }
-
-            // Redirect ke halaman checkout atau proses selanjutnya
-            console.log('Selected Package ID:', selectedPackageId);
-            console.log('Selected Package Price:', selectedPackagePrice);
-
-            // Contoh: redirect ke halaman checkout
-            window.location.href = `/checkout?package=${selectedPackageId}&price=${selectedPackagePrice}`;
-        }
-
-        function submitPackage() {
-            if (!selectedPackageId) {
-            alert('Silakan pilih paket terlebih dahulu');
+    function savePackage() {
+        if (!selectedPackageId) {
+            showToast('Silakan pilih paket terlebih dahulu', 'error');
             return;
         }
 
-        // Redirect ke halaman payment detailsss
-            window.location.href = '{{ route("payment.details") }}?package=' + selectedPackageId;
+        // Disable button sementara
+        const saveBtn = document.getElementById('saveButton');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Saving...';
+
+        fetch('{{ route("saved.toggle") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                packageID: selectedPackageId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message, 'success');
+                
+                // Update badge visual
+                const selectedItem = document.querySelector(`[data-package-id="${selectedPackageId}"]`);
+                if (data.action === 'saved') {
+                    selectedItem.classList.add('is-saved');
+                } else if (data.action === 'removed') {
+                    selectedItem.classList.remove('is-saved');
+                }
+            } else {
+                showToast(data.message || 'Terjadi kesalahan', 'error');
+            }
+            
+            // Restore button
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalText;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Gagal terhubung ke server', 'error');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalText;
+        });
+    }
+
+    function submitPackage() {
+        if (!selectedPackageId) {
+            alert('Silakan pilih paket terlebih dahulu');
+            return;
         }
+        window.location.href = '{{ route("payment.details") }}?package=' + selectedPackageId;
+    }
+
+    function showToast(message, type = 'success') {
+        const existingToast = document.querySelector('.toast-notification');
+        if (existingToast) {
+            existingToast.remove();
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    // Auto-select package from URL parameters
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabParam = getUrlParameter('tab');
+        const durationParam = getUrlParameter('duration');
+        
+        console.log('=== NETFLIX AUTO-SELECT DEBUG ===');
+        console.log('URL Parameters - Tab:', tabParam, 'Duration:', durationParam);
+        
+        if (tabParam) {
+            const tabName = tabParam.charAt(0).toUpperCase() + tabParam.slice(1).toLowerCase();
+            const tabs = document.querySelectorAll('.tab-button');
+            let foundTab = null;
+            
+            tabs.forEach(tab => {
+                if (tab.textContent.trim() === tabName) {
+                    foundTab = tab;
+                }
+            });
+            
+            if (foundTab) {
+                tabs.forEach(t => t.classList.remove('active'));
+                foundTab.classList.add('active');
+                
+                document.querySelectorAll('.package-list').forEach(list => {
+                    list.classList.remove('active');
+                });
+                
+                const listId = tabParam.toLowerCase() + '-list';
+                const targetList = document.getElementById(listId);
+                
+                if (targetList) {
+                    targetList.classList.add('active');
+                    
+                    if (durationParam) {
+                        setTimeout(() => {
+                            const packageItems = targetList.querySelectorAll('.package-item');
+                            
+                            packageItems.forEach((item) => {
+                                const itemDuration = item.getAttribute('data-duration');
+                                
+                                if (itemDuration === durationParam || itemDuration == durationParam) {
+                                    console.log('✅ MATCH FOUND! Auto-selecting Netflix package');
+                                    item.click();
+                                    
+                                    setTimeout(() => {
+                                        item.scrollIntoView({ 
+                                            behavior: 'smooth', 
+                                            block: 'center' 
+                                        });
+                                    }, 100);
+                                }
+                            });
+                        }, 300);
+                    }
+                }
+            }
+        }
+        
+        console.log('=== END DEBUG ===');
+    });
     </script>
 </body>
 </html>
-
-

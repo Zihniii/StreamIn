@@ -15,8 +15,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f5f5f5;
-            max-width: 480px;
+            background-color: #fff;
             margin: 0 auto;
             min-height: 100vh;
         }
@@ -43,7 +42,6 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            border-bottom: 1px solid #e0e0e0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -223,7 +221,7 @@
     <div class="content">
         <div class="order-list">
             @forelse($orderHistory ?? [] as $order)
-                <a href="{{ route('dashboard.packages.detail', $order->id) }}" class="order-item">
+                <a href="{{ route('dashboard.orders.detail', $order->userSubscriptionID) }}" class="order-item">
                     <div class="order-icon">
                         <img src="{{ asset('img/' . $order->package->logoSubscription) }}"
                             alt="{{ $order->package->serviceName }}"

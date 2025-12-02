@@ -15,8 +15,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f5f5f5;
-            max-width: 480px;
+            background-color: #fff;
             margin: 0 auto;
             min-height: 100vh;
             display: flex;
@@ -27,9 +26,8 @@
             background-color: #fff;
             padding: 12px 20px;
             text-align: center;
-            font-size: 17px;
+            font-size: 20px;
             font-weight: 600;
-            border-bottom: 1px solid #e0e0e0;
         }
 
         .content {
@@ -39,6 +37,7 @@
             padding-bottom: 80px;
         }
 
+        /* --- PROFILE CARD LAYOUT --- */
         .profile-card {
             background: linear-gradient(135deg, #e85d75 0%, #d63851 100%);
             border-radius: 16px;
@@ -46,13 +45,15 @@
             color: white;
             margin-bottom: 24px;
             box-shadow: 0 4px 12px rgba(230, 93, 117, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .profile-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 16px;
         }
 
         .profile-pic {
@@ -65,6 +66,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .profile-pic img {
@@ -88,7 +90,7 @@
         .profile-info h2 {
             font-size: 16px;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 0;
         }
 
         .profile-info p {
@@ -97,6 +99,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            margin-top: 4px;
         }
 
         .point-icon {
@@ -109,39 +112,15 @@
 
         .profile-footer {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-top: 16px;
-        }
-
-        .badge-section {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-        }
-
-        .badge-icon {
-            width: 20px;
-            height: 20px;
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
-
-        .badge-text {
-            font-size: 12px;
-            opacity: 0.95;
+            margin: 0;
         }
 
         .order-history-btn {
             background-color: white;
             color: #e85d75;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
@@ -150,11 +129,14 @@
             gap: 6px;
             cursor: pointer;
             text-decoration: none;
+            flex-shrink: 0;
         }
 
         .order-history-btn:hover {
             opacity: 0.9;
         }
+
+        /* --- PACKAGE LIST --- */
 
         .section-title {
             font-size: 16px;
@@ -176,7 +158,7 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
             cursor: pointer;
             transition: transform 0.2s;
             text-decoration: none;
@@ -185,6 +167,12 @@
 
         .package-item:active {
             transform: scale(0.98);
+        }
+
+        .package-item:hover {
+            transform: translateY(-3px);
+            transform: scale(1.01);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
         }
 
         .package-icon {
@@ -272,12 +260,13 @@
             opacity: 0.9;
         }
 
+        /* --- BOTTOM NAV --- */
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            max-width: 480px;
             margin: 0 auto;
             background: white;
             padding: 0.75rem 0 1.5rem 0;
@@ -295,7 +284,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            justify-content: center;
             color: #999;
             text-decoration: none;
             font-size: 0.85rem;
@@ -304,7 +292,6 @@
         }
 
         .nav-item.active {
-            color: #b91d4e;
             color: #b91d4e;
         }
 
@@ -324,26 +311,21 @@
             <div class="profile-header">
                 <div class="profile-pic">
                     @php
-                        $avatar = null;
-                        $userName = 'Guest';
-                        $userPoints = 0;
-                        $badgeName = 'The Watcher';
+                        // Ambil user yang sedang login
+                        $loggedInUser = Auth::user();
+                        $fotoProfil = $loggedInUser->fotoProfil ?? null;
+                        $userName = $loggedInUser->usernamePengguna ?? 'Guest';
 
-                        if (Auth::check()) {
-                            $avatar = Auth::user()->fotoProfil;
-                            $userName = Auth::user()->usernamePengguna;
-                            $userPoints = Auth::user()->points ?? 0;
-                            $badgeName = Auth::user()->badge ?? 'The Watcher';
-                        } elseif (isset($dummyUser)) {
-                            $avatar = $dummyUser->avatar ?? null;
-                            $userName = $dummyUser->name ?? 'Guest';
-                            $userPoints = $dummyUser->points ?? 0;
-                            $badgeName = $dummyUser->badge ?? 'The Watcher';
-                        }
+                        // Tentukan path foto profil
+                        $fotoPath = public_path('img/profile/' . $fotoProfil);
+
+                        // Gunakan foto profil atau placeholder
+                        $displayAvatar =
+                            $fotoProfil && file_exists($fotoPath) ? asset('img/profile/' . $fotoProfil) : null;
                     @endphp
 
-                    @if ($avatar)
-                        <img src="{{ $avatar }}" alt="Avatar">
+                    @if ($displayAvatar)
+                        <img src="{{ $displayAvatar }}" alt="Avatar">
                     @else
                         <div class="profile-pic-placeholder">
                             {{ strtoupper(substr($userName, 0, 2)) }}
@@ -352,30 +334,23 @@
                 </div>
                 <div class="profile-info">
                     <h2>{{ $userName }}</h2>
-                    <p><span class="point-icon"></span> {{ $userPoints }} Point</p>
                 </div>
             </div>
 
             <div class="profile-footer">
-                <div class="badge-section">
-                    <div class="badge-icon">🏆</div>
-                    <div>
-                        <div class="badge-text">Badge</div>
-                        <div class="badge-text" style="font-weight: 600;">{{ $badgeName }}</div>
-                    </div>
-                </div>
-                <a href="{{ route('dashboard.orders') ?? '#' }}" class="order-history-btn">
+                <a href="{{ route('dashboard.orders') }}" class="order-history-btn">
                     <i class="fas fa-history"></i>
                     Order History
                 </a>
             </div>
+
         </div>
 
-        <h3 class="section-title">Active package</h3>
+        <h3 class="section-title">Active Package</h3>
 
         <div class="package-list">
             @forelse($activePackages ?? [] as $package)
-                <a href="{{ route('dashboard.packages.detail', $package->id ?? '#') }}" class="package-item">
+                <a href="{{ route('dashboard.packages.detail', $package->userSubscriptionID) }}" class="package-item">
                     <div class="package-icon">
                         <img src="{{ asset('img/' . $package->package->logoSubscription) }}"
                             alt="{{ $package->package->serviceName }}"
@@ -389,7 +364,7 @@
                         </div>
 
                         <div class="package-expiry">
-                            <svg class="calendar-icon" ...></svg>
+                            <i class="fas fa-calendar" style="color: #dc3545; font-size: 12px;"></i>
                             <span>{{ \Carbon\Carbon::parse($package->endDate)->format('d F Y H.i') }}</span>
                         </div>
                     </div>
@@ -406,7 +381,6 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <div class="nav-container">
             <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
