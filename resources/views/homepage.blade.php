@@ -585,7 +585,7 @@
 
     <script>
         // CREATED BY NAUFAL 152: Enhanced Dynamic Package System with Fixed Routing
-        
+
         // Service route mapping untuk mendapatkan route yang benar
         const serviceRouteMap = {
             'Netflix': 'netflix',
@@ -594,43 +594,43 @@
             'Vidio': 'vidio',
             'Hotstar': 'hotstar'
         };
-        
+
         // Fungsi untuk redirect ke halaman package details
         function goToPackageDetails(serviceName, packageType = null, duration = null) {
             console.log('=== NAVIGATION DEBUG ===');
             console.log('Service:', serviceName);
-            console.log('Type:', packageType); 
+            console.log('Type:', packageType);
             console.log('Duration:', duration);
-            
+
             // Gunakan mapping untuk route yang benar
             const serviceSlug = serviceRouteMap[serviceName] || serviceName.toLowerCase().replace(/\s+/g, '-');
             console.log('Route slug:', serviceSlug);
-            
+
             // Build URL dengan parameter
             let url = `/package/${serviceSlug}`;
             const params = [];
-            
+
             if (packageType) {
                 params.push(`tab=${packageType.toLowerCase()}`);
             }
-            
+
             if (duration) {
                 // Extract hanya angka dari duration string
                 const durationValue = typeof duration === 'string' ? duration.split(' ')[0] : duration;
                 params.push(`duration=${durationValue}`);
                 console.log('Duration value:', durationValue);
             }
-            
+
             if (params.length > 0) {
                 url += '?' + params.join('&');
             }
-            
+
             console.log('Final URL:', url);
             console.log('=== END NAVIGATION DEBUG ===');
-            
+
             window.location.href = url;
         }
-        
+
         // Data packages
         const packagesData = {
             "Hourly": [
@@ -743,10 +743,10 @@
         function renderPackages(type) {
             const grid = document.getElementById('recommendationsGrid');
             const packages = packagesData[type] || [];
-            
+
             grid.innerHTML = packages.map(pkg => {
                 const unitText = type === 'Hourly' ? 'Hour' : (type === 'Daily' ? 'Day' : 'Month');
-                
+
                 return `
                     <div class="recommendation-card" onclick="goToPackageDetails('${pkg.serviceName}', '${type}', '${pkg.duration}')">
                         <div class="recommendation-image">

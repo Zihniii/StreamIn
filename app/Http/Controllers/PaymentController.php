@@ -15,47 +15,34 @@ class PaymentController extends Controller
     public function showPaymentDetails(Request $request)
     {
         $packageId = $request->query('package');
-        
-        // Validasi package ID
+
         if (!$packageId) {
             return redirect()->back()->with('error', 'Package not selected');
         }
 
-        // Ambil data package dari database
-        $package = DB::table('package')
-            ->where('packageID', $packageId)
-            ->first();
+        $package = DB::table('package')->where('packageID', $packageId)->first();
 
         if (!$package) {
             return redirect()->back()->with('error', 'Package not found');
         }
 
-        // Ambil semua payment methods
-        $paymentMethods = DB::table('paymentmethod')
-            ->orderBy('paymentMethodID', 'asc')
-            ->get();
-
-        // Ambil semua discount yang aktif
+        $paymentMethods = DB::table('paymentmethod')->orderBy('paymentMethodID')->get();
         $discounts = DB::table('discount')
             ->where('discountType', '!=', 'none')
-            ->orderBy('discountID', 'asc')
+            ->orderBy('discountID')
             ->get();
-
-        // Hitung harga setelah diskon
-        $originalPrice = $package->hargaPackage;
-        $discountAmount = 0;
 
         return view('paymentdetails', [
             'package' => $package,
             'paymentMethods' => $paymentMethods,
             'discounts' => $discounts,
-            'originalPrice' => $originalPrice,
-            'discountAmount' => $discountAmount
+            'originalPrice' => $package->hargaPackage,
+            'discountAmount' => 0
         ]);
     }
 
     /**
-     * Proses ke halaman payment
+     * Proses halaman payment
      */
     public function showPayment(Request $request)
     {
@@ -69,25 +56,15 @@ class PaymentController extends Controller
             'discount_amount' => 'nullable|numeric'
         ]);
 
-        // Ambil data package
-        $package = DB::table('package')
-            ->where('packageID', $request->package_id)
-            ->first();
+        $package = DB::table('package')->where('packageID', $request->package_id)->first();
+        $paymentMethod = DB::table('paymentmethod')->where('paymentMethodID', $request->payment_method_id)->first();
 
-        // Ambil data payment method
-        $paymentMethod = DB::table('paymentmethod')
-            ->where('paymentMethodID', $request->payment_method_id)
-            ->first();
-
-        // Ambil discount jika ada
         $discount = null;
         if ($request->discount_id) {
-            $discount = DB::table('discount')
-                ->where('discountID', $request->discount_id)
-                ->first();
+            $discount = DB::table('discount')->where('discountID', $request->discount_id)->first();
         }
 
-        // Simpan data ke session untuk digunakan di confirm payment
+        // Simpan session payment
         session([
             'payment_data' => [
                 'package_id' => $request->package_id,
@@ -112,7 +89,7 @@ class PaymentController extends Controller
     }
 
     /**
-     * Proses confirm payment dan create order
+     * Confirm payment (Insert payment + subscription)
      */
     public function confirmPayment(Request $request)
     {
@@ -123,9 +100,8 @@ class PaymentController extends Controller
             return redirect()->route('package.netflix')->with('error', 'Payment session expired');
         }
 
-        // Check if payment expired (10 minutes)
-        $createdAt = Carbon::parse($paymentData['created_at']);
-        if ($createdAt->diffInMinutes(now()) > 10) {
+        // Cek timeout (10 menit)
+        if (Carbon::parse($paymentData['created_at'])->diffInMinutes(now()) > 10) {
             session()->forget('payment_data');
             return redirect()->route('payment.details', ['package' => $paymentData['package_id']])
                 ->with('error', 'Payment time expired. Please try again.');
@@ -134,7 +110,9 @@ class PaymentController extends Controller
         try {
             DB::beginTransaction();
 
-            // 1. Insert payment record
+            /**
+             * 1. Insert ke PAYMENT
+             */
             $paymentId = DB::table('payment')->insertGetId([
                 'userID' => $user->userID,
                 'packageID' => $paymentData['package_id'],
@@ -148,53 +126,55 @@ class PaymentController extends Controller
                 'updated_at' => now()
             ]);
 
-            // 2. Get available account package
+            /**
+             * 2. Ambil account package yang AVAILABLE
+             *    Lock supaya tidak direbut transaksi lain
+             */
             $accountPackage = DB::table('accountpackage')
-                ->where('status', 'active')
-                ->where('validityPackage', 1)
+                ->where('status', 'available')
                 ->lockForUpdate()
                 ->first();
 
             if (!$accountPackage) {
                 DB::rollBack();
-                return redirect()->back()->with('error', 'No available account. Please contact support.');
+                return redirect()->back()->with('error', 'No available account. Contact support.');
             }
 
-            // 3. Get package details untuk calculate end date
+            /**
+             * 3. Ambil data package utk menentukan durasi
+             */
             $package = DB::table('package')
                 ->where('packageID', $paymentData['package_id'])
                 ->first();
 
-            // Calculate end date based on package type
             $startDate = now();
             $endDate = $this->calculateEndDate($package);
 
-            // 4. Create user subscription
-            $subscriptionId = DB::table('usersubscription')->insertGetId([
+            /**
+             * 4. Insert ke user_subscriptions
+             */
+            $subscriptionId = DB::table('user_subscriptions')->insertGetId([
                 'userID' => $user->userID,
                 'packageID' => $paymentData['package_id'],
                 'accountPackageID' => $accountPackage->accountPackageID,
                 'startDate' => $startDate,
                 'endDate' => $endDate,
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now()
+                'status' => 'active'
             ]);
 
-            // 5. Update account package status
+            /**
+             * 5. Update accountPackage jadi USED
+             */
             DB::table('accountpackage')
                 ->where('accountPackageID', $accountPackage->accountPackageID)
                 ->update([
-                    'validityPackage' => 0,
+                    'status' => 'used',
                     'updated_at' => now()
                 ]);
 
             DB::commit();
-
-            // Clear session
             session()->forget('payment_data');
 
-            // Redirect to success page
             return redirect()->route('payment.success', [
                 'subscription' => $subscriptionId
             ]);
@@ -206,53 +186,59 @@ class PaymentController extends Controller
     }
 
     /**
-     * Show payment success page
+     * Halaman success
      */
     public function showSuccess(Request $request)
     {
         $subscriptionId = $request->query('subscription');
-        
+
         if (!$subscriptionId) {
             return redirect()->route('dashboard.index');
         }
 
-        $subscription = DB::table('usersubscription')
-            ->join('package', 'usersubscription.packageID', '=', 'package.packageID')
-            ->join('accountpackage', 'usersubscription.accountPackageID', '=', 'accountpackage.accountPackageID')
-            ->where('usersubscription.userSubscriptionID', $subscriptionId)
-            ->select('usersubscription.*', 'package.*', 'accountpackage.usernamePackage', 'accountpackage.passwordPackage')
+        $subscription = DB::table('user_subscriptions')
+            ->join('package', 'user_subscriptions.packageID', '=', 'package.packageID')
+            ->join('accountpackage', 'user_subscriptions.accountPackageID', '=', 'accountpackage.accountPackageID')
+            ->where('user_subscriptions.userSubscriptionID', $subscriptionId)
+            ->select(
+                'user_subscriptions.*',
+                'package.*',
+                'accountpackage.usernamePackage',
+                'accountpackage.passwordPackage'
+            )
             ->first();
 
         if (!$subscription) {
             return redirect()->route('dashboard.index');
         }
 
-        return view('paymentsuccess', [
-            'subscription' => $subscription
-        ]);
+        return view('paymentsuccess', ['subscription' => $subscription]);
     }
 
     /**
-     * Calculate end date based on package type
+     * Durasi berdasarkan packageType dan durasiPackage
      */
     private function calculateEndDate($package)
     {
         $startDate = now();
-        
+
         switch ($package->packageType) {
             case 'Hourly':
                 return $startDate->copy()->addHours($package->durasiPackage);
+
             case 'Daily':
                 return $startDate->copy()->addDays($package->durasiPackage);
+
             case 'Monthly':
                 return $startDate->copy()->addMonths($package->durasiPackage);
+
             default:
-                return $startDate->copy()->addDays(1);
+                return $startDate->copy()->addDay();
         }
     }
 
     /**
-     * Check payment timeout (AJAX)
+     * AJAX timeout check
      */
     public function checkTimeout(Request $request)
     {
@@ -263,16 +249,16 @@ class PaymentController extends Controller
         }
 
         $createdAt = Carbon::parse($paymentData['created_at']);
-        $minutesElapsed = $createdAt->diffInMinutes(now());
+        $elapsedMinutes = $createdAt->diffInMinutes(now());
 
-        if ($minutesElapsed > 10) {
+        if ($elapsedMinutes > 10) {
             session()->forget('payment_data');
             return response()->json(['expired' => true]);
         }
 
         return response()->json([
             'expired' => false,
-            'remaining_seconds' => (10 * 60) - ($minutesElapsed * 60)
+            'remaining_seconds' => (10 * 60) - ($elapsedMinutes * 60)
         ]);
     }
 }

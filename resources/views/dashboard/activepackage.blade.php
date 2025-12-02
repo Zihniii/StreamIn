@@ -499,11 +499,11 @@
                     <span class="video-text">video</span>
                 </div>
                 <div class="package-info">
-                    <h2>Prime Video</h2>
+                    <h2>{{ $subs->package->packageName }}</h2>
                     <div class="package-duration">3 days package</div>
                     <div class="package-expiry">
                         <div class="calendar-icon"></div>
-                        31 April 2025 15:20
+                        {{ \Carbon\Carbon::parse($subs->endDate)->format('d M Y H:i') }}
                     </div>
                 </div>
             </div>
@@ -511,7 +511,20 @@
             <div class="time-remaining-section">
                 <div class="clock-icon"></div>
                 <div class="time-remaining-label">Time Remaining</div>
-                <div class="time-value">1d 22h 48m</div>
+                                @php
+                    $now = \Carbon\Carbon::now();
+                    $end = \Carbon\Carbon::parse($subs->endDate);
+                    $diffSeconds = $end->diffInSeconds($now, false);
+
+                    $days = floor($diffSeconds / 86400);
+                    $hours = floor(($diffSeconds % 86400) / 3600);
+                    $minutes = floor(($diffSeconds % 3600) / 60);
+                @endphp
+
+                <div class="time-value">
+                    {{ $days }}d {{ $hours }}h {{ $minutes }}m
+                </div>
+
             </div>
         </div>
     </div>
@@ -525,7 +538,7 @@
                     <div class="user-icon"></div>
                 </div>
                 <div class="info-content">
-                    <div class="info-value">prime3days@gmail.com</div>
+                    <div class="info-value">{{ $subs->accountPackage->usernamePackage }}</div>
                 </div>
                 <button class="copy-btn">
                     <div class="copy-icon"></div>
@@ -540,7 +553,7 @@
                     <div class="key-icon"></div>
                 </div>
                 <div class="info-content">
-                    <div class="info-value">kindergarten28</div>
+                    <div class="info-value">{{ $subs->accountPackage->passwordPackage }}</div>
                 </div>
                 <button class="eye-btn">
                     <div class="eye-icon"></div>

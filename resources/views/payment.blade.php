@@ -526,7 +526,7 @@
         function updateTimer() {
             const minutes = Math.floor(timeRemaining / 60);
             const seconds = timeRemaining % 60;
-            document.getElementById('timerDisplay').textContent = 
+            document.getElementById('timerDisplay').textContent =
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
             if (timeRemaining <= 0) {
@@ -550,7 +550,7 @@
                 btn.style.background = '#4caf50';
                 btn.style.color = 'white';
                 btn.style.borderColor = '#4caf50';
-                
+
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.style.background = '';
