@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $subscription->package->serviceName ?? 'Active Package' }} - {{ config('app.name', 'Stream.in') }}</title>
+    <title>{{ $subscription->package->serviceName ?? 'Package Details' }} - {{ config('app.name', 'Stream.in') }}
+    </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
@@ -16,7 +17,6 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background-color: #f5f5f5;
-            max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
             display: flex;
@@ -80,9 +80,9 @@
         }
 
         .package-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -92,8 +92,8 @@
         }
 
         .package-icon img {
-            width: 100%;
-            height: 100%;
+            width: 80%;
+            height: 80%;
             object-fit: contain;
         }
 
@@ -170,7 +170,7 @@
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #fff;
         }
 
         .section-title {
@@ -185,6 +185,8 @@
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+
         }
 
         .info-item {
@@ -267,8 +269,7 @@
 
         .rules-list li {
             font-size: 13px;
-            color: #666;
-            padding: 6px 0;
+            color: #2b2b2b;
             padding-left: 20px;
             position: relative;
         }
@@ -329,23 +330,53 @@
             color: #999;
         }
 
+        /* Ganti style toast lama dengan yang baru (Toast Berbasis Card) */
         .toast {
             position: fixed;
-            bottom: 80px;
+            top: 30px;
+            /* Posisikan lebih ke atas, di bawah header */
             left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
+            transform: translateX(-50%) scale(0.9);
+            /* Skala lebih kecil secara default */
+
+            /* Desain seperti Attachment */
+            background-color: white;
+            color: #1a1a1a;
+            padding: 16px 24px;
+            border-radius: 12px;
+            /* Bulat seperti kartu */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            /* Shadow lebih menonjol */
+
+            font-size: 15px;
+            font-weight: 600;
             opacity: 0;
-            transition: opacity 0.3s;
+            visibility: hidden;
+            /* Sembunyikan sepenuhnya */
+
+            /* Tambahkan transisi untuk animasi smooth */
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out, visibility 0.3s;
+
             z-index: 1000;
+            display: flex;
+            /* Untuk menyejajarkan ikon dan teks */
+            align-items: center;
+            gap: 12px;
+            max-width: 90%;
         }
 
         .toast.show {
             opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+            /* Tampilkan dengan skala normal */
+        }
+
+        /* Style untuk ikon checklist hijau */
+        .toast-icon {
+            font-size: 20px;
+            color: #28a745;
+            /* Warna hijau sukses */
         }
     </style>
 </head>
@@ -357,45 +388,47 @@
                 <i class="fas fa-chevron-left"></i>
             </a>
             <div class="page-title">
-                @if ($isActive ?? true)
-                    Active Package
-                @else
-                    Package Details
-                @endif
+                {{ $isActive ? 'Active Package' : 'Package Details' }}
             </div>
         </div>
 
-    <div class="package-card-container">
-        <div class="package-card">
-            <div class="package-header">
-                <div class="package-icon">
-                    <span class="prime-text">prime</span>
-                    <span class="video-text">video</span>
-                </div>
-                <div class="package-info">
-                    <h2>{{ $subs->package->packageName }}</h2>
-                    <div class="package-duration">3 days package</div>
-                    <div class="package-expiry">
-                        <div class="calendar-icon"></div>
-                        {{ \Carbon\Carbon::parse($subs->endDate)->format('d M Y H:i') }}
+        <div class="package-card-container">
+            <div class="package-card">
+                <div class="package-header">
+                    <div class="package-icon">
+                        <img src="{{ asset('img/' . $subscription->package->logoSubscription) }}"
+                            alt="{{ $subscription->package->serviceName }}"
+                            onerror="this.src='{{ asset('img/default-platform.png') }}'">
+                    </div>
+                    <div class="package-info">
+                        <h2>{{ $subscription->package->serviceName }}</h2>
+                        <div class="package-duration">
+                            {{ $subscription->package->descriptionDurasi ?? $subscription->package->durasiPackage . ' days package' }}
+                        </div>
+                        <div class="package-expiry">
+                            <i class="fas fa-calendar" style="color: #dc3545; font-size: 12px;"></i>
+                            <span>{{ $endDate->format('d F Y H:i') }}</span>
+                        </div>
+
+                        <span class="status-badge {{ $isActive ? 'status-active' : 'status-expired' }}">
+                            {{ $isActive ? 'Active' : 'Expired' }}
+                        </span>
                     </div>
                 </div>
 
-            <div class="time-remaining-section">
-                <div class="clock-icon"></div>
-                <div class="time-remaining-label">Time Remaining</div>
-                                @php
-                    $now = \Carbon\Carbon::now();
-                    $end = \Carbon\Carbon::parse($subs->endDate);
-                    $diffSeconds = $end->diffInSeconds($now, false);
-
-                    $days = floor($diffSeconds / 86400);
-                    $hours = floor(($diffSeconds % 86400) / 3600);
-                    $minutes = floor(($diffSeconds % 3600) / 60);
-                @endphp
-
-                <div class="time-value">
-                    {{ $days }}d {{ $hours }}h {{ $minutes }}m
+                {{-- All calculations done in controller, just display here --}}
+                <div class="time-remaining-section {{ $isExpired ? 'expired' : '' }}">
+                    <i class="fas fa-clock" style="font-size: 16px; color: #666;"></i>
+                    <div class="time-remaining-label">
+                        {{ $isExpired ? 'Expired' : 'Time Remaining' }}
+                    </div>
+                    <div class="time-value {{ $isExpired ? 'expired' : '' }}">
+                        @if ($isExpired)
+                            {{ abs($daysRemaining) }}d ago
+                        @else
+                            {{ $diff->d }}d {{ $diff->h }}h {{ $diff->i }}m
+                        @endif
+                    </div>
                 </div>
 
             </div>
@@ -454,7 +487,7 @@
                 Report Trouble
             </button>
 
-            {{-- @if ($isActive ?? true)
+            {{-- @if ($isActive)
                 <a href="{{ route('packages.renew', $subscription->packageID) }}" class="btn btn-secondary">
                     <i class="fas fa-sync-alt"></i>
                     Renew Package
@@ -468,7 +501,10 @@
         </div>
     </div>
 
-    <div id="toast" class="toast"></div>
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle toast-icon"></i>
+        <span id="toast-message"></span>
+    </div>
 
     <script>
         let passwordVisible = false;
@@ -503,7 +539,9 @@
 
         function showToast(message) {
             const toast = document.getElementById('toast');
-            toast.textContent = message;
+            const toastMessage = document.getElementById('toast-message');
+
+            toastMessage.textContent = message;
             toast.classList.add('show');
 
             setTimeout(function() {
@@ -512,8 +550,7 @@
         }
 
         function reportTrouble() {
-            // Redirect ke halaman chat atau support
-            window.location.href = '{{ route('chat.index') }}';
+            window.location.href = '{{ route('report.show', $subscription->userSubscriptionID) }}';
         }
     </script>
 </body>

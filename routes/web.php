@@ -1,23 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\AccountPackageController;
-use App\Http\Controllers\ChatMessageController;
-use App\Http\Controllers\ChatTicketController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PaymentMethodController;
-use App\Http\Controllers\ReportissueController;
-use App\Http\Controllers\SubcriptionController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WishlistPackageController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PackageController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ChatMessageController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PackageController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportIssueController;
 use App\Http\Controllers\SupportPemilihanController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,6 +117,22 @@ Route::middleware('auth')->group(function () {
     Route::post('/chat/send', [ChatMessageController::class, 'sendTextMessage'])->name('chat.send');
 
     Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
+
+    // Show report form for specific subscription
+    Route::get('/report/{subscriptionId}', [ReportIssueController::class, 'showReportForm'])
+        ->name('report.show');
+
+    // Submit report
+    Route::post('/report/submit', [ReportIssueController::class, 'submitReport'])
+        ->name('report.submit');
+
+    // View my reports
+    Route::get('/my-reports', [ReportIssueController::class, 'myReports'])
+        ->name('report.list');
+
+    // View report detail
+    Route::get('/report/detail/{id}', [ReportIssueController::class, 'reportDetail'])
+        ->name('report.detail');
 
 });
 
