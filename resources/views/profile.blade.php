@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -502,139 +503,149 @@
 
 <body>
 
-<div class="page-wrapper">
+    <div class="page-wrapper">
 
-    <div id="mainScreen" class="screen active">
+        <div id="mainScreen" class="screen active">
 
-        <div class="header">Profile</div>
+            <div class="header">Profile</div>
 
-        <!-- PROFILE CARD -->
-        <div class="profile-card">
-            <div class="profile-left">
+            <!-- PROFILE CARD -->
+            <div class="profile-card">
+                <div class="profile-left">
 
-                <div class="profile-avatar">
-                    @php
+                    <div class="profile-avatar">
+                        @php
                         $fotoPath = public_path('img/profile/' . $user->fotoProfil);
-                    @endphp
+                        @endphp
 
-                    @if ($user->fotoProfil && file_exists($fotoPath))
+                        @if ($user->fotoProfil && file_exists($fotoPath))
                         <img src="{{ asset('img/profile/'.$user->fotoProfil) }}">
-                    @else
+                        @else
                         <img src="https://i.pravatar.cc/150?u={{ $user->id }}">
+                        @endif
+                    </div>
+
+                    <div class="profile-text">
+                        <div class="profile-name">{{ $user->name }}</div>
+                        <div class="profile-email">{{ $user->email }}</div>
+                    </div>
+
+                </div>
+
+                <button class="edit-btn" onclick="showScreen('avatarScreen')">
+                    <i class="fas fa-pen"></i>
+                </button>
+            </div>
+
+            <!-- MENU LIST -->
+            <div class="menu-list">
+
+                <button class="menu-item">
+                    <div class="menu-left"><i class="fas fa-cog"></i> Settings</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
+                </button>
+
+                <button class="menu-item">
+                    <div class="menu-left"><i class="fas fa-bell"></i> Notifications</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
+                </button>
+
+                <button class="menu-item">
+                    <div class="menu-left"><i class="fas fa-headset"></i> Customer Service</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
+                </button>
+
+                <button class="menu-item">
+                    <div class="menu-left"><i class="fas fa-shield-alt"></i> Privacy Policy</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
+                </button>
+
+                <button class="menu-item" style="border-bottom:none;">
+                    <div class="menu-left">About Us</div>
+                    <i class="fas fa-external-link-alt chevron-icon"></i>
+                </button>
+
+            </div>
+
+            <!-- LOGOUT BUTTON -->
+            <button class="logout-btn" onclick="showLogoutModal()">
+                <i class="fas fa-sign-out-alt"></i> Log Out
+            </button>
+
+            <!-- Form logout tersembunyi -->
+            <form id="logoutForm" method="POST" action="{{ route('logout') }}" style="display: none;">
+                @csrf
+            </form>
+
+        </div>
+
+        <!-- AVATAR SCREEN -->
+        <div id="avatarScreen" class="screen">
+            <div class="photo-screen">
+
+                <div class="photo-header">
+                    <button class="back-btn" onclick="showScreen('mainScreen')">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    Profile
+                </div>
+
+                <div class="avatar-circle">
+                    @if ($user->fotoProfil && file_exists($fotoPath))
+                    <img src="{{ asset('img/profile/'.$user->fotoProfil) }}" style="width:100%; height:100%; object-fit:cover;">
+                    @else
+                    <i class="fas fa-user-circle" style="font-size:120px; color:#a94064;"></i>
                     @endif
                 </div>
 
-                <div class="profile-text">
-                    <div class="profile-name">{{ $user->name }}</div>
-                    <div class="profile-email">{{ $user->email }}</div>
+                <button class="photo-action-btn" onclick="showScreen('uploadScreen')">Choose Your Photo</button>
+
+            </div>
+        </div>
+
+        <!-- UPLOAD SCREEN -->
+        <div id="uploadScreen" class="screen">
+            <div class="photo-screen">
+
+                <div class="photo-header">
+                    <button class="back-btn" onclick="showScreen('avatarScreen')">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    Upload Photo
                 </div>
-
-            </div>
-
-            <button class="edit-btn" onclick="showScreen('avatarScreen')">
-                <i class="fas fa-pen"></i>
-            </button>
-        </div>
-
-        <!-- MENU LIST -->
-        <div class="menu-list">
-
-            <button class="menu-item">
-                <div class="menu-left"><i class="fas fa-cog"></i> Settings</div>
-                <i class="fas fa-chevron-right chevron-icon"></i>
-            </button>
-
-            <button class="menu-item">
-                <div class="menu-left"><i class="fas fa-bell"></i> Notifications</div>
-                <i class="fas fa-chevron-right chevron-icon"></i>
-            </button>
-
-            <button class="menu-item">
-                <div class="menu-left"><i class="fas fa-headset"></i> Customer Service</div>
-                <i class="fas fa-chevron-right chevron-icon"></i>
-            </button>
-
-            <button class="menu-item">
-                <div class="menu-left"><i class="fas fa-shield-alt"></i> Privacy Policy</div>
-                <i class="fas fa-chevron-right chevron-icon"></i>
-            </button>
-
-            <button class="menu-item" style="border-bottom:none;">
-                <div class="menu-left">About Us</div>
-                <i class="fas fa-external-link-alt chevron-icon"></i>
-            </button>
-
-        </div>
-
-        <!-- LOGOUT BUTTON -->
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Log Out
-            </button>
-        </form>
-
-    </div>
-
-    <!-- AVATAR SCREEN -->
-    <div id="avatarScreen" class="screen">
-        <div class="photo-screen">
-
-            <div class="photo-header">
-                <button class="back-btn" onclick="showScreen('mainScreen')">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                Profile
-            </div>
-
-            <div class="avatar-circle">
-                @if ($user->fotoProfil && file_exists($fotoPath))
-                    <img src="{{ asset('img/profile/'.$user->fotoProfil) }}" style="width:100%; height:100%; object-fit:cover;">
-                @else
-                    <i class="fas fa-user-circle" style="font-size:120px; color:#a94064;"></i>
-                @endif
-            </div>
-
-            <button class="photo-action-btn" onclick="showScreen('uploadScreen')">Choose Your Photo</button>
-
-        </div>
-    </div>
-
-    <!-- UPLOAD SCREEN -->
-    <div id="uploadScreen" class="screen">
-        <div class="photo-screen">
-
-            <div class="photo-header">
-                <button class="back-btn" onclick="showScreen('avatarScreen')">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                Upload Photo
-            </div>
 
             <div class="avatar-circle">
                 <img id="previewImg" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <i id="previewIcon" class="fas fa-camera" style="font-size:80px; color:#a94064;"></i>
             </div>
 
-            <form id="uploadForm" action="{{ route('profile.upload') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input id="fileInput" type="file" hidden name="foto" accept="image/*" onchange="readPhoto(event)">
-            </form>
+                <form id="uploadForm" action="{{ route('profile.upload') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input id="fileInput" type="file" hidden name="foto" accept="image/*" onchange="readPhoto(event)">
+                </form>
 
-            <button class="photo-action-btn" onclick="document.getElementById('fileInput').click()">
-                Upload from Gallery
-            </button>
+                <button class="photo-action-btn" onclick="document.getElementById('fileInput').click()">
+                    Upload from Gallery
+                </button>
 
-            <button id="saveBtn" class="photo-action-btn"
-                style="display:none; background:#ffe6ec; color:#a94064; margin-top:20px;"
-                onclick="document.getElementById('uploadForm').submit()">
-                Save Photo
-            </button>
+                <button id="saveBtn" class="photo-action-btn"
+                    style="display:none; background:#ffe6ec; color:#a94064; margin-top:20px;"
+                    onclick="document.getElementById('uploadForm').submit()">
+                    Save Photo
+                </button>
 
+            </div>
         </div>
-    </div>
 
-</div>
+        <!-- LOGOUT CONFIRMATION MODAL -->
+        <div id="logoutModal" class="logout-modal" style="display: none;">
+            <div class="modal-overlay" onclick="hideLogoutModal()"></div>
+            <div class="modal-content">
+                <div class="modal-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <h3 class="modal-title">Log Out of Your Account?</h3>
+                <p class="modal-text">Are you sure you want to log out? You will need to log back in to access your account features</p>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
@@ -662,28 +673,53 @@
             </div>
         </div>
     </div>
-</div>
 
-<script>
-function showScreen(id) {
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-}
+    <script>
+        function showScreen(id) {
+            document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+        }
 
-function readPhoto(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+        function readPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = e => {
-        previewImg.src = e.target.result;
-        previewImg.style.display = "block";
-        previewIcon.style.display = "none";
-        saveBtn.style.display = "block";
-    };
-    reader.readAsDataURL(file);
-}
-</script>
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImg.src = e.target.result;
+                previewImg.style.display = "block";
+                previewIcon.style.display = "none";
+                saveBtn.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ✅ TAMBAHKAN FUNCTION-FUNCTION INI
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'flex';
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+            // Re-enable body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        function confirmLogout() {
+            // Submit the hidden logout form
+            document.getElementById('logoutForm').submit();
+        }
+
+        // Close modal when pressing ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideLogoutModal();
+            }
+        });
+    </script>
 
 </body>
+
 </html>
