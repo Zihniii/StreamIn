@@ -105,6 +105,19 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | SAVED PACKAGE / WISHLIST
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('saved-package')->name('saved.')->group(function () {
+        Route::get('/', [WishlistPackageController::class, 'index'])->name('index');
+        Route::post('/store', [WishlistPackageController::class, 'store'])->name('store');
+        Route::delete('/remove', [WishlistPackageController::class, 'destroy'])->name('remove');
+        Route::post('/toggle', [WishlistPackageController::class, 'toggle'])->name('toggle');
+        Route::get('/check/{packageID}', [WishlistPackageController::class, 'checkStatus'])->name('check');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
     | CHAT SYSTEM
     |--------------------------------------------------------------------------
     */
