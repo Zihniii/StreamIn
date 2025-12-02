@@ -12,7 +12,19 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Run expiration check every hour
+        $schedule->call(function () {
+            \App\Models\UserSubscription::where('status', 'active')
+                ->where('endDate', '<=', \Carbon\Carbon::now())
+                ->update(['status' => 'expired']);
+        })->hourly()->name('expire-subscriptions')->withoutOverlapping();
+
+        // Alternative: Run every 15 minutes for faster updates
+        // $schedule->call(function () {
+        //     \App\Models\UserSubscription::where('status', 'active')
+        //         ->where('endDate', '<=', \Carbon\Carbon::now())
+        //         ->update(['status' => 'expired']);
+        // })->everyFifteenMinutes()->name('expire-subscriptions')->withoutOverlapping();
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Models\UserSubscription;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -18,10 +19,14 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Ambil semua subscription aktif yg belum expired
+        // Auto-expire packages FIRST
+        $this->autoExpirePackages($user->userID);
+
+        // Get active packages
         $activePackages = UserSubscription::where('userID', $user->userID)
             ->where('status', 'active')
             ->where('endDate', '>', Carbon::now())
+            ->with(['package', 'accountPackage'])
             ->get();
 
         $totalActivePackages = $activePackages->count();
@@ -29,7 +34,6 @@ class DashboardController extends Controller
         // Expiring soon (3 days)
         $expiringPackages = $activePackages->filter(function ($s) {
             $days = Carbon::now()->diffInDays($s->endDate, false);
-
             return $days <= 3 && $days >= 0;
         });
 
@@ -47,6 +51,8 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
+        $this->autoExpirePackages($user->userID);
+
         $orderHistory = UserSubscription::where('userID', $user->userID)
             ->with('package')
             ->orderBy('startDate', 'desc')
@@ -57,6 +63,7 @@ class DashboardController extends Controller
 
     /**
      * Package detail page - 5026231012 zihni
+     * OPTIMIZED: Calculate everything in controller, pass to view
      */
     public function packageDetail($id)
     {
@@ -64,14 +71,44 @@ class DashboardController extends Controller
 
         $subscription = UserSubscription::where('userSubscriptionID', $id)
             ->where('userID', $user->userID)
-            ->with('package')
+            ->with(['package', 'accountPackage'])
             ->firstOrFail();
 
-        $daysRemaining = Carbon::now()->diffInDays($subscription->endDate, false);
+        // Auto-expire and refresh
+        $this->autoExpirePackages($user->userID);
+        $subscription->refresh();
+
+        // Calculate ALL time-related data here (no duplication in view)
+        $now = Carbon::now();
+        $endDate = Carbon::parse($subscription->endDate);
+
+        // Determine status
+        $isExpired = $now->greaterThan($endDate);
+        $isActive = $subscription->status === 'active' && !$isExpired;
+
+        // Calculate time difference
+        $diff = $now->diff($endDate);
+        $daysRemaining = $now->diffInDays($endDate, false);
+
+        // Debug logging
+        Log::info("Package Detail", [
+            'id' => $id,
+            'status' => $subscription->status,
+            'end_date' => $endDate->toDateTimeString(),
+            'now' => $now->toDateTimeString(),
+            'is_expired' => $isExpired,
+            'is_active' => $isActive,
+            'days_remaining' => $daysRemaining
+        ]);
 
         return view('dashboard.activepackage', compact(
             'subscription',
-            'daysRemaining'
+            'isActive',
+            'isExpired',
+            'daysRemaining',
+            'diff',
+            'now',
+            'endDate'
         ));
     }
 
@@ -81,28 +118,48 @@ class DashboardController extends Controller
     public function browsePackages()
     {
         $packages = Package::orderBy('serviceName', 'asc')->get();
-
         $packagesByPlatform = $packages->groupBy('serviceName');
 
         return view('packages.browse', compact('packages', 'packagesByPlatform'));
     }
 
     /**
-     * Auto-mark expired packages - zihni
+     * SINGLE METHOD: Auto-expire packages
+     * Used by all other methods - no duplication
+     *
+     * @param int|null $userID - If provided, only expire for this user. If null, expire all.
+     * @return int Number of expired packages
+     */
+    private function autoExpirePackages($userID = null)
+    {
+        $query = UserSubscription::where('status', 'active')
+            ->where('endDate', '<=', Carbon::now());
+
+        if ($userID) {
+            $query->where('userID', $userID);
+        }
+
+        $expiredCount = $query->update(['status' => 'expired']);
+
+        if ($expiredCount > 0) {
+            Log::info("Auto-expired {$expiredCount} packages" . ($userID ? " for user {$userID}" : ""));
+        }
+
+        return $expiredCount;
+    }
+
+    /**
+     * Public API endpoint for manual/cron expiration
+     * Calls the same autoExpirePackages method
      */
     public function checkExpiredPackages()
     {
-        $expired = UserSubscription::where('status', 'active')
-            ->where('endDate', '<=', Carbon::now())
-            ->get();
-
-        foreach ($expired as $sub) {
-            $sub->update(['status' => 'expired']);
-        }
+        $expiredCount = $this->autoExpirePackages(); // null = expire all users
 
         return response()->json([
             'success' => true,
-            'expired_count' => $expired->count(),
+            'expired_count' => $expiredCount,
+            'timestamp' => Carbon::now()->toDateTimeString()
         ]);
     }
 
@@ -112,6 +169,7 @@ class DashboardController extends Controller
     public function getStats()
     {
         $user = Auth::user();
+        $this->autoExpirePackages($user->userID);
 
         $stats = [
             'active_packages' => UserSubscription::where('userID', $user->userID)
@@ -137,22 +195,20 @@ class DashboardController extends Controller
     public function orderHistoryDetail($id)
     {
         $user = Auth::user();
+        $this->autoExpirePackages($user->userID);
 
-        // Ambil data subscription
         $subscription = UserSubscription::where('userSubscriptionID', $id)
             ->where('userID', $user->userID)
             ->with(['package', 'accountPackage'])
             ->firstOrFail();
 
-        // Ambil payment terkait subscription ini
         $payment = Payment::where('userID', $user->userID)
             ->where('packageID', $subscription->packageID)
             ->with(['package', 'paymentMethod', 'discount'])
             ->orderBy('paymentDate', 'desc')
             ->first();
 
-        // Jika tidak ada payment, buat dummy data
-        if (! $payment) {
+        if (!$payment) {
             $payment = new Payment([
                 'paymentID' => 0,
                 'amount' => $subscription->package->hargaPackage ?? 0,
@@ -174,8 +230,7 @@ class DashboardController extends Controller
     {
         $query = $request->input('q');
 
-        // Jika tidak ada keyword, tampilkan semua package
-        if (! $query) {
+        if (!$query) {
             $packages = Package::all();
         } else {
             $packages = Package::where('serviceName', 'LIKE', "%{$query}%")
