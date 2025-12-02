@@ -17,13 +17,15 @@ class WishlistPackage extends Model
         'packageID',
     ];
 
+    // Relasi ke User
     public function user()
     {
-        return $this->belongsTo(User::class, 'userID');
+        return $this->belongsTo(User::class, 'userID', 'userID');
     }
 
+    // Relasi ke Package
     public function package()
     {
-        return $this->belongsTo(Package::class, 'packageID');
+        return $this->belongsTo(Package::class, 'packageID', 'packageID');
     }
 }

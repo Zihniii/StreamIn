@@ -69,7 +69,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        $subscription = UserSubscription::where('userSubscriptionID', $id)
+        $subs = UserSubscription::where('userSubscriptionID', $id)
             ->where('userID', $user->userID)
             ->with(['package', 'accountPackage'])
             ->firstOrFail();

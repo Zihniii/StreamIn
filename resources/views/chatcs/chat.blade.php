@@ -45,16 +45,6 @@
 
 <body>
 
-    <!-- Status Bar -->
-    <div class="status-bar">
-        <div class="time">9:41</div>
-        <div class="status-icons">
-            <i class="bi bi-reception-4"></i>
-            <i class="bi bi-wifi"></i>
-            <span class="battery-icon"></span>
-        </div>
-    </div>
-
     <!-- Header -->
     <div class="header">
         <button class="back-btn" onclick="window.location.href='{{ route('homepage') }}'">

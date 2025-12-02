@@ -430,44 +430,31 @@
                         @endif
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 
     <div class="content">
-        @if ($subscription->accountPackage)
-            <h3 class="section-title">Account</h3>
-            <div class="info-box">
-                <div class="info-item">
-                    <div class="info-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="info-content">
-                        <div class="info-value">{{ $subscription->accountPackage->usernamePackage }}</div>
-                    </div>
-                    <button class="copy-btn"
-                        onclick="copyToClipboard('{{ $subscription->accountPackage->usernamePackage }}', 'Username')">
-                        <i class="fas fa-copy"></i>
-                    </button>
+        <h3 class="section-title">Account</h3>
+        <div class="info-box">
+            <div class="info-item">
+                <div class="info-icon">
+                    <div class="user-icon"></div>
+                </div>
+                <div class="info-content">
+                    <div class="info-value">{{ $subs->accountPackage->usernamePackage }}</div>
                 </div>
             </div>
 
-            <h3 class="section-title">Password</h3>
-            <div class="info-box">
-                <div class="info-item">
-                    <div class="info-icon">
-                        <i class="fas fa-key"></i>
-                    </div>
-                    <div class="info-content">
-                        <div class="info-value masked" id="password-field">••••••••••••</div>
-                    </div>
-                    <button class="eye-btn" id="toggle-password" onclick="togglePassword()">
-                        <i class="fas fa-eye" id="eye-icon"></i>
-                    </button>
-                    <button class="copy-btn"
-                        onclick="copyToClipboard('{{ $subscription->accountPackage->passwordPackage }}', 'Password')">
-                        <i class="fas fa-copy"></i>
-                    </button>
+        <h3 class="section-title">Password</h3>
+        <div class="info-box">
+            <div class="info-item">
+                <div class="info-icon">
+                    <div class="key-icon"></div>
+                </div>
+                <div class="info-content">
+                    <div class="info-value">{{ $subs->accountPackage->passwordPackage }}</div>
                 </div>
             </div>
         @else
