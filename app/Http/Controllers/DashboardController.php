@@ -6,13 +6,13 @@ use App\Models\Package;
 use App\Models\Payment;
 use App\Models\UserSubscription;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     /**
-     * Dashboard main page
+     * Dashboard main page - 5026231012 zihni
      */
     public function index()
     {
@@ -43,22 +43,22 @@ class DashboardController extends Controller
     }
 
     /**
-     * Order history (payment history)
+     * Order history (payment history) - 5026231012 zihni
      */
     public function orderHistory()
     {
         $user = Auth::user();
 
-        $orders = Payment::where('userID', $user->userID)
+        $orderHistory = UserSubscription::where('userID', $user->userID)
             ->with('package')
-            ->orderBy('paymentDate', 'desc')
+            ->orderBy('startDate', 'desc')
             ->paginate(10);
 
-        return view('dashboard.history', compact('orders'));
+        return view('dashboard.history', compact('orderHistory'));
     }
 
     /**
-     * Package detail page
+     * Package detail page - 5026231012 zihni
      */
     public function packageDetail($id)
     {
@@ -78,7 +78,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Browse all available packages
+     * Browse all available packages - 5026231012 zihni
      */
     public function browsePackages()
     {
@@ -90,30 +90,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * User profile summary
-     */
-    public function profile()
-    {
-        $user = Auth::user();
-
-        $totalSubscriptions = UserSubscription::where('userID', $user->userID)->count();
-
-        $totalOrders = Payment::where('userID', $user->userID)->count();
-
-        $totalSpent = Payment::where('userID', $user->userID)
-            ->where('paymentStatus', 'completed')
-            ->sum('amount');
-
-        return view('profile', compact(
-            'user',
-            'totalSubscriptions',
-            'totalOrders',
-            'totalSpent'
-        ));
-    }
-
-    /**
-     * Auto-mark expired packages
+     * Auto-mark expired packages - zihni
      */
     public function checkExpiredPackages()
     {
@@ -156,7 +133,7 @@ class DashboardController extends Controller
         return response()->json($stats);
     }
 
-     /**
+    /**
      * Order history detail - bagas 24/11/2005
      */
     public function orderHistoryDetail($id)
@@ -177,7 +154,7 @@ class DashboardController extends Controller
             ->first();
 
         // Jika tidak ada payment, buat dummy data
-        if (!$payment) {
+        if (! $payment) {
             $payment = new Payment([
                 'paymentID' => 0,
                 'amount' => $subscription->package->hargaPackage ?? 0,
@@ -186,7 +163,7 @@ class DashboardController extends Controller
                 'paymentStatus' => 'completed',
             ]);
             $payment->package = $subscription->package;
-            $payment->paymentMethod = (object)['methodName' => 'N/A'];
+            $payment->paymentMethod = (object) ['methodName' => 'N/A'];
         }
 
         return view('dashboard.historydetail', compact('payment', 'subscription'));
@@ -200,7 +177,7 @@ class DashboardController extends Controller
         $query = $request->input('q');
 
         // Jika tidak ada keyword, tampilkan semua package
-        if (!$query) {
+        if (! $query) {
             $packages = Package::all();
         } else {
             $packages = Package::where('serviceName', 'LIKE', "%{$query}%")
@@ -211,5 +188,4 @@ class DashboardController extends Controller
 
         return view('search', compact('packages', 'query'));
     }
-
 }

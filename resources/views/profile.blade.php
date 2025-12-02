@@ -10,12 +10,12 @@
 
 <style>
     body {
-        background: #f5f5f5;
+        background: #fff;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
         margin: 0;
     }
 
-    /* Center container but flexible */
+    /* Mobile: centered container */
     .page-wrapper {
         max-width: 480px;
         margin: 0 auto;
@@ -24,12 +24,27 @@
         min-height: 100vh;
     }
 
+    /* Laptop: FULL WIDTH seperti homepage */
+    @media (min-width: 768px) {
+        .page-wrapper {
+            max-width: 100%;
+            padding-bottom: 140px;
+        }
+    }
+
     /* Header */
     .header {
         text-align: center;
         padding: 18px 0;
         font-size: 20px;
         font-weight: 700;
+    }
+
+    @media (min-width: 768px) {
+        .header {
+            font-size: 28px;
+            padding: 32px 0;
+        }
     }
 
     /* Profile Card */
@@ -44,10 +59,31 @@
         color: white;
     }
 
+    @media (min-width: 768px) {
+        .profile-card {
+            padding: 40px 60px;
+            margin: 30px 80px;
+            border-radius: 30px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .profile-card {
+            margin: 30px 120px;
+            padding: 45px 80px;
+        }
+    }
+
     .profile-left {
         display: flex;
         gap: 15px;
         align-items: center;
+    }
+
+    @media (min-width: 768px) {
+        .profile-left {
+            gap: 30px;
+        }
     }
 
     .profile-avatar {
@@ -59,6 +95,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    @media (min-width: 768px) {
+        .profile-avatar {
+            width: 110px;
+            height: 110px;
+        }
     }
 
     .profile-avatar img {
@@ -77,11 +120,30 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    @media (min-width: 768px) {
+        .edit-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+        }
+
+        .edit-btn:hover {
+            transform: scale(1.05);
+        }
     }
 
     .edit-btn i {
         color: #aa3154;
         font-size: 18px;
+    }
+
+    @media (min-width: 768px) {
+        .edit-btn i {
+            font-size: 24px;
+        }
     }
 
     .profile-text {
@@ -96,16 +158,44 @@
         margin: 0;
     }
 
+    @media (min-width: 768px) {
+        .profile-name {
+            font-size: 26px;
+        }
+    }
+
     .profile-email {
         margin: 0;
         opacity: .9;
         font-size: 14px;
     }
 
+    @media (min-width: 768px) {
+        .profile-email {
+            font-size: 18px;
+            margin-top: 4px;
+        }
+    }
+
     /* Menu List */
     .menu-list {
         background: white;
         margin-top: 25px;
+    }
+
+    @media (min-width: 768px) {
+        .menu-list {
+            margin: 40px 80px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .menu-list {
+            margin: 40px 120px;
+        }
     }
 
     .menu-item {
@@ -119,6 +209,18 @@
         align-items: center;
         font-size: 16px;
         cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    @media (min-width: 768px) {
+        .menu-item {
+            padding: 28px 40px;
+            font-size: 19px;
+        }
+
+        .menu-item:hover {
+            background: #f8f8f8;
+        }
     }
 
     .menu-left {
@@ -127,14 +229,33 @@
         align-items: center;
     }
 
+    @media (min-width: 768px) {
+        .menu-left {
+            gap: 24px;
+        }
+    }
+
     .menu-left i {
         font-size: 20px;
         color: #333;
     }
 
+    @media (min-width: 768px) {
+        .menu-left i {
+            font-size: 24px;
+            width: 30px;
+        }
+    }
+
     .chevron-icon {
         font-size: 16px;
         color: #666;
+    }
+
+    @media (min-width: 768px) {
+        .chevron-icon {
+            font-size: 20px;
+        }
     }
 
     /* Logout */
@@ -148,6 +269,30 @@
         color: #c03434;
         font-weight: 600;
         cursor: pointer;
+        transition: all 0.2s;
+        width: calc(100% - 40px);
+    }
+
+    @media (min-width: 768px) {
+        .logout-btn {
+            padding: 20px;
+            margin: 50px 80px;
+            font-size: 19px;
+            border-radius: 18px;
+            width: calc(100% - 160px);
+        }
+
+        .logout-btn:hover {
+            background: #fff5f5;
+            border-color: #c03434;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .logout-btn {
+            margin: 50px 120px;
+            width: calc(100% - 240px);
+        }
     }
 
     /* Upload Screens */
@@ -159,6 +304,29 @@
         min-height: 100vh;
         padding: 20px;
         color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* ✅ FULL RED BACKGROUND (NO WHITE AREA) */
+    .photo-screen::before{
+        content:"";
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #a94064 0%, #c85a7a 100%);
+        z-index: -1;
+    }
+
+    @media (min-width: 768px) {
+        .photo-screen {
+            padding: 40px 80px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .photo-screen {
+            padding: 40px 120px;
+        }
     }
 
     .photo-header {
@@ -170,6 +338,14 @@
         font-weight: 600;
     }
 
+    @media (min-width: 768px) {
+        .photo-header {
+            font-size: 28px;
+            padding-top: 20px;
+            padding-bottom: 45px;
+        }
+    }
+
     .back-btn {
         position: absolute;
         left: 20px;
@@ -178,6 +354,26 @@
         background: none;
         border: none;
         color: white;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+    @media (min-width: 768px) {
+        .back-btn {
+            font-size: 28px;
+            left: 80px;
+            top: 20px;
+        }
+
+        .back-btn:hover {
+            opacity: 0.8;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .back-btn {
+            left: 120px;
+        }
     }
 
     .avatar-circle {
@@ -192,17 +388,41 @@
         overflow: hidden;
     }
 
+    @media (min-width: 768px) {
+        .avatar-circle {
+            width: 320px;
+            height: 320px;
+            margin: 60px auto;
+        }
+    }
+
     .photo-action-btn {
         width: 100%;
+        display: block;              /* ✅ center works reliably */
         padding: 16px;
         background: white;
         color: #a94064;
         font-weight: 700;
         border-radius: 30px;
         text-align: center;
-        margin-top: 40px;
+        margin: 40px auto 0;         /* ✅ auto center */
         cursor: pointer;
         border: none;
+        transition: all 0.2s;
+    }
+
+    @media (min-width: 768px) {
+        .photo-action-btn {
+            padding: 22px;
+            font-size: 19px;
+            margin: 50px auto 0;     /* ✅ auto center */
+            max-width: 500px;        /* ✅ nice desktop width */
+        }
+
+        .photo-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+        }
     }
 
     /* Bottom navbar */
@@ -214,6 +434,32 @@
         background: white;
         padding: 10px 0 18px 0;
         box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+
+    @media (min-width: 768px) {
+        .bottom-nav {
+            padding: 18px 0 25px 0;
+        }
+    }
+
+    .bottom-nav .container-nav {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    @media (min-width: 768px) {
+        .bottom-nav .container-nav {
+            max-width: 100%;
+            padding: 0 80px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .bottom-nav .container-nav {
+            padding: 0 120px;
+        }
     }
 
     .bottom-nav .nav-item {
@@ -222,6 +468,17 @@
         font-size: 13px;
         text-decoration: none;
         display: block;
+        transition: color 0.2s;
+    }
+
+    @media (min-width: 768px) {
+        .bottom-nav .nav-item {
+            font-size: 15px;
+        }
+
+        .bottom-nav .nav-item:hover {
+            color: #b91d4e;
+        }
     }
 
     .bottom-nav .nav-item.active {
@@ -231,6 +488,14 @@
     .bottom-nav i {
         font-size: 20px;
         display: block;
+        margin-bottom: 4px;
+    }
+
+    @media (min-width: 768px) {
+        .bottom-nav i {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
     }
 </style>
 </head>
@@ -347,7 +612,7 @@
             </div>
 
             <div class="avatar-circle">
-                <img id="previewImg" style="display:none;">
+                <img id="previewImg" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <i id="previewIcon" class="fas fa-camera" style="font-size:80px; color:#a94064;"></i>
             </div>
 
@@ -373,26 +638,28 @@
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-    <div class="row text-center">
-        <div class="col">
-            <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
-                <i class="fas fa-home"></i> Home
-            </a>
-        </div>
-        <div class="col">
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <i class="fas fa-chart-bar"></i> Dashboard
-            </a>
-        </div>
-        <div class="col">
-            <a href="{{ route('chat.index') }}" class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
-                <i class="fas fa-comments"></i> Chat
-            </a>
-        </div>
-        <div class="col">
-            <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
-                <i class="fas fa-user"></i> Profile
-            </a>
+    <div class="container-nav">
+        <div class="row text-center">
+            <div class="col">
+                <a href="{{ route('homepage') }}" class="nav-item {{ request()->routeIs('homepage') ? 'active' : '' }}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+            <div class="col">
+                <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-chart-bar"></i> Dashboard
+                </a>
+            </div>
+            <div class="col">
+                <a href="{{ route('chat.index') }}" class="nav-item {{ request()->routeIs('chat.index') ? 'active' : '' }}">
+                    <i class="fas fa-comments"></i> Chat
+                </a>
+            </div>
+            <div class="col">
+                <a href="{{ route('profile') }}" class="nav-item {{ request()->routeIs('profile') ? 'active' : '' }}">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+            </div>
         </div>
     </div>
 </div>

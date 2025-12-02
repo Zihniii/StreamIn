@@ -4,9 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Models\WishlistPackage;
 
 class PackageController extends Controller
 {
+    /**
+     * Helper method untuk get saved package IDs
+     */
+    private function getSavedPackageIds()
+    {
+        if (Auth::check()) {
+            return WishlistPackage::where('userID', Auth::id())
+                                 ->pluck('packageID')
+                                 ->toArray();
+        }
+        return [];
+    }
+
     /**
      * Menampilkan halaman paket Netflix
      */
@@ -20,10 +35,14 @@ class PackageController extends Controller
 
         $groupedPackages = $packages->groupBy('packageType');
 
+        // Get saved package IDs
+        $savedPackageIds = $this->getSavedPackageIds();
+
         return view('packagenetflix', [
             'packages' => $groupedPackages,
             'serviceName' => 'Netflix',
-            'serviceDescription' => 'Nikmati pengalaman menonton tanpa batas dengan paket Netflix khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia. Tidak ada iklan, tidak ada gangguan, hanya hiburan berkualitas untuk setiap momen.'
+            'serviceDescription' => 'Nikmati pengalaman menonton tanpa batas dengan paket Netflix khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia. Tidak ada iklan, tidak ada gangguan, hanya hiburan berkualitas untuk setiap momen.',
+            'savedPackageIds' => $savedPackageIds
         ]);
     }
 
@@ -37,10 +56,14 @@ class PackageController extends Controller
 
         $groupedPackages = $packages->groupBy('packageType');
 
+        // Get saved package IDs
+        $savedPackageIds = $this->getSavedPackageIds();
+
         return view('packageprime', [
             'packages' => $groupedPackages,
             'serviceName' => 'Prime Video',
-            'serviceDescription' => 'Nikmati pengalaman menonton tanpa batas dengan paket Prime Video khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia. Tidak ada iklan, tidak ada gangguan, hanya hiburan berkualitas untuk setiap momen.'
+            'serviceDescription' => 'Nikmati pengalaman menonton tanpa batas dengan paket Prime Video khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia. Tidak ada iklan, tidak ada gangguan, hanya hiburan berkualitas untuk setiap momen.',
+            'savedPackageIds' => $savedPackageIds
         ]);
     }
 
@@ -54,10 +77,14 @@ class PackageController extends Controller
 
         $groupedPackages = $packages->groupBy('packageType');
 
+        // Get saved package IDs
+        $savedPackageIds = $this->getSavedPackageIds();
+
         return view('packageviu', [
             'packages' => $groupedPackages,
             'serviceName' => 'Viu',
-            'serviceDescription' => 'Nikmati pengalaman menonton tanpa batas dengan paket Viu khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia. Tidak ada iklan, tidak ada gangguan, hanya hiburan berkualitas untuk setiap momen.'
+            'serviceDescription' => 'Nikmati pengalaman menonton tanpa batas dengan paket Viu khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia. Tidak ada iklan, tidak ada gangguan, hanya hiburan berkualitas untuk setiap momen.',
+            'savedPackageIds' => $savedPackageIds
         ]);
     }
 
@@ -85,6 +112,9 @@ class PackageController extends Controller
         // Kelompokkan paket berdasarkan tipe
         $groupedPackages = $packages->groupBy('packageType');
 
+        // Get saved package IDs
+        $savedPackageIds = $this->getSavedPackageIds();
+
         // FIXED: Mapping service name ke view file yang sesuai
         $viewMap = [
             'Netflix' => 'packagenetflix',
@@ -108,7 +138,8 @@ class PackageController extends Controller
         return view($viewName, [
             'packages' => $groupedPackages,
             'serviceName' => $serviceName,
-            'serviceDescription' => $descriptions[$serviceName] ?? 'Nikmati streaming berkualitas tinggi.'
+            'serviceDescription' => $descriptions[$serviceName] ?? 'Nikmati streaming berkualitas tinggi.',
+            'savedPackageIds' => $savedPackageIds
         ]);
     }
 }

@@ -11,15 +11,12 @@ use App\Http\Controllers\ReportissueController;
 use App\Http\Controllers\SubcriptionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistPackageController;
-
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PackageController;
-
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-
 use App\Http\Controllers\SupportPemilihanController;
 
 /*
@@ -89,7 +86,7 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard/orders', [DashboardController::class, 'orderHistory'])->name('dashboard.orders');
     Route::get('dashboard/orders/{id}', [DashboardController::class, 'orderHistoryDetail'])->name('dashboard.orders.detail');
 
-    Route::get('dashboard/packages/{id}', [DashboardController::class, 'packagedetails'])->name('dashboard.packages.detail');
+    Route::get('dashboard/packages/{id}', [DashboardController::class, 'packageDetail'])->name('dashboard.packages.detail');
     Route::get('dashboard/packages', [DashboardController::class, 'browsePackages'])->name('dashboard.packages.browse');
 
     Route::post('dashboard/check-expired', [DashboardController::class, 'checkExpiredPackages'])->name('dashboard.checkExpired');
@@ -102,6 +99,19 @@ Route::middleware('auth')->group(function () {
     */
     Route::get('/profile', [SupportPemilihanController::class, 'profile'])->name('profile');
     Route::post('/profile/upload', [SupportPemilihanController::class, 'uploadImage'])->name('profile.upload');
+
+    /*
+    |--------------------------------------------------------------------------
+    | SAVED PACKAGE / WISHLIST
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('saved-package')->name('saved.')->group(function () {
+        Route::get('/', [WishlistPackageController::class, 'index'])->name('index');
+        Route::post('/store', [WishlistPackageController::class, 'store'])->name('store');
+        Route::delete('/remove', [WishlistPackageController::class, 'destroy'])->name('remove');
+        Route::post('/toggle', [WishlistPackageController::class, 'toggle'])->name('toggle');
+        Route::get('/check/{packageID}', [WishlistPackageController::class, 'checkStatus'])->name('check');
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -149,6 +159,8 @@ Route::get('/package/{service}', [PackageController::class, 'showPackage'])->nam
 */
 
 Route::get('/payment/details', [PaymentController::class, 'showPaymentDetails'])->name('payment.details');
+Route::post('/payment/checkout', [PaymentController::class, 'processCheckout'])->name('payment.checkout');
+Route::post('/payment/calculate-discount', [PaymentController::class, 'calculateDiscount'])->name('payment.calculate');
 Route::post('/payment', [PaymentController::class, 'showPayment'])->name('payment.show');
 Route::post('/payment/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
 Route::get('/payment/success', [PaymentController::class, 'showSuccess'])->name('payment.success');

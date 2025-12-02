@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Active Package</title>
+    <title>{{ $subscription->package->serviceName ?? 'Active Package' }} - {{ config('app.name', 'Stream.in') }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -15,9 +16,9 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background-color: #f5f5f5;
-            max-width: 375px;
+            max-width: 480px;
             margin: 0 auto;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
@@ -28,22 +29,6 @@
             padding-bottom: 20px;
         }
 
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .status-icons {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            font-size: 12px;
-        }
-
         .top-nav {
             display: flex;
             align-items: center;
@@ -52,20 +37,20 @@
         }
 
         .back-btn {
-            width: 24px;
-            height: 24px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            text-decoration: none;
         }
 
-        .back-arrow {
-            width: 10px;
-            height: 10px;
-            border-left: 2px solid white;
-            border-bottom: 2px solid white;
-            transform: rotate(45deg);
+        .back-btn:hover {
+            opacity: 0.8;
         }
 
         .page-title {
@@ -73,7 +58,7 @@
             font-weight: 600;
             flex: 1;
             text-align: center;
-            margin-right: 24px;
+            margin-right: 28px;
         }
 
         .package-card-container {
@@ -97,26 +82,19 @@
         .package-icon {
             width: 56px;
             height: 56px;
-            background-color: #00a8e1;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            color: white;
             flex-shrink: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
         }
 
-        .prime-text {
-            font-size: 13px;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .video-text {
-            font-size: 10px;
-            font-weight: 400;
-            line-height: 1;
+        .package-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .package-info h2 {
@@ -140,23 +118,23 @@
             margin-top: 4px;
         }
 
-        .calendar-icon {
-            width: 12px;
-            height: 12px;
-            background-color: #dc3545;
-            border-radius: 2px;
-            position: relative;
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
         }
 
-        .calendar-icon::before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
-            background-color: white;
-            border-radius: 1px;
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-expired {
+            background-color: #f8d7da;
+            color: #721c24;
         }
 
         .time-remaining-section {
@@ -168,46 +146,24 @@
             gap: 10px;
         }
 
+        .time-remaining-section.expired {
+            background-color: #ffe0e0;
+        }
+
         .time-remaining-label {
             font-size: 13px;
             color: #666;
             flex: 1;
         }
 
-        .clock-icon {
-            width: 16px;
-            height: 16px;
-            border: 2px solid #666;
-            border-radius: 50%;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .clock-icon::before {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 5px;
-            background-color: #666;
-            top: 1px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .clock-icon::after {
-            content: '';
-            position: absolute;
-            width: 4px;
-            height: 2px;
-            background-color: #666;
-            top: 5px;
-            left: 5px;
-        }
-
         .time-value {
             font-size: 15px;
             font-weight: 600;
             color: #1a1a1a;
+        }
+
+        .time-value.expired {
+            color: #dc3545;
         }
 
         .content {
@@ -250,54 +206,7 @@
             justify-content: center;
             flex-shrink: 0;
             color: #999;
-        }
-
-        .user-icon {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background-color: #e0e0e0;
-            position: relative;
-        }
-
-        .user-icon::before {
-            content: '';
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #999;
-            top: 2px;
-            left: 5px;
-        }
-
-        .user-icon::after {
-            content: '';
-            position: absolute;
-            width: 14px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #999;
-            bottom: 1px;
-            left: 2px;
-        }
-
-        .key-icon {
-            width: 6px;
-            height: 12px;
-            border: 2px solid #999;
-            border-radius: 2px;
-            position: relative;
-        }
-
-        .key-icon::after {
-            content: '';
-            position: absolute;
-            width: 8px;
-            height: 2px;
-            background-color: #999;
-            right: -8px;
-            top: 3px;
+            font-size: 16px;
         }
 
         .info-content {
@@ -310,38 +219,11 @@
             margin-bottom: 2px;
         }
 
-        .copy-btn {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            background-color: #f5f5f5;
-            border-radius: 6px;
-            border: none;
+        .info-value.masked {
+            letter-spacing: 2px;
         }
 
-        .copy-icon {
-            width: 14px;
-            height: 16px;
-            border: 2px solid #666;
-            border-radius: 2px;
-            position: relative;
-        }
-
-        .copy-icon::before {
-            content: '';
-            position: absolute;
-            width: 14px;
-            height: 16px;
-            border: 2px solid #666;
-            border-radius: 2px;
-            top: -4px;
-            left: -4px;
-            background-color: white;
-        }
-
+        .copy-btn,
         .eye-btn {
             width: 32px;
             height: 32px;
@@ -352,27 +234,23 @@
             background-color: #f5f5f5;
             border-radius: 6px;
             border: none;
+            font-size: 14px;
+            color: #666;
+            transition: background-color 0.2s;
+        }
+
+        .copy-btn:hover,
+        .eye-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .copy-btn:active,
+        .eye-btn:active {
+            transform: scale(0.95);
+        }
+
+        .eye-btn {
             margin-right: 8px;
-        }
-
-        .eye-icon {
-            width: 18px;
-            height: 12px;
-            border: 2px solid #666;
-            border-radius: 50%;
-            position: relative;
-        }
-
-        .eye-icon::before {
-            content: '';
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background-color: #666;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
         }
 
         .rules-box {
@@ -422,6 +300,7 @@
             justify-content: center;
             gap: 8px;
             transition: transform 0.2s;
+            text-decoration: none;
         }
 
         .btn:active {
@@ -439,56 +318,51 @@
             border: 2px solid #c9184a;
         }
 
-        .alert-icon {
-            width: 18px;
-            height: 18px;
-            border: 2px solid currentColor;
-            border-radius: 50%;
-            position: relative;
-            flex-shrink: 0;
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .alert-icon::before {
-            content: '!';
-            position: absolute;
-            top: 50%;
+        .empty-account {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: 700;
-            font-size: 12px;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
         }
 
-        .renew-icon {
-            width: 16px;
-            height: 16px;
-            border: 2px solid currentColor;
-            border-radius: 50%;
-            border-top-color: transparent;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .renew-icon::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            border-bottom: 6px solid currentColor;
-            top: -8px;
-            right: -2px;
-            transform: rotate(45deg);
+        .toast.show {
+            opacity: 1;
         }
     </style>
 </head>
 
 <body>
+    <div class="header-section">
         <div class="top-nav">
-            <div class="back-btn" onclick="window.location.href='{{ route('dashboard') }}'">
-                <div class="back-arrow"></div>
+            <a href="{{ route('dashboard') }}" class="back-btn">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            <div class="page-title">
+                @if ($isActive ?? true)
+                    Active Package
+                @else
+                    Package Details
+                @endif
             </div>
-            <div class="page-title">Active Package</div>
         </div>
 
     <div class="package-card-container">
@@ -506,7 +380,6 @@
                         {{ \Carbon\Carbon::parse($subs->endDate)->format('d M Y H:i') }}
                     </div>
                 </div>
-            </div>
 
             <div class="time-remaining-section">
                 <div class="clock-icon"></div>
@@ -528,7 +401,6 @@
             </div>
         </div>
     </div>
-    </div>
 
     <div class="content">
         <h3 class="section-title">Account</h3>
@@ -540,11 +412,7 @@
                 <div class="info-content">
                     <div class="info-value">{{ $subs->accountPackage->usernamePackage }}</div>
                 </div>
-                <button class="copy-btn">
-                    <div class="copy-icon"></div>
-                </button>
             </div>
-        </div>
 
         <h3 class="section-title">Password</h3>
         <div class="info-box">
@@ -555,34 +423,99 @@
                 <div class="info-content">
                     <div class="info-value">{{ $subs->accountPackage->passwordPackage }}</div>
                 </div>
-                <button class="eye-btn">
-                    <div class="eye-icon"></div>
-                </button>
-                <button class="copy-btn">
-                    <div class="copy-icon"></div>
-                </button>
             </div>
-        </div>
+        @else
+            <div class="empty-account">
+                <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 12px;"></i>
+                <p>No account information available</p>
+            </div>
+        @endif
 
         <h3 class="section-title">Rules</h3>
         <div class="rules-box">
             <ul class="rules-list">
-                <li>User can't change password</li>
-                <li>User can't share the account</li>
+                @if ($subscription->package->rulesPackage)
+                    @foreach (explode("\n", $subscription->package->rulesPackage) as $rule)
+                        @if (trim($rule))
+                            <li>{{ trim($rule) }}</li>
+                        @endif
+                    @endforeach
+                @else
+                    <li>User can't change password</li>
+                    <li>User can't share the account</li>
+                    <li>Follow the terms and conditions</li>
+                @endif
             </ul>
         </div>
 
         <div class="action-buttons">
-            <button class="btn btn-primary">
-                <div class="alert-icon"></div>
+            <button class="btn btn-primary" onclick="reportTrouble()">
+                <i class="fas fa-exclamation-triangle"></i>
                 Report Trouble
             </button>
-            <button class="btn btn-secondary">
-                <div class="renew-icon"></div>
-                Renew Package
-            </button>
+
+            {{-- @if ($isActive ?? true)
+                <a href="{{ route('packages.renew', $subscription->packageID) }}" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i>
+                    Renew Package
+                </a>
+            @else
+                <a href="{{ route('packages.buy', $subscription->packageID) }}" class="btn btn-secondary">
+                    <i class="fas fa-shopping-cart"></i>
+                    Buy Again
+                </a>
+            @endif --}}
         </div>
     </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        let passwordVisible = false;
+        const actualPassword = '{{ $subscription->accountPackage->passwordPackage ?? '' }}';
+
+        function togglePassword() {
+            const passwordField = document.getElementById('password-field');
+            const eyeIcon = document.getElementById('eye-icon');
+
+            passwordVisible = !passwordVisible;
+
+            if (passwordVisible) {
+                passwordField.textContent = actualPassword;
+                passwordField.classList.remove('masked');
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.textContent = '••••••••••••';
+                passwordField.classList.add('masked');
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        function copyToClipboard(text, label) {
+            navigator.clipboard.writeText(text).then(function() {
+                showToast(label + ' copied to clipboard!');
+            }, function(err) {
+                showToast('Failed to copy');
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function reportTrouble() {
+            // Redirect ke halaman chat atau support
+            window.location.href = '{{ route('chat.index') }}';
+        }
+    </script>
 </body>
 
 </html>
