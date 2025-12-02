@@ -728,16 +728,16 @@
             
             let url = `/package/${serviceSlug}`;
             const params = [];
-            
+
             if (packageType) {
                 params.push(`tab=${packageType.toLowerCase()}`);
             }
-            
+
             if (duration) {
                 const durationValue = typeof duration === 'string' ? duration.split(' ')[0] : duration;
                 params.push(`duration=${durationValue}`);
             }
-            
+
             if (params.length > 0) {
                 url += '?' + params.join('&');
             }
@@ -856,10 +856,10 @@
         function renderPackages(type) {
             const grid = document.getElementById('recommendationsGrid');
             const packages = packagesData[type] || [];
-            
+
             grid.innerHTML = packages.map(pkg => {
                 const unitText = type === 'Hourly' ? 'Hour' : (type === 'Daily' ? 'Day' : 'Month');
-                
+
                 return `
                     <div class="recommendation-card" onclick="goToPackageDetails('${pkg.serviceName}', '${type}', '${pkg.duration}')">
                         <div class="recommendation-image">

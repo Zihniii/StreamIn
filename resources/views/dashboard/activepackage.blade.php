@@ -365,90 +365,63 @@
             </div>
         </div>
 
-        <div class="package-card-container">
-            <div class="package-card">
-                <div class="package-header">
-                    <div class="package-icon">
-                        <img src="{{ asset('img/' . $subscription->package->logoSubscription) }}"
-                            alt="{{ $subscription->package->serviceName }}"
-                            onerror="this.src='{{ asset('img/default-platform.png') }}'">
-                    </div>
-                    <div class="package-info">
-                        <h2>{{ $subscription->package->serviceName }}</h2>
-                        <div class="package-duration">
-                            {{ $subscription->package->descriptionDurasi ?? $subscription->package->durasiPackage . ' days package' }}
-                        </div>
-                        <div class="package-expiry">
-                            <i class="fas fa-calendar" style="color: #dc3545; font-size: 12px;"></i>
-                            <span>{{ \Carbon\Carbon::parse($subscription->endDate)->format('d F Y H:i') }}</span>
-                        </div>
-
-                        @if ($isActive ?? true)
-                            <span class="status-badge status-active">Active</span>
-                        @else
-                            <span class="status-badge status-expired">Expired</span>
-                        @endif
+    <div class="package-card-container">
+        <div class="package-card">
+            <div class="package-header">
+                <div class="package-icon">
+                    <span class="prime-text">prime</span>
+                    <span class="video-text">video</span>
+                </div>
+                <div class="package-info">
+                    <h2>{{ $subs->package->packageName }}</h2>
+                    <div class="package-duration">3 days package</div>
+                    <div class="package-expiry">
+                        <div class="calendar-icon"></div>
+                        {{ \Carbon\Carbon::parse($subs->endDate)->format('d M Y H:i') }}
                     </div>
                 </div>
 
-                @php
+            <div class="time-remaining-section">
+                <div class="clock-icon"></div>
+                <div class="time-remaining-label">Time Remaining</div>
+                                @php
                     $now = \Carbon\Carbon::now();
-                    $endDate = \Carbon\Carbon::parse($subscription->endDate);
-                    $diff = $now->diff($endDate);
-                    $isExpired = $now->greaterThan($endDate);
+                    $end = \Carbon\Carbon::parse($subs->endDate);
+                    $diffSeconds = $end->diffInSeconds($now, false);
+
+                    $days = floor($diffSeconds / 86400);
+                    $hours = floor(($diffSeconds % 86400) / 3600);
+                    $minutes = floor(($diffSeconds % 3600) / 60);
                 @endphp
 
-                <div class="time-remaining-section {{ $isExpired ? 'expired' : '' }}">
-                    <i class="fas fa-clock" style="font-size: 16px; color: #666;"></i>
-                    <div class="time-remaining-label">
-                        {{ $isExpired ? 'Expired' : 'Time Remaining' }}
-                    </div>
-                    <div class="time-value {{ $isExpired ? 'expired' : '' }}">
-                        @if ($isExpired)
-                            {{ abs($daysRemaining) }}d ago
-                        @else
-                            {{ $diff->d }}d {{ $diff->h }}h {{ $diff->i }}m
-                        @endif
-                    </div>
+                <div class="time-value">
+                    {{ $days }}d {{ $hours }}h {{ $minutes }}m
                 </div>
+
             </div>
         </div>
     </div>
 
     <div class="content">
-        @if ($subscription->accountPackage)
-            <h3 class="section-title">Account</h3>
-            <div class="info-box">
-                <div class="info-item">
-                    <div class="info-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="info-content">
-                        <div class="info-value">{{ $subscription->accountPackage->usernamePackage }}</div>
-                    </div>
-                    <button class="copy-btn"
-                        onclick="copyToClipboard('{{ $subscription->accountPackage->usernamePackage }}', 'Username')">
-                        <i class="fas fa-copy"></i>
-                    </button>
+        <h3 class="section-title">Account</h3>
+        <div class="info-box">
+            <div class="info-item">
+                <div class="info-icon">
+                    <div class="user-icon"></div>
+                </div>
+                <div class="info-content">
+                    <div class="info-value">{{ $subs->accountPackage->usernamePackage }}</div>
                 </div>
             </div>
 
-            <h3 class="section-title">Password</h3>
-            <div class="info-box">
-                <div class="info-item">
-                    <div class="info-icon">
-                        <i class="fas fa-key"></i>
-                    </div>
-                    <div class="info-content">
-                        <div class="info-value masked" id="password-field">••••••••••••</div>
-                    </div>
-                    <button class="eye-btn" id="toggle-password" onclick="togglePassword()">
-                        <i class="fas fa-eye" id="eye-icon"></i>
-                    </button>
-                    <button class="copy-btn"
-                        onclick="copyToClipboard('{{ $subscription->accountPackage->passwordPackage }}', 'Password')">
-                        <i class="fas fa-copy"></i>
-                    </button>
+        <h3 class="section-title">Password</h3>
+        <div class="info-box">
+            <div class="info-item">
+                <div class="info-icon">
+                    <div class="key-icon"></div>
+                </div>
+                <div class="info-content">
+                    <div class="info-value">{{ $subs->accountPackage->passwordPackage }}</div>
                 </div>
             </div>
         @else

@@ -22,6 +22,8 @@ class DashboardController extends Controller
         $activePackages = UserSubscription::where('userID', $user->userID)
             ->where('status', 'active')
             ->where('endDate', '>', Carbon::now())
+            ->with(['package', 'accountPackage'])
+            ->orderBy('endDate', 'asc')
             ->get();
 
         $totalActivePackages = $activePackages->count();
@@ -62,15 +64,15 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        $subscription = UserSubscription::where('userSubscriptionID', $id)
+        $subs = UserSubscription::where('userSubscriptionID', $id)
             ->where('userID', $user->userID)
-            ->with('package')
+            ->with(['package', 'accountPackage'])
             ->firstOrFail();
 
-        $daysRemaining = Carbon::now()->diffInDays($subscription->endDate, false);
+        $daysRemaining = Carbon::now()->diffInDays($subs->endDate, false);
 
         return view('dashboard.activepackage', compact(
-            'subscription',
+            'subs',
             'daysRemaining'
         ));
     }

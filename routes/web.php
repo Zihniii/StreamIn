@@ -134,7 +134,10 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::get('/package', fn () => view('package'))->middleware('auth')->name('package');
-Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('payment');
+// Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('payment');
+Route::get('/payment', function () {
+    return redirect()->route('dashboard');
+})->middleware('auth')->name('payment');
 
 /*
 |--------------------------------------------------------------------------

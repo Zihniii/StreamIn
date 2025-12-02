@@ -8,7 +8,7 @@ use App\Models\ChatTicket;
 class ChatTicketController extends Controller
 {
     // ======================================
-    //  CARI TIKET OPEN ATAU BUAT BARU
+    //  CARI TIKET OPEN ATAU BUAT BARU - auliya 16/11/2025
     // ======================================
     public function getOrCreateTicket($userID, $issueCategory = null, $issueSubCategory = null)
     {
@@ -34,7 +34,7 @@ class ChatTicketController extends Controller
     }
 
     // ======================================
-    //  TUTUP TIKET
+    //  TUTUP TIKET - auliya 16/11/2025
     // ======================================
     public function close($id)
     {
