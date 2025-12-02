@@ -21,6 +21,8 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            /* Batasi lebar konten di tengah jika di layar desktop */
+            width: 100%;
         }
 
         .header-section {
@@ -430,34 +432,55 @@
                         @endif
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
     <div class="content">
-        <h3 class="section-title">Account</h3>
-        <div class="info-box">
-            <div class="info-item">
-                <div class="info-icon">
-                    <div class="user-icon"></div>
-                </div>
-                <div class="info-content">
-                    <div class="info-value">{{ $subs->accountPackage->usernamePackage }}</div>
+        @if ($subscription->accountPackage)
+            {{-- START ACCOUNT SECTION --}}
+            <h3 class="section-title">Account</h3>
+            <div class="info-box">
+                <div class="info-item">
+                    <div class="info-icon">
+                        {{-- Perbaikan: Ganti div kosong dengan ikon Font Awesome --}}
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="info-content">
+                        {{-- Perbaikan: Gunakan $subscription, bukan $subs (konsistensi) --}}
+                        <div class="info-value">{{ $subscription->accountPackage->usernamePackage }}</div>
+                    </div>
+                    <button class="copy-btn"
+                        onclick="copyToClipboard('{{ $subscription->accountPackage->usernamePackage }}', 'Account')">
+                        <i class="fas fa-copy"></i>
+                    </button>
                 </div>
             </div>
 
-        <h3 class="section-title">Password</h3>
-        <div class="info-box">
-            <div class="info-item">
-                <div class="info-icon">
-                    <div class="key-icon"></div>
-                </div>
-                <div class="info-content">
-                    <div class="info-value">{{ $subs->accountPackage->passwordPackage }}</div>
+            {{-- START PASSWORD SECTION --}}
+            <h3 class="section-title">Password</h3>
+            <div class="info-box">
+                <div class="info-item">
+                    <div class="info-icon">
+                        {{-- Perbaikan: Ganti div kosong dengan ikon Font Awesome --}}
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="info-content">
+                        {{-- Perbaikan: Gunakan $subscription, bukan $subs (konsistensi) --}}
+                        <div class="info-value masked" id="password-field">••••••••••••</div>
+                    </div>
+                    <button class="eye-btn" id="toggle-password" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="eye-icon"></i>
+                    </button>
+                    <button class="copy-btn"
+                        onclick="copyToClipboard('{{ $subscription->accountPackage->passwordPackage }}', 'Password')">
+                        <i class="fas fa-copy"></i>
+                    </button>
                 </div>
             </div>
+            {{-- END PASSWORD SECTION --}}
         @else
+            {{-- ELSE SECTION (Jika tidak ada accountPackage) --}}
             <div class="empty-account">
                 <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 12px;"></i>
                 <p>No account information available</p>
@@ -487,17 +510,7 @@
                 Report Trouble
             </button>
 
-            {{-- @if ($isActive)
-                <a href="{{ route('packages.renew', $subscription->packageID) }}" class="btn btn-secondary">
-                    <i class="fas fa-sync-alt"></i>
-                    Renew Package
-                </a>
-            @else
-                <a href="{{ route('packages.buy', $subscription->packageID) }}" class="btn btn-secondary">
-                    <i class="fas fa-shopping-cart"></i>
-                    Buy Again
-                </a>
-            @endif --}}
+            {{-- RENEW/BUY AGAIN BUTTONS (Dibiarkan di-comment) --}}
         </div>
     </div>
 
@@ -508,6 +521,7 @@
 
     <script>
         let passwordVisible = false;
+        // Menggunakan $subscription (konsistensi)
         const actualPassword = '{{ $subscription->accountPackage->passwordPackage ?? '' }}';
 
         function togglePassword() {
@@ -531,7 +545,8 @@
 
         function copyToClipboard(text, label) {
             navigator.clipboard.writeText(text).then(function() {
-                showToast(label + ' copied to clipboard!');
+                // Perbaikan pesan: Sesuaikan dengan format "Account copied successfully"
+                showToast(label + ' copied successfully!');
             }, function(err) {
                 showToast('Failed to copy');
             });
@@ -551,6 +566,13 @@
 
         function reportTrouble() {
             window.location.href = '{{ route('report.show', $subscription->userSubscriptionID) }}';
+        }
+
+        // Perbaikan: Ganti $subs yang salah ke $subscription
+        const subscription = {!! json_encode($subscription ?? null) !!};
+        if (subscription && subscription.account_package) {
+            const actualPasswordElement = document.getElementById('password-field');
+            actualPasswordElement.setAttribute('data-password', subscription.account_package.passwordPackage);
         }
     </script>
 </body>
