@@ -364,7 +364,7 @@
                         <div class="badge-text" style="font-weight: 600;">{{ $badgeName }}</div>
                     </div>
                 </div>
-                <a href="{{ route('dashboard.orders') ?? '#' }}" class="order-history-btn">
+                <a href="{{ route('dashboard.orders') }}" class="order-history-btn">
                     <i class="fas fa-history"></i>
                     Order History
                 </a>
@@ -375,7 +375,7 @@
 
         <div class="package-list">
             @forelse($activePackages ?? [] as $package)
-                <a href="{{ route('dashboard.packages.detail', $package->id ?? '#') }}" class="package-item">
+                <a href="{{ route('dashboard.packages.detail', $package->userSubscriptionID) }}" class="package-item">
                     <div class="package-icon">
                         <img src="{{ asset('img/' . $package->package->logoSubscription) }}"
                             alt="{{ $package->package->serviceName }}"
@@ -389,7 +389,7 @@
                         </div>
 
                         <div class="package-expiry">
-                            <svg class="calendar-icon" ...></svg>
+                            <i class="fas fa-calendar" style="color: #dc3545; font-size: 12px;"></i>
                             <span>{{ \Carbon\Carbon::parse($package->endDate)->format('d F Y H.i') }}</span>
                         </div>
                     </div>
