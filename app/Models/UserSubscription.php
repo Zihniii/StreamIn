@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserSubscription extends Model
 {
-    protected $table = 'user_subscriptions';
+    // Sesuaikan nama tabel dengan database kamu
+    // Berdasarkan PaymentController fixed di atas, kita gunakan 'usersubscription'
+    protected $table = 'user_subscriptions'; 
+    
     protected $primaryKey = 'userSubscriptionID';
-    public $timestamps = false;
+    
+    public $timestamps = false; // Set true jika tabel punya created_at/updated_at
 
     protected $fillable = [
         'userID',
@@ -16,19 +20,27 @@ class UserSubscription extends Model
         'accountPackageID',
         'startDate',
         'endDate',
-        'status',
+        'status' // active, expired, cancelled
     ];
 
+    protected $casts = [
+        'startDate' => 'datetime',
+        'endDate' => 'datetime',
+    ];
+
+    // Relasi ke User
     public function user()
     {
         return $this->belongsTo(User::class, 'userID');
     }
 
+    // Relasi ke Package (Netflix Premium, dll)
     public function package()
     {
         return $this->belongsTo(Package::class, 'packageID');
     }
 
+    // Relasi ke AccountPackage (Akun email/pass yang diberikan ke user)
     public function accountPackage()
     {
         return $this->belongsTo(AccountPackage::class, 'accountPackageID');

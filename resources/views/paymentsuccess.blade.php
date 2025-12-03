@@ -346,7 +346,7 @@
 
             <!-- Buttons -->
             <div class="button-group">
-                <a href="{{ route('dashboard.index') }}" class="btn btn-primary">
+                <a href="{{ route('dashboard') }}" class="btn btn-primary">
                     <span class="material-icons" style="font-size: 20px;">dashboard</span>
                     Go to Dashboard
                 </a>
