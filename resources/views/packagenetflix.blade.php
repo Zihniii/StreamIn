@@ -1,246 +1,178 @@
-<?php
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $serviceName }} - Pilih Paket</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* CSS DISAMAKAN DENGAN PRIME AGAR KONSISTEN */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f5f5; min-height: 100vh; color: #333; }
+        .container { max-width: 100%; margin: 0 auto; background: #f5f5f5; min-height: 100vh; }
+        .card-wrapper { max-width: 1000px; margin: 0 auto; background: white; min-height: 100vh; }
+        .header { display: flex; align-items: center; padding: 16px 20px; background: white; border-bottom: 1px solid #e0e0e0; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; color: #333; border-radius: 50%; }
+        .header-title { flex: 1; text-align: center; font-size: 18px; font-weight: 600; padding-right: 40px; }
+        .banner-section { padding: 24px; }
+        .banner { width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+        .banner img { width: 100%; height: auto; display: block; }
+        .service-info { padding: 0 24px 24px; }
+        .service-title { font-size: 24px; font-weight: 700; color: #333; }
+        .service-description { font-size: 14px; color: #666; line-height: 1.6; text-align: justify; }
+        .package-tabs { display: flex; padding: 0 24px; border-bottom: 1px solid #e0e0e0; background: white; overflow-x: auto; }
+        .tab-button { padding: 12px 0; margin-right: 32px; background: transparent; border: none; color: #999; font-size: 14px; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+        .tab-button.active { color: #c1184a; border-bottom-color: #c1184a; }
+        .package-list { display: none; padding: 24px; gap: 12px; }
+        .package-list.active { display: grid; }
+        @media (min-width: 768px) { .package-list.active { grid-template-columns: repeat(2, 1fr); } }
+        .package-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 2px solid #e0e0e0; border-radius: 12px; cursor: pointer; background: white; position: relative; }
+        .package-item.selected { border-color: #c1184a; background: #fff5f8; }
+        .package-item.is-saved::after { content: 'SAVED'; position: absolute; top: 8px; right: 8px; background: #4caf50; color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; }
+        .duration-badge { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #e0e0e0; color: #666; }
+        .package-item.selected .duration-badge { background: #c1184a; color: white; }
+        .package-price { font-size: 15px; font-weight: 700; margin-left: 12px; }
+        .radio-button { width: 20px; height: 20px; border: 2px solid #e0e0e0; border-radius: 50%; position: relative; }
+        .package-item.selected .radio-button::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; background: #c1184a; border-radius: 50%; border: 4px solid #fff5f8; }
+        .button-container { padding: 24px; background: white; border-top: 1px solid #e0e0e0; display: flex; gap: 12px; }
+        .action-button { flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .save-button { background: white; color: #c1184a; border: 2px solid #c1184a; flex: 1 !important; }
+        .choose-button { background: #c1184a; color: white; flex: 2 !important; }
+        .action-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .toast-notification { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 14px 24px; border-radius: 8px; z-index: 1000; transition: bottom 0.3s; }
+        .toast-notification.show { bottom: 24px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card-wrapper">
+            <div class="header">
+                <button class="back-btn" onclick="window.location.href='{{ route('homepage') }}'">
+                    <span class="material-icons">chevron_left</span>
+                </button>
+                <h1 class="header-title">{{ $serviceName }}</h1>
+            </div>
 
-namespace App\Http\Controllers;
+            <div class="content">
+                <div class="banner-section">
+                    <div class="banner">
+                        <img src="{{ asset('img/banner_' . strtolower(str_replace(' ', '', $serviceName)) . '.png') }}"
+                             onerror="this.src='{{ asset('img/banner_netflix.png') }}'" alt="Banner">
+                    </div>
+                </div>
 
-use App\Models\AccountPackage;
-use App\Models\Package;
-use App\Models\Payment;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Illuminate\Database\QueryException; 
+                <div class="service-info">
+                    <h2 class="service-title">{{ $serviceName }}</h2>
+                    <p class="service-description">{{ $serviceDescription }}</p>
+                </div>
 
-class PaymentController extends Controller
-{
-    /**
-     * Menampilkan halaman detail pembayaran (Langkah 1)
-     */
-    public function showPaymentDetails(Request $request)
-    {
-        $packageID = $request->query('package');
-        if (! $packageID) return redirect()->back()->with('error', 'Package not selected');
-        
-        $package = DB::table('Package')->where('packageID', $packageID)->first();
-        if (! $package) return redirect()->back()->with('error', 'Package not found');
-        
-        $paymentMethods = DB::table('PaymentMethod')->orderBy('paymentMethodID', 'asc')->get();
-        $discounts = DB::table('discount')->where('discountType', '!=', 'none')->get();
+                <div class="package-tabs">
+                    @foreach($packages as $type => $items)
+                        <button class="tab-button {{ $loop->first ? 'active' : '' }}"
+                                onclick="switchTab('{{ strtolower($type) }}', event)">
+                            {{ $type }}
+                        </button>
+                    @endforeach
+                </div>
 
-        return view('paymentdetails', [
-            'package' => $package,
-            'paymentMethods' => $paymentMethods,
-            'discounts' => $discounts,
-            'originalPrice' => $package->hargaPackage,
-            'discountAmount' => 0,
-        ]);
+                @foreach($packages as $type => $items)
+                    <div class="package-list {{ $loop->first ? 'active' : '' }}" id="{{ strtolower($type) }}-list">
+                        @forelse($items as $package)
+                            <div class="package-item {{ in_array($package->packageID, $savedPackageIds ?? []) ? 'is-saved' : '' }}"
+                                 data-duration="{{ $package->durasiPackage }}"
+                                 data-package-id="{{ $package->packageID }}"
+                                 onclick="selectPackage(this, {{ $package->packageID }}, {{ $package->hargaPackage }})">
+
+                                <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                                    <div class="duration-badge">
+                                        <span class="material-icons">schedule</span>
+                                        <span>{{ $package->durasiPackage }} {{ $type === 'Hourly' ? 'Hour' : ($type === 'Daily' ? 'Day' : 'Month') }}</span>
+                                    </div>
+                                    <div class="package-price">Rp{{ number_format($package->hargaPackage, 0, ',', '.') }}</div>
+                                </div>
+                                <div class="radio-button"></div>
+                            </div>
+                        @empty
+                            <div style="text-align: center; padding: 40px; color: #999;">Tidak ada paket tersedia</div>
+                        @endforelse
+                    </div>
+                @endforeach
+
+                <div class="button-container">
+                    <button class="action-button save-button" id="saveButton" onclick="savePackage()" disabled>
+                        <span class="material-icons">bookmark</span> Save
+                    </button>
+                    <button class="action-button choose-button" id="chooseButton" onclick="submitPackage()" disabled>
+                        Choose Package
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let selectedPackageId = null;
+
+    // Fungsi helper untuk baca URL
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     }
 
-    /**
-     * Proses halaman pembayaran (Langkah 2 - Preview & Save Session)
-     */
-    public function showPayment(Request $request)
-    {
-        $request->validate([
-            'packageID' => 'required|integer',
-            'paymentMethodID' => 'required|integer',
-            'discountID' => 'nullable|integer',
-            'finalPrice' => 'required|numeric',
-            'originalPrice' => 'required|numeric',
-        ]);
+    function switchTab(tabName, event) {
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        if(event) event.target.classList.add('active');
 
-        $package = DB::table('Package')->where('packageID', $request->packageID)->first();
-        $paymentMethod = DB::table('PaymentMethod')->where('paymentMethodID', $request->paymentMethodID)->first();
-        
-        $discount = null;
-        if ($request->discountID) {
-            $discount = DB::table('discount')->where('discountID', $request->discountID)->first();
-        }
+        document.querySelectorAll('.package-list').forEach(list => list.classList.remove('active'));
+        const targetList = document.getElementById(tabName + '-list');
+        if(targetList) targetList.classList.add('active');
 
-        session([
-            'payment_data' => [
-                'packageID' => $request->packageID,
-                'paymentMethodID' => $request->paymentMethodID,
-                'discountID' => $request->discountID,
-                'referralCode' => $request->referralCode ?? null,
-                'finalPrice' => $request->finalPrice,
-                'originalPrice' => $request->originalPrice,
-                'discountAmount' => $request->discountAmount ?? 0,
-                'createdAt' => now(),
-            ],
-        ]);
-
-        return view('payment', [
-            'package' => $package,
-            'paymentMethod' => $paymentMethod,
-            'discount' => $discount,
-            'originalPrice' => $request->originalPrice,
-            'discountAmount' => $request->discountAmount ?? 0,
-            'finalPrice' => $request->finalPrice,
-        ]);
+        resetSelection();
     }
 
-    /**
-     * Konfirmasi Pembayaran (Langkah 3 - Eksekusi Final)
-     */
-    public function confirmPayment(Request $request)
-    {
-        $user = Auth::user();
-        $paymentData = session('payment_data');
+    function selectPackage(element, packageId) {
+        document.querySelectorAll('.package-item').forEach(item => item.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedPackageId = packageId;
+        document.getElementById('chooseButton').disabled = false;
+        document.getElementById('saveButton').disabled = false;
+    }
 
-        if (! $paymentData) {
-            return redirect()->route('package.netflix')->with('error', 'Sesi pembayaran habis/hilang.');
-        }
+    function resetSelection() {
+        selectedPackageId = null;
+        document.getElementById('chooseButton').disabled = true;
+        document.getElementById('saveButton').disabled = true;
+    }
 
-        try {
-            DB::beginTransaction();
+    function submitPackage() {
+        if (!selectedPackageId) return;
+        window.location.href = '{{ route("payment.details") }}?package=' + selectedPackageId;
+    }
 
-            // -----------------------------------------------------------
-            // 1. Simpan Uang Masuk (Payment Table)
-            // -----------------------------------------------------------
-            $paymentId = DB::table('payment')->insertGetId([
-                'userID' => $user->userID,
-                'packageID' => $paymentData['packageID'],
-                'paymentMethodID' => $paymentData['paymentMethodID'],
-                'discountID' => $paymentData['discountID'],
-                'amount' => $paymentData['finalPrice'],
-                'adminFee' => 0,
-                'paymentDate' => now(),
-                'paymentStatus' => 'paid', 
-            ]);
+    // AUTO-SELECT LOGIC (Sama seperti Prime Video agar Netflix tidak blank)
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabParam = getUrlParameter('tab');
+        const durationParam = getUrlParameter('duration');
 
-            // -----------------------------------------------------------
-            // 2. Cari Akun (Service Based Matching)
-            // -----------------------------------------------------------
-            // Ambil info paket yang dibeli user
-            $purchasedPackage = DB::table('package')->where('packageID', $paymentData['packageID'])->first();
-            $targetService = $purchasedPackage->serviceName; // Contoh: "Netflix"
+        if (tabParam) {
+            const tabName = tabParam.charAt(0).toUpperCase() + tabParam.slice(1).toLowerCase();
+            const tabBtn = Array.from(document.querySelectorAll('.tab-button')).find(t => t.textContent.trim() === tabName);
 
-            // Cari akun yang terhubung ke paket dengan layanan yang SAMA ("Netflix")
-            // Join ini sekarang BERHASIL karena kolom packageID sudah Anda buat.
-            $accountPackage = DB::table('accountpackage')
-                ->join('package', 'accountpackage.packageID', '=', 'package.packageID') 
-                ->where('package.serviceName', $targetService) 
-                ->where(function($query) {
-                    $query->where('accountpackage.status', 'active')
-                          ->orWhere('accountpackage.status', 'Active');
-                })
-                ->select('accountpackage.*') // Ambil data akun saja
-                ->inRandomOrder() // Acak (Shared Account)
-                ->first();
-
-            if (! $accountPackage) {
-                DB::rollBack();
-                return redirect()->back()->with('error', 'Stok akun untuk layanan '.$targetService.' sedang kosong. Hubungi Admin.');
+            if (tabBtn) {
+                tabBtn.click();
+                if (durationParam) {
+                    setTimeout(() => {
+                        const list = document.getElementById(tabParam.toLowerCase() + '-list');
+                        const item = list.querySelector(`[data-duration="${durationParam}"]`);
+                        if (item) item.click();
+                    }, 300);
+                }
             }
-
-            // -----------------------------------------------------------
-            // 3. Hitung Tanggal (Start & End)
-            // -----------------------------------------------------------
-            $startDate = now();
-            $endDate = $this->calculateEndDate($purchasedPackage);
-
-            // -----------------------------------------------------------
-            // 4. Simpan Langganan (User Subscription)
-            // -----------------------------------------------------------
-            // Ambil ID akun dengan aman (antisipasi beda huruf besar/kecil)
-            $accPkgId = $accountPackage->accountPackageID ?? $accountPackage->accountpackageID;
-
-            $subscriptionId = DB::table('user_subscriptions')->insertGetId([
-                'userID' => $user->userID,               
-                'packageID' => $paymentData['packageID'], 
-                'accountPackageID' => $accPkgId,          
-                'startDate' => $startDate,
-                'endDate' => $endDate,
-                'status' => 'active'
-            ]);
-
-            DB::commit();
-            session()->forget('payment_data');
-
-            return redirect()->route('payment.success', [
-                'subscription' => $subscriptionId,
-            ]);
-
-        } catch (QueryException $e) {
-            DB::rollBack();
-            // Pesan error teknis untuk developer
-            return redirect()->back()->with('error', 'Database Error: '.$e->getMessage());
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan sistem: '.$e->getMessage());
         }
-    }
-
-    /**
-     * Halaman Sukses
-     */
-    public function showSuccess(Request $request)
-    {
-        $subscriptionId = $request->query('subscription');
-        if (! $subscriptionId) return redirect()->route('dashboard');
-
-        // Join tabel untuk menampilkan detail di struk
-        // FIXED: Menggunakan 'user_subscriptions' (jamak) agar konsisten dengan database
-        $subscription = DB::table('user_subscriptions')
-            ->join('package', 'user_subscriptions.packageID', '=', 'package.packageID')
-            ->join('accountpackage', 'user_subscriptions.accountPackageID', '=', 'accountpackage.accountPackageID')
-            ->where('user_subscriptions.userSubscriptionID', $subscriptionId)
-            ->select('user_subscriptions.*', 'package.*', 'accountpackage.usernamePackage', 'accountpackage.passwordPackage')
-            ->first();
-
-        // Fallback jika join gagal karena nama kolom beda case
-        if (! $subscription) {
-             $subscription = DB::table('user_subscriptions')
-                ->join('package', 'user_subscriptions.packageID', '=', 'package.packageID')
-                ->join('accountpackage', 'user_subscriptions.accountpackageID', '=', 'accountpackage.accountPackageID') 
-                ->where('user_subscriptions.userSubscriptionID', $subscriptionId)
-                ->select('user_subscriptions.*', 'package.*', 'accountpackage.usernamePackage', 'accountpackage.passwordPackage')
-                ->first();
-        }
-
-        if (! $subscription) {
-            return redirect()->route('dashboard')->with('error', 'Data tidak ditemukan');
-        }
-
-        return view('paymentsuccess', ['subscription' => $subscription]);
-    }
-
-    public function checkTimeout(Request $request)
-    {
-        $paymentData = session('payment_data');
-        if (! $paymentData) return response()->json(['expired' => true]);
-
-        $createdAt = Carbon::parse($paymentData['createdAt']);
-        $minutesElapsed = $createdAt->diffInMinutes(now());
-
-        // FIXED: Variabel typo ($elapsedMinutes -> $minutesElapsed)
-        if ($minutesElapsed > 10) {
-            session()->forget('payment_data');
-            return response()->json(['expired' => true]);
-        }
-
-        return response()->json([
-            'expired' => false,
-            'remaining_seconds' => (10 * 60) - ($minutesElapsed * 60),
-        ]);
-    }
-
-    private function calculateEndDate($package)
-    {
-        $now = Carbon::now();
-        $type = strtolower($package->packageType ?? '');
-        $duration = (int) ($package->durasiPackage ?? 1);
-
-        if (str_contains($type, 'hour') || str_contains($type, 'jam')) {
-            return $now->addHours($duration);
-        } elseif (str_contains($type, 'day') || str_contains($type, 'hari')) {
-            return $now->addDays($duration);
-        } elseif (str_contains($type, 'year') || str_contains($type, 'tahun')) {
-            return $now->addYears($duration);
-        }
-        return $now->addMonths($duration);
-    }
-}
+    });
+    </script>
+</body>
+</html>
