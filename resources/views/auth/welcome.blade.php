@@ -1,3 +1,4 @@
+<!-- Bagas Rafi -->
 @extends('auth.layout')
 
 @section('title', 'welcome')
@@ -9,7 +10,7 @@
             <img src="{{ asset('img/auth_illust.png') }}" alt="authentication illust">
         </div>
     </div>
-
+    <!-- Bagas Rafi -->
     <div class="form-side">
         <div class="auth-card">
             <div class="page-indicator">

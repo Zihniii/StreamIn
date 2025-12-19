@@ -1,3 +1,4 @@
+<!-- Bagas Rafi -->
 @extends('auth.layout')
 
 @section('title', 'login')
@@ -10,6 +11,7 @@
         </div>
     </div>
 
+    <!-- Bagas Rafi -->
     <div class="form-side">
         <div class="auth-card">
             <div class="page-indicator">

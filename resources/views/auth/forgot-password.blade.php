@@ -1,3 +1,4 @@
+<!-- Bagas Rafi -->
 @extends('auth.layout')
 
 @section('title', 'forgot-password')
