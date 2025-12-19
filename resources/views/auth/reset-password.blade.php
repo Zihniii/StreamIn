@@ -1,3 +1,4 @@
+<!-- Bagas Rafi -->
 @extends('auth.layout')
 
 @section('title', 'reset-password')
@@ -12,6 +13,7 @@
 
     <div class="form-side">
         <div class="auth-card">
+            <!-- Bagas Rafi -->
             <div class="page-indicator">
                 <span class="dot"></span>
                 <span class="dot active"></span>

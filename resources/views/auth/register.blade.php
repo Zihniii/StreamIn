@@ -1,8 +1,10 @@
+<!-- Bagas Rafi -->
 @extends('auth.layout')
 
 @section('title', 'egister')
 
 @section('content')
+<!-- Bagas Rafi -->
 <div class="auth-wrapper">
     <div class="illustration-side">
         <div class="illustration-content">
