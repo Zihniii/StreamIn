@@ -239,6 +239,20 @@ class DashboardController extends Controller
                 ->get();
         }
 
+        // olah data di controller, BUKAN di Blade
+        $packages = $packages->map(function ($pkg) {
+            return [
+                'name' => $pkg->serviceName,
+                'duration' => $pkg->durasiPackage . ' ' . $pkg->packageType,
+                'price' => 'Rp ' . number_format($pkg->hargaPackage, 0, ',', '.'),
+                'image' => asset('img/' . $pkg->logoSubscription),
+                'url' => route('package.show', [
+                    'service' => strtolower(str_replace(' ', '-', $pkg->serviceName))
+                ])
+            ];
+        });
+
         return view('search', compact('packages', 'query'));
     }
+
 }
