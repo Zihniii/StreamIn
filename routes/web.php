@@ -24,6 +24,10 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::middleware('guest')->group(function () {
+     /*=============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    =============================================  */
 
     // Login
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -50,7 +54,11 @@ Route::get('/password-reset-success', [ResetPasswordController::class, 'showSucc
 | LOGOUT
 |--------------------------------------------------------------------------
 */
-
+ /*=============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    =============================================  */
+    
 Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
@@ -64,11 +72,9 @@ Route::post('/logout', [LoginController::class, 'logout'])
 Route::middleware('auth')->group(function () {
 
     // Homepage
-    Route::get('/home', function () {
-        return view('homepage');
-    })->name('homepage');
+    Route::get('/home', [PackageController::class, 'showHomepage'])->name('homepage');
 
-    // 🔍 SEARCH (ambil versi CONTROLLER karena lebih bagus)
+    // SEARCH (ambil versi CONTROLLER karena lebih bagus)
     Route::get('/search', [DashboardController::class, 'search'])->name('search');
 
     /*
@@ -143,8 +149,9 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/package', fn () => view('package'))->middleware('auth')->name('package');
-// Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('payment');
+Route::get('/package/{service}', [PackageController::class, 'showPackage'])->name('package.show')->middleware('auth');
+//Route::get('/package', fn () => view('package'))->middleware('auth')->name('package');
+//Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('payment');
 Route::get('/payment', function () {
     return redirect()->route('dashboard');
 })->middleware('auth')->name('payment');

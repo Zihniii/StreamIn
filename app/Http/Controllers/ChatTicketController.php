@@ -8,11 +8,11 @@ use App\Models\ChatTicket;
 class ChatTicketController extends Controller
 {
     // ======================================
-    //  CARI TIKET OPEN ATAU BUAT BARU - auliya 16/11/2025
+    //  <!-- Bagas Rafi -->C ARI TIKET OPEN ATAU BUAT BARU - auliya 16/11/2025
     // ======================================
     public function getOrCreateTicket($userID, $issueCategory = null, $issueSubCategory = null)
     {
-        // Cari tiket open milik user
+        // Cari <!-- Bagas Rafi --> tiket open milik user
         $ticket = ChatTicket::where('userID', $userID)
             ->where('status', 'open')
             ->orderBy('createdAt', 'desc') // GANTI created_at → createdAt

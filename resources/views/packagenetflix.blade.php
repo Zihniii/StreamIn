@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        * {
+        {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -480,7 +480,7 @@
 
                 <div class="package-tabs">
                     @foreach($packages as $type => $items)
-                        <button class="tab-button {{ $loop->first ? 'active' : '' }}" 
+                        <button class="tab-button {{ $loop->first ? 'active' : '' }}"
                                 onclick="switchTab('{{ strtolower($type) }}', event)">
                             {{ $type }}
                         </button>
@@ -490,11 +490,11 @@
                 @foreach($packages as $type => $items)
                     <div class="package-list {{ $loop->first ? 'active' : '' }}" id="{{ strtolower($type) }}-list">
                         @forelse($items as $package)
-                            <div class="package-item {{ in_array($package->packageID, $savedPackageIds ?? []) ? 'is-saved' : '' }}" 
+                            <div class="package-item {{ in_array($package->packageID, $savedPackageIds ?? []) ? 'is-saved' : '' }}"
                                  data-duration="{{ $package->durasiPackage }}"
                                  data-package-id="{{ $package->packageID }}"
                                  onclick="selectPackage(this, {{ $package->packageID }}, {{ $package->hargaPackage }})">
-                                
+
                                 <div class="package-info-left">
                                     <div class="duration-badge">
                                         <span class="material-icons">schedule</span>
@@ -565,7 +565,7 @@
         element.classList.add('selected');
         selectedPackageId = packageId;
         selectedPackagePrice = price;
-        
+
         document.getElementById('chooseButton').disabled = false;
         document.getElementById('saveButton').disabled = false;
     }
@@ -595,7 +595,7 @@
         .then(data => {
             if (data.success) {
                 showToast(data.message, 'success');
-                
+
                 const selectedItem = document.querySelector(`[data-package-id="${selectedPackageId}"]`);
                 if (data.action === 'saved') {
                     selectedItem.classList.add('is-saved');
@@ -605,7 +605,7 @@
             } else {
                 showToast(data.message || 'Terjadi kesalahan', 'error');
             }
-            
+
             saveBtn.disabled = false;
             saveBtn.innerHTML = originalText;
         })
@@ -630,17 +630,17 @@
         if (existingToast) {
             existingToast.remove();
         }
-        
+
         const toast = document.createElement('div');
         toast.className = `toast-notification ${type}`;
         toast.textContent = message;
-        
+
         document.body.appendChild(toast);
-        
+
         setTimeout(() => {
             toast.classList.add('show');
         }, 10);
-        
+
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => {
@@ -652,50 +652,50 @@
     document.addEventListener('DOMContentLoaded', function() {
         const tabParam = getUrlParameter('tab');
         const durationParam = getUrlParameter('duration');
-        
+
         console.log('=== NETFLIX AUTO-SELECT DEBUG ===');
         console.log('URL Parameters - Tab:', tabParam, 'Duration:', durationParam);
-        
+
         if (tabParam) {
             const tabName = tabParam.charAt(0).toUpperCase() + tabParam.slice(1).toLowerCase();
             const tabs = document.querySelectorAll('.tab-button');
             let foundTab = null;
-            
+
             tabs.forEach(tab => {
                 if (tab.textContent.trim() === tabName) {
                     foundTab = tab;
                 }
             });
-            
+
             if (foundTab) {
                 tabs.forEach(t => t.classList.remove('active'));
                 foundTab.classList.add('active');
-                
+
                 document.querySelectorAll('.package-list').forEach(list => {
                     list.classList.remove('active');
                 });
-                
+
                 const listId = tabParam.toLowerCase() + '-list';
                 const targetList = document.getElementById(listId);
-                
+
                 if (targetList) {
                     targetList.classList.add('active');
-                    
+
                     if (durationParam) {
                         setTimeout(() => {
                             const packageItems = targetList.querySelectorAll('.package-item');
-                            
+
                             packageItems.forEach((item) => {
                                 const itemDuration = item.getAttribute('data-duration');
-                                
+
                                 if (itemDuration === durationParam || itemDuration == durationParam) {
                                     console.log('✅ MATCH FOUND! Auto-selecting Netflix package');
                                     item.click();
-                                    
+
                                     setTimeout(() => {
-                                        item.scrollIntoView({ 
-                                            behavior: 'smooth', 
-                                            block: 'center' 
+                                        item.scrollIntoView({
+                                            behavior: 'smooth',
+                                            block: 'center'
                                         });
                                     }, 100);
                                 }
@@ -705,7 +705,7 @@
                 }
             }
         }
-        
+
         console.log('=== END DEBUG ===');
     });
     </script>

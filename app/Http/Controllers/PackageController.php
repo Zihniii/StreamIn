@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\WishlistPackage;
+use App\Models\Package;
+use App\Models\UserSubscription;
+use Carbon\Carbon;
 
 class PackageController extends Controller
 {
@@ -92,54 +95,81 @@ class PackageController extends Controller
      * FIXED: Menampilkan halaman paket untuk service lainnya (generic)
      * Sekarang return view yang sesuai dengan service
      */
-    public function showPackage($service)
-    {
-        // Capitalize first letter of each word
-        $serviceName = ucwords(str_replace('-', ' ', $service));
+public function showPackage($service)
+{
+    // Ubah slug (contoh: prime-video) menjadi Nama Normal (Prime Video)
+    $serviceName = ucwords(str_replace('-', ' ', $service));
 
-        // Ambil semua paket dari database berdasarkan service name
-        $packages = DB::table('package')
-            ->where('serviceName', $serviceName)
-            ->orderByRaw("FIELD(packageType, 'Hourly', 'Daily', 'Monthly')")
-            ->orderBy('durasiPackage', 'asc')
+    // Ambil data dari tabel package
+    $packages = DB::table('package')
+        ->whereRaw('LOWER(TRIM(serviceName)) = ?', [strtolower($serviceName)])
+        ->orderByRaw("FIELD(packageType, 'Hourly', 'Daily', 'Monthly')")
+        ->get();
+
+    if ($packages->isEmpty()) {
+        abort(404, 'Layanan ' . $serviceName . ' tidak ditemukan.');
+    }
+
+    // Kelompokkan berdasarkan packageType
+    $groupedPackages = $packages->groupBy('packageType');
+    $savedPackageIds = $this->getSavedPackageIds();
+
+    // Mapping View - Pastikan file 'packagenetflix.blade.php' benar-benar ada
+    $viewMap = [
+        'Netflix'     => 'packagenetflix',
+        'Prime Video' => 'packageprime',
+        'Viu'         => 'packageviu',
+    ];
+
+    // Fallback ke view 'package' jika nama tidak ada di map
+    $viewName = $viewMap[$serviceName] ?? 'package';
+
+    return view($viewName, [
+        'packages'           => $groupedPackages,
+        'serviceName'        => $serviceName,
+        'serviceDescription' => 'Nikmati hiburan terbaik dari ' . $serviceName,
+        'savedPackageIds'    => $savedPackageIds
+    ]);
+}
+
+    /**
+     * Menampilkan data dinamis untuk GUI Homepage:
+     * 1. Active Package (Carousel di atas)
+     * 2. Applications (Daftar logo layanan)
+     * 3. Recommended for You (Katalog paket)
+     */
+    public function showHomepage()
+    {
+        $user = Auth::user();
+
+        // 1. DATA ACTIVE PACKAGE (Sesuai tabel user_subscriptions & package di ERD)
+        // Mengambil paket yang sedang aktif untuk ditampilkan di carousel atas
+        $activeSubscriptions = UserSubscription::with('package')
+            ->where('userID', $user->userID)
+            ->where('status', 'active')
+            ->orderBy('endDate', 'asc')
             ->get();
 
-        // Jika tidak ada paket ditemukan
-        if ($packages->isEmpty()) {
-            abort(404, 'Service not found');
+        // Tambahkan atribut sisa waktu (untuk tampilan 1d 22h 48m di GUI)
+        foreach ($activeSubscriptions as $sub) {
+            $end = Carbon::parse($sub->endDate);
+            $sub->remainingTime = Carbon::now()->diff($end)->format('%dd %hh %im');
         }
 
-        // Kelompokkan paket berdasarkan tipe
-        $groupedPackages = $packages->groupBy('packageType');
+        // 2. DATA APPLICATIONS (Daftar layanan unik)
+        // Mengambil serviceName dan logoSubscription agar muncul di section 'Applications'
+        $applications = Package::select('serviceName', 'logoSubscription')
+            ->groupBy('serviceName', 'logoSubscription')
+            ->get();
 
-        // Get saved package IDs
-        $savedPackageIds = $this->getSavedPackageIds();
+        // 3. DATA RECOMMENDED (Katalog paket berdasarkan tipe)
+        // Default menampilkan semua paket untuk section 'Recommended for You'
+        $recommendedPackages = Package::all();
 
-        // FIXED: Mapping service name ke view file yang sesuai
-        $viewMap = [
-            'Netflix' => 'packagenetflix',
-            'Prime Video' => 'packageprime',
-            'Viu' => 'packageviu',
-            'Vidio' => 'packagevidio',  // Jika ada
-            'Hotstar' => 'packagehotstar',  // Jika ada
-        ];
-
-        $descriptions = [
-            'Netflix' => 'Nikmati pengalaman menonton tanpa batas dengan paket Netflix khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia.',
-            'Prime Video' => 'Akses ribuan film dan series eksklusif dengan Amazon Prime Video. Tonton konten original dan blockbuster terbaik.',
-            'Viu' => 'Tonton drama Asia terbaik dan konten eksklusif di Viu. Streaming tanpa batas untuk hiburan Anda.',
-            'Vidio' => 'Streaming konten lokal dan internasional terbaik di Vidio. Hiburan untuk seluruh keluarga.',
-            'Hotstar' => 'Nikmati konten premium dari Disney, Marvel, Star Wars, dan lainnya di Disney+ Hotstar.',
-        ];
-
-        // FIXED: Gunakan view yang sesuai, fallback ke packagenetflix jika tidak ada
-        $viewName = $viewMap[$serviceName] ?? 'packagenetflix';
-
-        return view($viewName, [
-            'packages' => $groupedPackages,
-            'serviceName' => $serviceName,
-            'serviceDescription' => $descriptions[$serviceName] ?? 'Nikmati streaming berkualitas tinggi.',
-            'savedPackageIds' => $savedPackageIds
-        ]);
+        return view('homepage', compact(
+            'activeSubscriptions',
+            'applications',
+            'recommendedPackages'
+        ));
     }
 }

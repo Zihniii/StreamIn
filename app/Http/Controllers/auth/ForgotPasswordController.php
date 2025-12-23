@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-
+ /*=============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    =============================================  */
 class ForgotPasswordController extends Controller
 {
     /**
