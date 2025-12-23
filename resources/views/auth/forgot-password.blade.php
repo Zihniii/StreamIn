@@ -1,4 +1,9 @@
-<!-- Bagas Rafi -->
+ <!-- 
+    =============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    ============================================= 
+    -->
 @extends('auth.layout')
 
 @section('title', 'forgot-password')

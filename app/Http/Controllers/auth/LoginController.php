@@ -1,4 +1,3 @@
-<!-- Bagas Rafi -->
 <?php
 
 namespace App\Http\Controllers\Auth;
@@ -7,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+ /*=============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    =============================================  */
 class LoginController extends Controller
 {
     /**

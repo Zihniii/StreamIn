@@ -1,4 +1,3 @@
-<!-- Bagas Rafi -->
 <?php
 
 namespace App\Http\Controllers\Auth;
@@ -9,7 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
+ /*=============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    =============================================  */
 class RegisterController extends Controller
 {
     /**
@@ -66,15 +68,7 @@ class RegisterController extends Controller
             'fotoProfil' => null, // Default null
         ]);
 
-        // Auto login after registration
-        Auth::login($user);
-
-        return redirect()->route('homepage')
-            ->with('success', 'Registration successful! Welcome to Stream.in');
+        return redirect()->route('login')
+            ->with('success', 'Registration successful! Please log in to continue.');
     }
 }
-
-//         return redirect()->route('home')
-//             ->with('success', 'Logged out successfully.');
-//     }
-// }

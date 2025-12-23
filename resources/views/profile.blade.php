@@ -259,7 +259,10 @@
             }
         }
 
-        /* Bagas Rafi - Logout */
+         /*=============================================
+            Coded by: Bagas Rafi Dewantara
+            NRP: 5026231091
+            =============================================  */
         .logout-btn {
             background: #fff;
             border: 1px solid #ddd;
@@ -846,7 +849,10 @@
 
     </div> <!-- Close .page-wrapper -->
 
-    <!-- Bagas Rafi - BOTTOM NAV (DILUAR page-wrapper AGAR FIXED POSITION BENAR) -->
+     <!--=============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    =============================================-->
     <div class="bottom-nav">
         <div class="container-nav">
             <div class="row text-center">

@@ -24,6 +24,10 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::middleware('guest')->group(function () {
+     /*=============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    =============================================  */
 
     // Login
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -50,7 +54,11 @@ Route::get('/password-reset-success', [ResetPasswordController::class, 'showSucc
 | LOGOUT
 |--------------------------------------------------------------------------
 */
-
+ /*=============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    =============================================  */
+    
 Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');

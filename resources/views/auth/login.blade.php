@@ -1,4 +1,9 @@
-<!-- Bagas Rafi -->
+ <!-- 
+    =============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    ============================================= 
+    -->
 @extends('auth.layout')
 
 @section('title', 'login')
@@ -14,6 +19,23 @@
     <!-- Bagas Rafi -->
     <div class="form-side">
         <div class="auth-card">
+
+            {{-- TOAST NOTIFICATION --}}
+            @if(session('success'))
+            <div id="successToast" class="toast-notification">
+                <div class="toast-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">Success!</div>
+                    <div class="toast-message">{{ session('success') }}</div>
+                </div>
+                <button class="toast-close" onclick="closeToast()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            @endif
+
             <div class="page-indicator">
                 <span class="dot"></span>
                 <span class="dot active"></span>
