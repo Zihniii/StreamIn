@@ -10,19 +10,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
-        /* CSS Kamu tetap sama persis, tidak ada perubahan */
+        /* ======================================================
+           Created by Muhammad Naufal Erwin E 5026231152
+           ====================================================== */
+
+        /* =======================
+           Section: Global Reset
+           ======================= */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* =======================
+           Section: Body
+           ======================= */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: #f5f5f5;
             overflow-x: hidden;
         }
 
+        /* =======================
+           Section: Main Container
+           ======================= */
         .container {
             max-width: 430px;
             margin: 0 auto;
@@ -32,6 +44,9 @@
             padding-bottom: 120px;
         }
 
+        /* =======================
+           Section: Responsive (Tablet & Desktop)
+           ======================= */
         @media (min-width: 768px) {
             body {
                 background: white;
@@ -77,6 +92,9 @@
             }
         }
 
+        /* =======================
+           Section: Responsive (Tablet Landscape)
+           ======================= */
         @media (min-width: 768px) and (max-width: 1024px) {
             .apps-grid {
                 grid-template-columns: repeat(5, 1fr) !important;
@@ -87,6 +105,9 @@
             }
         }
 
+        /* =======================
+           Section: Responsive (Large Desktop)
+           ======================= */
         @media (min-width: 1400px) {
             .apps-grid {
                 grid-template-columns: repeat(6, 1fr) !important;
@@ -97,6 +118,9 @@
             }
         }
 
+        /* =======================
+           Section: Header
+           ======================= */
         .header {
             background: linear-gradient(135deg, #9B1636 0%, #E23C64 100%);
             padding: 24px 24px 48px;
@@ -117,18 +141,41 @@
             gap: 12px;
         }
 
+        /* =======================
+           Section: Avatar (Container)
+           ======================= */
         .user-avatar {
             width: 48px;
             height: 48px;
             border-radius: 50%;
             background: white;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .user-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* =======================
+           Section: Avatar Placeholder (Initials)
+           ======================= */
+        .profile-pic-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
         .user-name {
@@ -168,6 +215,9 @@
             font-weight: 500;
         }
 
+        /* =======================
+           Section: Active Package Card
+           ======================= */
         .active-package {
             background: white;
             border-radius: 20px;
@@ -270,6 +320,9 @@
             color: #333;
         }
 
+        /* =======================
+           Section: Search
+           ======================= */
         .search-section {
             padding: 0 24px;
             margin-top: 24px;
@@ -293,6 +346,9 @@
             color: #999;
         }
 
+        /* =======================
+           Section: Applications
+           ======================= */
         .applications-section {
             padding: 0 24px;
             margin-bottom: 24px;
@@ -357,6 +413,9 @@
             text-align: center;
         }
 
+        /* =======================
+           Section: Recommended
+           ======================= */
         .recommended-section {
             padding: 0 24px;
             margin-bottom: 24px;
@@ -480,6 +539,9 @@
             color: #C93866;
         }
 
+        /* =======================
+           Section: Bottom Navigation
+           ======================= */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -519,24 +581,54 @@
 </head>
 
 <body>
+    <!-- =======================
+         Section: Main Wrapper
+         ======================= -->
     <div class="container">
+        <!-- =======================
+             Section: Header UI
+             ======================= -->
         <div class="header">
             <div class="user-section">
                 <div class="user-info">
+                    <!-- =======================
+                         Section: Photo Profile (Logic disamakan dengan Dashboard)
+                         Created by Muhammad Naufal Erwin E 5026231152
+                         ======================= -->
                     <div class="user-avatar">
                         @php
+                            // Data user login
                             $user = Auth::user();
-                            $fotoProfil = $user->fotoProfil;
+                            $fotoProfil = $user->fotoProfil ?? null;
+                            $userName = $user->usernamePengguna ?? 'Guest';
+
+                            // Path foto
                             $fotoPath = public_path('img/profile/' . $fotoProfil);
-                            $avatarUrl =
-                                $fotoProfil && file_exists($fotoPath)
-                                    ? asset('img/profile/' . $fotoProfil)
-                                    : 'https://i.pravatar.cc/150?u=' . $user->userID;
+
+                            // Jika foto ada -> pakai foto, jika tidak -> null (pakai inisial)
+                            $displayAvatar = ($fotoProfil && file_exists($fotoPath))
+                                ? asset('img/profile/' . $fotoProfil)
+                                : null;
                         @endphp
-                        <img src="{{ $avatarUrl }}" alt="Profile">
+
+                        @if ($displayAvatar)
+                            <img src="{{ $displayAvatar }}" alt="Profile">
+                        @else
+                            <div class="profile-pic-placeholder">
+                                {{ strtoupper(substr($userName, 0, 2)) }}
+                            </div>
+                        @endif
                     </div>
+
+                    <!-- =======================
+                         Section: Greeting Name
+                         ======================= -->
                     <div class="user-name">Hai, {{ explode(' ', $user->usernamePengguna)[0] }}!</div>
                 </div>
+
+                <!-- =======================
+                     Section: Header Actions
+                     ======================= -->
                 <div class="header-actions">
                     <button class="icon-btn" onclick="window.location.href='{{ route('saved.index') }}'">
                         <div class="icon-btn-circle">
@@ -554,6 +646,9 @@
             </div>
         </div>
 
+        <!-- =======================
+             Section: Active Package
+             ======================= -->
         <div class="active-package">
             <div class="active-package-title">Active Package</div>
             @if ($activeSubscriptions && $activeSubscriptions->count() > 0)
@@ -586,12 +681,18 @@
             @endif
         </div>
 
+        <!-- =======================
+             Section: Search Navigation
+             ======================= -->
         <div class="search-section position-relative" onclick="window.location.href='{{ route('search') }}'"
             style="cursor:pointer;">
             <i class="fas fa-search search-icon"></i>
             <input type="text" class="form-control search-box" placeholder="Search your package" readonly>
         </div>
 
+        <!-- =======================
+             Section: Applications List
+             ======================= -->
         <div class="applications-section">
             <div class="section-title">Applications</div>
             <div class="apps-grid">
@@ -607,6 +708,9 @@
             </div>
         </div>
 
+        <!-- =======================
+             Section: Recommended Packages
+             ======================= -->
         <div class="recommended-section">
             <div class="section-title">Recommended for You</div>
             <div class="filter-tabs">
@@ -617,6 +721,9 @@
             <div class="recommendations-grid" id="recommendationsGrid"></div>
         </div>
 
+        <!-- =======================
+             Section: Bottom Navigation
+             ======================= -->
         <div class="bottom-nav">
             <div class="container-nav">
                 <div class="row text-center">
@@ -650,6 +757,9 @@
     </div>
 
     <script>
+        /* =======================
+           Section: Route Map
+           ======================= */
         const serviceRouteMap = {
             'Netflix': 'netflix',
             'Prime Video': 'primevideo',
@@ -658,7 +768,9 @@
             'Hotstar': 'hotstar'
         };
 
-        /* */
+        /* =======================
+           Section: Go To Package Details
+           ======================= */
         function goToPackageDetails(serviceName, packageType = null, duration = null) {
             // Ubah 'Prime Video' menjadi 'prime-video' agar sesuai dengan parameter route Laravel
             const serviceSlug = serviceName.toLowerCase().replace(/\s+/g, '-');
@@ -677,16 +789,23 @@
             window.location.href = url;
         }
 
-        // AMBIL DATA DARI CONTROLLER
+        /* =======================
+           Section: Data from Controller
+           ======================= */
         const dbPackages = {!! json_encode($recommendedPackages) !!};
 
-        // FILTER DINAMIS SESUAI packageType DI DB
+        /* =======================
+           Section: Filter Packages
+           ======================= */
         const packagesData = {
             "Hourly": dbPackages.filter(p => p.packageType === 'Hourly'),
             "Daily": dbPackages.filter(p => p.packageType === 'Daily'),
             "Monthly": dbPackages.filter(p => p.packageType === 'Monthly')
         };
 
+        /* =======================
+           Section: Price Formatter
+           ======================= */
         function formatPrice(price) {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -695,6 +814,9 @@
             }).format(price);
         }
 
+        /* =======================
+           Section: Render Packages
+           ======================= */
         function renderPackages(type) {
             const grid = document.getElementById('recommendationsGrid');
             const packages = packagesData[type] || [];
@@ -728,6 +850,9 @@
             }).join('');
         }
 
+        /* =======================
+           Section: Filter Tab Events
+           ======================= */
         document.querySelectorAll('.filter-tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -736,6 +861,9 @@
             });
         });
 
+        /* =======================
+           Section: Initial Load
+           ======================= */
         document.addEventListener('DOMContentLoaded', () => renderPackages('Hourly'));
     </script>
 </body>
