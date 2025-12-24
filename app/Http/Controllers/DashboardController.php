@@ -72,6 +72,7 @@ class DashboardController extends Controller
         $subscription = UserSubscription::where('userSubscriptionID', $id)
             ->where('userID', $user->userID)
             ->with(['package', 'accountPackage'])
+            ->with(['package', 'accountPackage'])
             ->firstOrFail();
 
         // Auto-expire and refresh

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -407,6 +408,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="card-wrapper">
@@ -444,14 +446,16 @@
                 <!-- Payment Summary -->
                 <div class="payment-summary">
                     <div class="summary-row">
-                        <span class="summary-label">{{ $package->serviceName }} ({{ $package->descriptionDurasi }})</span>
+                        <span class="summary-label">{{ $package->serviceName }}
+                            ({{ $package->descriptionDurasi }})</span>
                         <span class="summary-value">Rp{{ number_format($originalPrice, 0, ',', '.') }}</span>
                     </div>
-                    @if($discountAmount > 0)
-                    <div class="summary-row">
-                        <span class="summary-label">Discount Voucher</span>
-                        <span class="summary-value discount">-Rp{{ number_format($discountAmount, 0, ',', '.') }}</span>
-                    </div>
+                    @if ($discountAmount > 0)
+                        <div class="summary-row">
+                            <span class="summary-label">Discount Voucher</span>
+                            <span
+                                class="summary-value discount">-Rp{{ number_format($discountAmount, 0, ',', '.') }}</span>
+                        </div>
                     @endif
                     <div class="summary-divider"></div>
                     <div class="total-row">
@@ -466,7 +470,7 @@
                         <img src="{{ asset('img/' . $paymentMethod->icon) }}" alt="{{ $paymentMethod->methodName }}">
                     </div>
                     <div class="payment-method-name">
-                        @if($paymentMethod->methodName == 'QRIS')
+                        @if ($paymentMethod->methodName == 'QRIS')
                             QRIS
                         @elseif($paymentMethod->methodName == 'BCA')
                             BCA Virtual Account
@@ -488,7 +492,7 @@
 
                 <!-- QR Code or Account Number -->
                 <div class="payment-detail-card">
-                    @if($paymentMethod->methodName == 'QRIS')
+                    @if ($paymentMethod->methodName == 'QRIS')
                         <div class="qr-code">
                             <img src="{{ asset('img/' . $paymentMethod->detail) }}" alt="QR Code">
                         </div>
@@ -531,7 +535,7 @@
 
             if (timeRemaining <= 0) {
                 alert('Payment time expired. Redirecting back...');
-                window.location.href = '{{ route("payment.details", ["package" => $package->packageID]) }}';
+                window.location.href = '{{ route('payment.details', ['package' => $package->packageID]) }}';
             }
 
             timeRemaining--;
@@ -542,7 +546,7 @@
 
         // Copy account number
         function copyAccountNumber() {
-            const accountNumber = '{{ explode(" ", $paymentMethod->detail)[0] }}';
+            const accountNumber = '{{ explode(' ', $paymentMethod->detail)[0] }}';
             navigator.clipboard.writeText(accountNumber).then(() => {
                 const btn = event.target.closest('.copy-btn');
                 const originalText = btn.innerHTML;
@@ -561,35 +565,60 @@
         }
 
         // Confirm payment
-        function confirmPayment() {
-            if (confirm('Have you completed the payment?')) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '{{ route("payment.confirm") }}';
+        async function confirmPayment() {
+            if (!confirm('Have you completed the payment?')) {
+                return;
+            }
 
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = '_token';
-                csrfInput.value = csrfToken;
-                form.appendChild(csrfInput);
+            const confirmBtn = document.querySelector('.confirm-btn');
+            const originalText = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = 'Processing...';
+            confirmBtn.disabled = true;
 
-                document.body.appendChild(form);
-                form.submit();
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                const response = await fetch('{{ route('payment.confirm') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({}) // Empty body since data is in session
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Redirect to success page
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert('Payment failed: ' + data.message);
+                    confirmBtn.innerHTML = originalText;
+                    confirmBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while confirming payment. Please try again.');
+                confirmBtn.innerHTML = originalText;
+                confirmBtn.disabled = false;
             }
         }
 
         // Check timeout via AJAX periodically
         setInterval(() => {
-            fetch('{{ route("payment.check.timeout") }}')
+            fetch('{{ route('payment.check.timeout') }}')
                 .then(response => response.json())
                 .then(data => {
                     if (data.expired) {
                         alert('Payment session expired. Redirecting back...');
-                        window.location.href = '{{ route("payment.details", ["package" => $package->packageID]) }}';
+                        window.location.href =
+                            '{{ route('payment.details', ['package' => $package->packageID]) }}';
                     }
                 });
         }, 30000); // Check every 30 seconds
     </script>
 </body>
+
 </html>

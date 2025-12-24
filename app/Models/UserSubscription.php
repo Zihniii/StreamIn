@@ -8,10 +8,10 @@ class UserSubscription extends Model
 {
     // Sesuaikan nama tabel dengan database kamu
     // Berdasarkan PaymentController fixed di atas, kita gunakan 'usersubscription'
-    protected $table = 'user_subscriptions'; 
-    
+    protected $table = 'user_subscriptions';
+
     protected $primaryKey = 'userSubscriptionID';
-    
+
     public $timestamps = false; // Set true jika tabel punya created_at/updated_at
 
     protected $fillable = [
@@ -20,7 +20,7 @@ class UserSubscription extends Model
         'accountPackageID',
         'startDate',
         'endDate',
-        'status' // active, expired, cancelled
+        'status', // active, expired, cancelled
     ];
 
     protected $casts = [

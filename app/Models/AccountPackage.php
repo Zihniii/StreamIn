@@ -13,6 +13,7 @@ class AccountPackage extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'packageID',
         'usernamePackage',
         'passwordPackage',
         'validityPackage',
