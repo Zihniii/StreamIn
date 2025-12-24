@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AccountPackage;
-use App\Models\Package;
 use App\Models\Payment;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Illuminate\Database\QueryException; 
 
 class PaymentController extends Controller
 {
@@ -20,11 +17,15 @@ class PaymentController extends Controller
     public function showPaymentDetails(Request $request)
     {
         $packageID = $request->query('package');
-        if (! $packageID) return redirect()->back()->with('error', 'Package not selected');
-        
+        if (! $packageID) {
+            return redirect()->back()->with('error', 'Package not selected');
+        }
+
         $package = DB::table('Package')->where('packageID', $packageID)->first();
-        if (! $package) return redirect()->back()->with('error', 'Package not found');
-        
+        if (! $package) {
+            return redirect()->back()->with('error', 'Package not found');
+        }
+
         $paymentMethods = DB::table('PaymentMethod')->orderBy('paymentMethodID', 'asc')->get();
         $discounts = DB::table('discount')->where('discountType', '!=', 'none')->get();
 
@@ -52,7 +53,7 @@ class PaymentController extends Controller
 
         $package = DB::table('Package')->where('packageID', $request->packageID)->first();
         $paymentMethod = DB::table('PaymentMethod')->where('paymentMethodID', $request->paymentMethodID)->first();
-        
+
         $discount = null;
         if ($request->discountID) {
             $discount = DB::table('discount')->where('discountID', $request->discountID)->first();
@@ -89,8 +90,11 @@ class PaymentController extends Controller
         $user = Auth::user();
         $paymentData = session('payment_data');
 
-        if (! $paymentData) {
-            return redirect()->route('package.netflix')->with('error', 'Sesi pembayaran habis/hilang.');
+        if (! $paymentData || ! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sesi pembayaran habis atau user tidak login.',
+            ], 401);
         }
 
         try {
@@ -103,36 +107,25 @@ class PaymentController extends Controller
                 'userID' => $user->userID,
                 'packageID' => $paymentData['packageID'],
                 'paymentMethodID' => $paymentData['paymentMethodID'],
-                'discountID' => $paymentData['discountID'],
+                'discountID' => $paymentData['discountID'] ?? null,
                 'amount' => $paymentData['finalPrice'],
                 'adminFee' => 0,
                 'paymentDate' => now(),
-                'paymentStatus' => 'paid', 
+                'paymentStatus' => 'paid',
             ]);
 
             // -----------------------------------------------------------
-            // 2. Cari Akun (Service Based Matching)
+            // 2. Dapatkan Info Paket yang Dibeli
             // -----------------------------------------------------------
-            // Ambil info paket yang dibeli user
             $purchasedPackage = DB::table('package')->where('packageID', $paymentData['packageID'])->first();
-            $targetService = $purchasedPackage->serviceName; // Contoh: "Netflix"
 
-            // Cari akun yang terhubung ke paket dengan layanan yang SAMA ("Netflix")
-            // Join ini sekarang BERHASIL karena kolom packageID sudah Anda buat.
-            $accountPackage = DB::table('accountpackage')
-                ->join('package', 'accountpackage.packageID', '=', 'package.packageID') 
-                ->where('package.serviceName', $targetService) 
-                ->where(function($query) {
-                    $query->where('accountpackage.status', 'active')
-                          ->orWhere('accountpackage.status', 'Active');
-                })
-                ->select('accountpackage.*') // Ambil data akun saja
-                ->inRandomOrder() // Acak (Shared Account)
-                ->first();
-
-            if (! $accountPackage) {
+            if (! $purchasedPackage) {
                 DB::rollBack();
-                return redirect()->back()->with('error', 'Stok akun untuk layanan '.$targetService.' sedang kosong. Hubungi Admin.');
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Paket tidak ditemukan.',
+                ], 404);
             }
 
             // -----------------------------------------------------------
@@ -142,81 +135,135 @@ class PaymentController extends Controller
             $endDate = $this->calculateEndDate($purchasedPackage);
 
             // -----------------------------------------------------------
-            // 4. Simpan Langganan (User Subscription)
+            // 4. BUAT AKUN BARU (Dynamic Generation)
             // -----------------------------------------------------------
-            // Ambil ID akun dengan aman (antisipasi beda huruf besar/kecil)
-            $accPkgId = $accountPackage->accountPackageID ?? $accountPackage->accountpackageID;
+            $serviceName = $purchasedPackage->serviceName;
+            $username = $this->generateAccountUsername($serviceName);
+            $password = $this->generateAccountPassword();
 
+            $accountPackageId = DB::table('accountpackage')->insertGetId([
+                'packageID' => $purchasedPackage->packageID, // Use actual package ID
+                'usernamePackage' => $username,
+                'passwordPackage' => $password,
+                'validityPackage' => 1, // 1 = valid/active
+                'status' => 'active',
+                // Note: We're NOT adding new columns, using existing structure
+            ]);
+
+            // -----------------------------------------------------------
+            // 5. Simpan Langganan (User Subscription)
+            // -----------------------------------------------------------
             $subscriptionId = DB::table('user_subscriptions')->insertGetId([
-                'userID' => $user->userID,               
-                'packageID' => $paymentData['packageID'], 
-                'accountPackageID' => $accPkgId,          
+                'userID' => $user->userID,
+                'packageID' => $paymentData['packageID'],
+                'accountPackageID' => $accountPackageId, // Use NEWLY created account
                 'startDate' => $startDate,
                 'endDate' => $endDate,
-                'status' => 'active'
+                'status' => 'active',
             ]);
 
             DB::commit();
+
+            // Clear session
             session()->forget('payment_data');
 
-            return redirect()->route('payment.success', [
-                'subscription' => $subscriptionId,
+            return response()->json([
+                'success' => true,
+                'subscription_id' => $subscriptionId,
+                'redirect_url' => route('payment.success', ['subscription' => $subscriptionId]),
             ]);
 
         } catch (QueryException $e) {
             DB::rollBack();
-            // Pesan error teknis untuk developer
-            return redirect()->back()->with('error', 'Database Error: '.$e->getMessage());
+
+            \Log::error('Payment DB Error: '.$e->getMessage(), [
+                'user_id' => $user->userID ?? null,
+                'payment_data' => $paymentData,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Database Error: '.$e->getMessage(),
+            ], 500);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan sistem: '.$e->getMessage());
+
+            \Log::error('Payment System Error: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem: '.$e->getMessage(),
+            ], 500);
         }
+    }
+
+    /**
+     * Generate unique username based on service
+     */
+    private function generateAccountUsername($serviceName)
+    {
+        // Clean service name (remove spaces, special chars)
+        $cleanService = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $serviceName));
+
+        // Generate random suffix
+        $random = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 8);
+        $timestamp = time() % 10000; // Last 4 digits of timestamp
+
+        return $cleanService.'_'.$random.$timestamp;
+    }
+
+    /**
+     * Generate strong password
+     */
+    private function generateAccountPassword()
+    {
+        // 10-character password with letters and numbers
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+        return substr(str_shuffle($chars), 0, 10);
     }
 
     /**
      * Halaman Sukses
      */
-    public function showSuccess(Request $request)
+    public function showSuccess($subscription)
     {
-        $subscriptionId = $request->query('subscription');
-        if (! $subscriptionId) return redirect()->route('dashboard');
+        $subscriptionId = $subscription;
 
-        // Join tabel untuk menampilkan detail di struk
         $subscription = DB::table('user_subscriptions')
             ->join('package', 'user_subscriptions.packageID', '=', 'package.packageID')
             ->join('accountpackage', 'user_subscriptions.accountPackageID', '=', 'accountpackage.accountPackageID')
             ->where('user_subscriptions.userSubscriptionID', $subscriptionId)
-            ->select('user_subscriptions.*', 'package.*', 'accountpackage.usernamePackage', 'accountpackage.passwordPackage')
+            ->where('user_subscriptions.userID', Auth::user()->userID)
+            ->select(
+                'user_subscriptions.*',
+                'package.*',
+                'accountpackage.usernamePackage',
+                'accountpackage.passwordPackage'
+            )
             ->first();
-
-        // Fallback jika join gagal karena nama kolom beda case
-        if (! $subscription) {
-             $subscription = DB::table('user_subscriptions')
-                ->join('package', 'user_subscriptions.packageID', '=', 'package.packageID')
-                ->join('accountpackage', 'user_subscriptions.accountpackageID', '=', 'accountpackage.accountPackageID') 
-                ->where('user_subscriptions.userSubscriptionID', $subscriptionId)
-                ->select('user_subscriptions.*', 'package.*', 'accountpackage.usernamePackage', 'accountpackage.passwordPackage')
-                ->first();
-        }
 
         if (! $subscription) {
             return redirect()->route('dashboard')->with('error', 'Data tidak ditemukan');
         }
 
-        return view('paymentsuccess', ['subscription' => $subscription]);
+        return view('paymentsuccess', compact('subscription'));
     }
 
     public function checkTimeout(Request $request)
     {
         $paymentData = session('payment_data');
-        if (! $paymentData) return response()->json(['expired' => true]);
+        if (! $paymentData) {
+            return response()->json(['expired' => true]);
+        }
 
         $createdAt = Carbon::parse($paymentData['createdAt']);
         $minutesElapsed = $createdAt->diffInMinutes(now());
 
         if ($minutesElapsed > 10) {
             session()->forget('payment_data');
+
             return response()->json(['expired' => true]);
         }
 
@@ -234,11 +281,11 @@ class PaymentController extends Controller
 
         if (str_contains($type, 'hour') || str_contains($type, 'jam')) {
             return $now->addHours($duration);
-        } elseif (str_contains($type, 'day') || str_contains($type, 'hari')) {
+        } elseif (str_contains($type, 'day') || str_contains($type, 'hari') || str_contains($type, 'daily')) {
             return $now->addDays($duration);
-        } elseif (str_contains($type, 'year') || str_contains($type, 'tahun')) {
-            return $now->addYears($duration);
+        } elseif (str_contains($type, 'month') || str_contains($type, 'bulan') || str_contains($type, 'monthly')) {
+            return $now->addMonths($duration);  // FIXED: changed addYears to addMonths
         }
-        return $now->addMonths($duration);
+
     }
 }

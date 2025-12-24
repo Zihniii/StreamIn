@@ -24,7 +24,7 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::middleware('guest')->group(function () {
-     /*=============================================
+    /*=============================================
     Coded by: Bagas Rafi Dewantara
     NRP: 5026231091
     =============================================  */
@@ -54,11 +54,11 @@ Route::get('/password-reset-success', [ResetPasswordController::class, 'showSucc
 | LOGOUT
 |--------------------------------------------------------------------------
 */
- /*=============================================
-    Coded by: Bagas Rafi Dewantara
-    NRP: 5026231091
-    =============================================  */
-    
+/*=============================================
+   Coded by: Bagas Rafi Dewantara
+   NRP: 5026231091
+   =============================================  */
+
 Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
@@ -125,7 +125,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
 
-    // Show report form for specific subscription
+    // Show report form
     Route::get('/report/{subscriptionId}', [ReportIssueController::class, 'showReportForm'])
         ->name('report.show');
 
@@ -137,9 +137,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-reports', [ReportIssueController::class, 'myReports'])
         ->name('report.list');
 
-    // View report detail
     Route::get('/report/detail/{id}', [ReportIssueController::class, 'reportDetail'])
         ->name('report.detail');
+
+    Route::post('/report/submit-new', [ReportIssueController::class, 'submitNewIssue'])
+        ->name('report.submit.new');
+
+    Route::post('/report/{id}/update-status', [ReportIssueController::class, 'updateStatus'])
+        ->name('report.update.status');
+
+    Route::post('/report/{id}/mark-solved', [ReportIssueController::class, 'markAsSolved'])
+        ->name('report.mark.solved');
 
 });
 
@@ -150,8 +158,8 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::get('/package/{service}', [PackageController::class, 'showPackage'])->name('package.show')->middleware('auth');
-//Route::get('/package', fn () => view('package'))->middleware('auth')->name('package');
-//Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('payment');
+// Route::get('/package', fn () => view('package'))->middleware('auth')->name('package');
+// Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('payment');
 Route::get('/payment', function () {
     return redirect()->route('dashboard');
 })->middleware('auth')->name('payment');
@@ -180,6 +188,6 @@ Route::post('/payment/checkout', [PaymentController::class, 'processCheckout'])-
 Route::post('/payment/calculate-discount', [PaymentController::class, 'calculateDiscount'])->name('payment.calculate');
 Route::post('/payment', [PaymentController::class, 'showPayment'])->name('payment.show');
 Route::post('/payment/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
-Route::get('/payment/success', [PaymentController::class, 'showSuccess'])->name('payment.success');
+Route::get('/payment/success/{subscription}', [PaymentController::class, 'showSuccess'])->name('payment.success');
 // Route untuk check payment timeout (AJAX)
 Route::get('/payment/check-timeout', [PaymentController::class, 'checkTimeout'])->name('payment.check.timeout');
