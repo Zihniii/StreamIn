@@ -1,3 +1,8 @@
+
+// =============================================
+// Coded by: Bagas Rafi Dewantara
+// NRP: 5026231091
+// ============================================= 
 // Toggle Password Visibility
 function togglePassword(inputId, iconElement) {
     const input = document.getElementById(inputId);
@@ -81,35 +86,7 @@ function handleSignup(e) {
     
     return true; // Allow form submission to Laravel
 
-    // const password = document.getElementById('signupPassword').value;
-    // const confirm = document.getElementById('signupConfirmPassword').value;
-    
-    // let isValid = true;
-    
-    // // Reset errors
-    // document.getElementById('signupPasswordError').style.display = 'none';
-    // document.getElementById('signupConfirmError').style.display = 'none';
-    
-    // // Validate password
-    // if (password.length < 8 || !/\d/.test(password) || !/[!@#$%^&*]/.test(password)) {
-    //     document.getElementById('signupPasswordError').style.display = 'block';
-    //     document.getElementById('signupPassword').classList.add('is-invalid');
-    //     isValid = false;
-    // }
-    
-    // // Validate password match
-    // if (password !== confirm) {
-    //     document.getElementById('signupConfirmError').style.display = 'block';
-    //     document.getElementById('signupConfirmPassword').classList.add('is-invalid');
-    //     isValid = false;
-    // }
-    
-    // if (!isValid) {
-    //     e.preventDefault();
-    //     return false;
-    // }
-    
-    // return true; // Allow form submission to Laravel
+   
 }
 
 // Real-time Email Validation
@@ -133,5 +110,26 @@ document.addEventListener('input', function(e) {
             input.classList.remove('is-valid');
             if (icon) icon.style.display = 'none';
         }
+    }
+});
+
+// Toast Notification Functions
+function closeToast() {
+    const toast = document.getElementById('successToast');
+    if (toast) {
+        toast.style.animation = 'fadeOut 0.3s ease-in forwards';
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }
+}
+
+// Auto close toast after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const toast = document.getElementById('successToast');
+    if (toast) {
+        setTimeout(() => {
+            closeToast();
+        }, 5000);
     }
 });

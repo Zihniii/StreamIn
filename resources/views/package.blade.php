@@ -211,291 +211,102 @@
 </head>
 <body>
     <div class="container">
-        <div class="status-bar">
-            <div class="status-icons">
-            </div>
-        </div>
-
         <div class="header">
-            <button class="back-btn" onclick="history.back()">
+            <button class="back-btn" onclick="window.location.href='{{ route('homepage') }}'">
                 <i class="bi bi-chevron-left"></i>
             </button>
-            <h1>Netflix</h1>
+            <h1>{{ $serviceName }}</h1>
         </div>
 
         <div class="netflix-banner">
-            <div class="netflix-logo">NETFLIX</div>
+            <div class="netflix-logo">{{ strtoupper($serviceName) }}</div>
         </div>
 
         <div class="content-wrapper">
             <div class="title-section">
-                <h2>Netflix</h2>
+                <h2>{{ $serviceName }}</h2>
                 <button class="bookmark-btn">
                     <i class="bi bi-bookmark"></i>
                 </button>
             </div>
 
             <p class="description">
-                Nikmati pengalaman menonton tanpa batas dengan paket Netflix khusus. Dapatkan akses ke ribuan film, serial, dan dokumenter terbaik di dunia. Tidak ada iklan, tidak ada gangguan, hanya hiburan berkualitas untuk setiap momen.
+                {{ $serviceDescription }}
             </p>
 
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('hourly')">Hourly</button>
-                <button class="tab-btn" onclick="switchTab('daily')">Daily</button>
-                <button class="tab-btn" onclick="switchTab('monthly')">Monthly</button>
+                @foreach(['Hourly', 'Daily', 'Monthly'] as $type)
+                    <button class="tab-btn {{ (request('tab') == strtolower($type) || ($type == 'Hourly' && !request('tab'))) ? 'active' : '' }}"
+                            onclick="switchTab('{{ strtolower($type) }}')">
+                        {{ $type }}
+                    </button>
+                @endforeach
             </div>
 
-            <!-- Hourly Packages -->
-            <div id="hourly-packages" class="packages-container active">
-                <div class="pricing-card" onclick="selectCard('hourly', 0)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-clock"></i>
-                            <span>1 Hour</span>
+            @foreach(['Hourly', 'Daily', 'Monthly'] as $type)
+            <div id="{{ strtolower($type) }}-packages" class="packages-container {{ (request('tab') == strtolower($type) || ($type == 'Hourly' && !request('tab'))) ? 'active' : '' }}">
+                @if(isset($packages[$type]))
+                    @foreach($packages[$type] as $index => $pkg)
+                        <div class="pricing-card" onclick="selectCard('{{ strtolower($type) }}', {{ $pkg->packageID }})">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="time-badge">
+                                    <i class="bi {{ $type == 'Monthly' ? 'bi-calendar' : 'bi-clock' }}"></i>
+                                    <span>{{ $pkg->durasiPackage }} {{ $type == 'Hourly' ? 'Hour' : ($type == 'Daily' ? 'Day' : 'Month') }}</span>
+                                </div>
+                                <div class="pricing-info">
+                                    <h3>Rp{{ number_format($pkg->hargaPackage, 0, ',', '.') }}</h3>
+                                    <p>{{ $pkg->descriptionPackage ?? 'Streaming access' }}</p>
+                                </div>
+                            </div>
+                            <div class="radio-btn" id="radio-{{ $pkg->packageID }}"></div>
                         </div>
-                        <div class="pricing-info">
-                            <h3>Rp3.000</h3>
-                            <p>Quick watch session</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="hourly-radio-0"></div>
-                </div>
-
-                <div class="pricing-card" onclick="selectCard('hourly', 1)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-clock"></i>
-                            <span>3 Hour</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp5.000</h3>
-                            <p>Great for a movie or more</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="hourly-radio-1"></div>
-                </div>
-
-                <div class="pricing-card" onclick="selectCard('hourly', 2)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-clock"></i>
-                            <span>6 Hour</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp7.000</h3>
-                            <p>Extended viewing time</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="hourly-radio-2"></div>
-                </div>
-
-                <div class="pricing-card" onclick="selectCard('hourly', 3)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-clock"></i>
-                            <span>12 Hour</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp10.000</h3>
-                            <p>All-day streaming access</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="hourly-radio-3"></div>
-                </div>
+                    @endforeach
+                @else
+                    <p class="text-center text-muted">No {{ $type }} packages available.</p>
+                @endif
             </div>
+            @endforeach
 
-            <!-- Daily Packages -->
-            <div id="daily-packages" class="packages-container">
-                <div class="pricing-card" onclick="selectCard('daily', 0)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-clock"></i>
-                            <span>1 Day</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp20.000</h3>
-                            <p>24 hour access</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="daily-radio-0"></div>
-                </div>
-
-                <div class="pricing-card" onclick="selectCard('daily', 1)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-clock"></i>
-                            <span>3 Day</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp25.000</h3>
-                            <p>Weekend entertainment</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="daily-radio-1"></div>
-                </div>
-
-                <div class="pricing-card" onclick="selectCard('daily', 2)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-clock"></i>
-                            <span>5 Day</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp30.000</h3>
-                            <p>Work week streaming</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="daily-radio-2"></div>
-                </div>
-
-                <div class="pricing-card" onclick="selectCard('daily', 3)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-clock"></i>
-                            <span>7 Day</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp40.000</h3>
-                            <p>Full week access</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="daily-radio-3"></div>
-                </div>
-            </div>
-
-            <!-- Monthly Packages -->
-            <div id="monthly-packages" class="packages-container">
-                <div class="pricing-card" onclick="selectCard('monthly', 0)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-calendar"></i>
-                            <span>1 Month</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp50.000</h3>
-                            <p>30 days of fun</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="monthly-radio-0"></div>
-                </div>
-
-                <div class="pricing-card" onclick="selectCard('monthly', 1)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-calendar"></i>
-                            <span>3 Month</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp70.000</h3>
-                            <p>Quarter year deal</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="monthly-radio-1"></div>
-                </div>
-
-                <div class="pricing-card" onclick="selectCard('monthly', 2)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-calendar"></i>
-                            <span>6 Month</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp80.000</h3>
-                            <p>Half year of fun</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="monthly-radio-2"></div>
-                </div>
-
-                <div class="pricing-card" onclick="selectCard('monthly', 3)">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="time-badge">
-                            <i class="bi bi-calendar"></i>
-                            <span>12 Month</span>
-                        </div>
-                        <div class="pricing-info">
-                            <h3>Rp150.000</h3>
-                            <p>Year round streaming</p>
-                        </div>
-                    </div>
-                    <div class="radio-btn" id="monthly-radio-3"></div>
-                </div>
-            </div>
-
-            <button class="choose-btn" onclick="choosePackage()">Choose Package</button>
+            <form id="purchase-form" action="{{ route('payment.show') }}" method="POST">
+                @csrf
+                <input type="hidden" name="packageID" id="selected-package-id">
+                <button type="button" class="choose-btn" onclick="submitPurchase()">Choose Package</button>
+            </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let currentTab = 'hourly';
-        let selectedCardIndex = {
-            hourly: -1,
-            daily: -1,
-            monthly: -1
-        };
+        let selectedID = null;
 
         function switchTab(tab) {
-            // Update active tab button
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Hide all packages and show selected tab
-            document.querySelectorAll('.packages-container').forEach(container => {
-                container.classList.remove('active');
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase() === tab) btn.classList.add('active');
             });
+
+            document.querySelectorAll('.packages-container').forEach(c => c.classList.remove('active'));
             document.getElementById(tab + '-packages').classList.add('active');
-
-            currentTab = tab;
         }
 
-        function selectCard(tab, index) {
-            const cards = document.querySelectorAll(`#${tab}-packages .pricing-card`);
-            const radios = document.querySelectorAll(`#${tab}-packages .radio-btn`);
+        function selectCard(tab, packageID) {
+            // Reset semua card
+            document.querySelectorAll('.pricing-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.radio-btn').forEach(r => r.classList.remove('selected'));
 
-            cards.forEach((card, i) => {
-                if (i === index) {
-                    card.classList.add('selected');
-                    radios[i].classList.add('selected');
-                } else {
-                    card.classList.remove('selected');
-                    radios[i].classList.remove('selected');
-                }
-            });
+            // Set yang dipilih
+            event.currentTarget.classList.add('selected');
+            document.getElementById('radio-' + packageID).classList.add('selected');
 
-            selectedCardIndex[tab] = index;
+            selectedID = packageID;
+            document.getElementById('selected-package-id').value = packageID;
         }
 
-        function choosePackage() {
-            const selected = selectedCardIndex[currentTab];
-
-            if (selected === -1) {
+        function submitPurchase() {
+            if (!selectedID) {
                 alert('Silakan pilih paket terlebih dahulu!');
                 return;
             }
-
-            const packages = {
-                hourly: [
-                    '1 Hour - Rp3.000',
-                    '3 Hour - Rp5.000',
-                    '6 Hour - Rp7.000',
-                    '12 Hour - Rp10.000'
-                ],
-                daily: [
-                    '1 Day - Rp20.000',
-                    '3 Day - Rp25.000',
-                    '5 Day - Rp30.000',
-                    '7 Day - Rp40.000'
-                ],
-                monthly: [
-                    '1 Month - Rp50.000',
-                    '3 Month - Rp70.000',
-                    '6 Month - Rp80.000',
-                    '12 Month - Rp150.000'
-                ]
-            };
-
+            document.getElementById('purchase-form').submit();
         }
     </script>
 </body>

@@ -1,3 +1,9 @@
+ <!-- 
+    =============================================
+    Coded by: Bagas Rafi Dewantara
+    NRP: 5026231091
+    ============================================= 
+    -->
 @extends('auth.layout')
 
 @section('title', 'reset-password')
@@ -12,6 +18,7 @@
 
     <div class="form-side">
         <div class="auth-card">
+            
             <div class="page-indicator">
                 <span class="dot"></span>
                 <span class="dot active"></span>

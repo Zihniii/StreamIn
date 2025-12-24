@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!-- Bagas Rafi -->
+<!DOCTYPE html> 
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -315,6 +316,8 @@
             }
         }
 
+
+        /* <!-- Bagas Rafi --> */
         .buy-again-btn:hover {
             background-color: #e50914;
             color: white;
@@ -372,7 +375,7 @@
         }
     </style>
 </head>
-
+<!-- Bagas Rafi -->
 <body>
     <div class="container-wrapper">
         <!-- Header -->
@@ -382,8 +385,7 @@
             </a>
             <h1 class="header-title">Order History Details</h1>
         </div>
-
-        <!-- Service Card -->
+        <!--Bagas Rafi - Service Card -->
         <div class="service-card-wrapper">
             <div class="service-card">
                 <div class="service-logo">
@@ -404,7 +406,7 @@
             </div>
         </div>
 
-        <!-- Transaction Details -->
+        <!--Bagas Rafi - Transaction Details -->
         <div class="content-grid">
             <div class="section">
                 <h3 class="section-title">Transaction Details</h3>
@@ -422,7 +424,7 @@
                 </div>
             </div>
 
-            <!-- Subscription Details -->
+            <!-- Bagas Rafi - Subscription Details -->
             <div class="section">
                 <h3 class="section-title">Subscription Details</h3>
                 @if($subscription)
@@ -473,20 +475,20 @@
             </div>
         </div>
 
-        <!-- Buy Again Button -->
+        <!--Bagas Rafi -  Buy Again Button -->
         <a href="{{ route('homepage') }}" class="buy-again-btn" style="display: block; text-align: center; text-decoration: none;">
             Buy Again
         </a>
     </div>
 
     <script>
-        // Handle image error fallback
+        //Bagas Rafi -  Handle image error fallback
         document.getElementById('serviceLogo').onerror = function() {
             this.onerror = null;
             this.src = '{{ asset("img/logo_netflix.png") }}';
         };
         
-        // Handle buy again button
+        //Bagas Rafi -  Handle buy again button
         document.getElementById('buyAgainBtn').addEventListener('click', function() {
             window.location.href = '{{ route("homepage") }}';
         });
