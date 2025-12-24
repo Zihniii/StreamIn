@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* CSS Anda tidak berubah, dihilangkan untuk keringkasan */
+       // Created by Muhammad Naufal Erwin E 5026231152
         * {
             margin: 0;
             padding: 0;
