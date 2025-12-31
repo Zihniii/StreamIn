@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- created by Muhammad Naufal Erwin E 5026231152 -->
+
     <style>
         body {
             background: #fff;
@@ -109,6 +111,27 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* Profile Pic Placeholder (Initials) */
+        .profile-pic-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        @media (min-width: 768px) {
+            .profile-pic-placeholder {
+                font-size: 42px;
+            }
         }
 
         .edit-btn {
@@ -259,10 +282,7 @@
             }
         }
 
-         /*=============================================
-            Coded by: Bagas Rafi Dewantara
-            NRP: 5026231091
-            =============================================  */
+        /* Bagas Rafi - Logout */
         .logout-btn {
             background: #fff;
             border: 1px solid #ddd;
@@ -402,6 +422,17 @@
                 width: 320px;
                 height: 320px;
                 margin: 60px auto;
+            }
+        }
+
+        /* Avatar Circle Placeholder */
+        .avatar-circle .profile-pic-placeholder {
+            font-size: 80px;
+        }
+
+        @media (min-width: 768px) {
+            .avatar-circle .profile-pic-placeholder {
+                font-size: 120px;
             }
         }
 
@@ -709,12 +740,15 @@
                     <div class="profile-avatar">
                         @php
                         $fotoPath = public_path('img/profile/' . $user->fotoProfil);
+                        $userName = $user->usernamePengguna ?? 'Guest';
                         @endphp
 
                         @if ($user->fotoProfil && file_exists($fotoPath))
                         <img src="{{ asset('img/profile/'.$user->fotoProfil) }}">
                         @else
-                        <img src="https://i.pravatar.cc/150?u={{ $user->id }}">
+                        <div class="profile-pic-placeholder">
+                            {{ strtoupper(substr($userName, 0, 2)) }}
+                        </div>
                         @endif
                     </div>
 
@@ -787,7 +821,9 @@
                     @if ($user->fotoProfil && file_exists($fotoPath))
                     <img src="{{ asset('img/profile/'.$user->fotoProfil) }}" style="width:100%; height:100%; object-fit:cover;">
                     @else
-                    <i class="fas fa-user-circle" style="font-size:120px; color:#a94064;"></i>
+                    <div class="profile-pic-placeholder">
+                        {{ strtoupper(substr($userName, 0, 2)) }}
+                    </div>
                     @endif
                 </div>
 
@@ -809,7 +845,9 @@
 
                 <div class="avatar-circle">
                     <img id="previewImg" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <i id="previewIcon" class="fas fa-camera" style="font-size:80px; color:#a94064;"></i>
+                    <div id="previewPlaceholder" class="profile-pic-placeholder">
+                        {{ strtoupper(substr($userName, 0, 2)) }}
+                    </div>
                 </div>
 
                 <form id="uploadForm" action="{{ route('profile.upload') }}" method="POST" enctype="multipart/form-data">
@@ -849,10 +887,7 @@
 
     </div> <!-- Close .page-wrapper -->
 
-     <!--=============================================
-    Coded by: Bagas Rafi Dewantara
-    NRP: 5026231091
-    =============================================-->
+    <!-- Bagas Rafi - BOTTOM NAV (DILUAR page-wrapper AGAR FIXED POSITION BENAR) -->
     <div class="bottom-nav">
         <div class="container-nav">
             <div class="row text-center">
@@ -894,7 +929,7 @@
             reader.onload = e => {
                 previewImg.src = e.target.result;
                 previewImg.style.display = "block";
-                previewIcon.style.display = "none";
+                previewPlaceholder.style.display = "none";
                 saveBtn.style.display = "block";
             };
             reader.readAsDataURL(file);

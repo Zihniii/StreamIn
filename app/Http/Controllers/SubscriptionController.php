@@ -81,7 +81,7 @@ class SubscriptionController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | 4. MENYIMPAN PAKET
+    | 4. MENYIMPAN PAKET created by Muhammad Naufal Erwin E 5026231152
     |--------------------------------------------------------------------------
     */
 
@@ -101,7 +101,7 @@ class SubscriptionController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | 5. MEMILIH PAKET
+    | 5. MEMILIH PAKET created by Muhammad Naufal Erwin E 5026231152
     |--------------------------------------------------------------------------
     */
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+// Created by Muhammad Naufal Erwin E 5026231152
+
 class WishlistPackage extends Model
 {
     protected $table = 'WishlistPackage';
