@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\ReportIssue;
 use App\Models\UserSubscription;
 use Carbon\Carbon;
@@ -9,6 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+
+
+    // =============================================
+    // Coded by: Zihni Aryanto Putra Buana
+    // NRP: 5026231012
+    // =============================================
 
 class ReportIssueController extends Controller
 {

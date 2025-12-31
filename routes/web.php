@@ -79,16 +79,14 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | DASHBOARD - versi terbaru dari branch ad24c3...
+    | DASHBOARD - Zihni Aryanto Putra Buana 5026231012
     |--------------------------------------------------------------------------
     */
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('dashboard/orders', [DashboardController::class, 'orderHistory'])->name('dashboard.orders');
     Route::get('dashboard/orders/{id}', [DashboardController::class, 'orderHistoryDetail'])->name('dashboard.orders.detail');
-
     Route::get('dashboard/packages/{id}', [DashboardController::class, 'packageDetail'])->name('dashboard.packages.detail');
     Route::get('dashboard/packages', [DashboardController::class, 'browsePackages'])->name('dashboard.packages.browse');
-
     Route::post('dashboard/check-expired', [DashboardController::class, 'checkExpiredPackages'])->name('dashboard.checkExpired');
     Route::get('dashboard/stats', [DashboardController::class, 'getStats'])->name('dashboard.stats');
 
@@ -125,6 +123,11 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/chat/send-photo', [ChatMessageController::class, 'sendPhoto'])->name('chat.send.photo');
 
+    /*
+    |--------------------------------------------------------------------------
+    | REPORT - Zihni Aryanto Putra Buana 5026231012
+    |--------------------------------------------------------------------------
+    */
     // Show report form
     Route::get('/report/{subscriptionId}', [ReportIssueController::class, 'showReportForm'])
         ->name('report.show');
