@@ -94,7 +94,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | PROFILE (UPLOAD FOTO + SHOW)
+    | PROFILE (UPLOAD FOTO + SHOW) created by Muhammad Naufal Erwin E 5026231152
     |--------------------------------------------------------------------------
     */
     Route::get('/profile', [SupportPemilihanController::class, 'profile'])->name('profile');
@@ -102,7 +102,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | SAVED PACKAGE / WISHLIST
+    | SAVED PACKAGE / WISHLIST created by Muhammad Naufal Erwin E 5026231152
     |--------------------------------------------------------------------------
     */
     Route::prefix('saved-package')->name('saved.')->group(function () {
@@ -149,45 +149,34 @@ Route::middleware('auth')->group(function () {
     Route::post('/report/{id}/mark-solved', [ReportIssueController::class, 'markAsSolved'])
         ->name('report.mark.solved');
 
+    /*
+    |--------------------------------------------------------------------------
+    | PACKAGE ROUTES ADIFA
+    |--------------------------------------------------------------------------
+    */
+    
+    // Route spesifik untuk setiap service (HARUS DI ATAS route dynamic)
+    Route::get('/package/netflix', [PackageController::class, 'showNetflix'])->name('package.netflix');
+    Route::get('/package/primevideo', [PackageController::class, 'showPrime'])->name('package.prime');
+    Route::get('/package/viu', [PackageController::class, 'showViu'])->name('package.viu');
+    
+    // Route dynamic untuk service lainnya (HARUS DI BAWAH route spesifik)
+    Route::get('/package/{service}', [PackageController::class, 'showPackage'])->name('package.show');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAYMENT ROUTES
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/payment', function () {
+        return redirect()->route('dashboard');
+    })->name('payment');
+    
+    Route::get('/payment/details', [PaymentController::class, 'showPaymentDetails'])->name('payment.details');
+    Route::post('/payment/checkout', [PaymentController::class, 'processCheckout'])->name('payment.checkout');
+    Route::post('/payment/calculate-discount', [PaymentController::class, 'calculateDiscount'])->name('payment.calculate');
+    Route::post('/payment', [PaymentController::class, 'showPayment'])->name('payment.show');
+    Route::post('/payment/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
+    Route::get('/payment/success/{subscription}', [PaymentController::class, 'showSuccess'])->name('payment.success');
+    Route::get('/payment/check-timeout', [PaymentController::class, 'checkTimeout'])->name('payment.check.timeout');
 });
-
-/*
-|--------------------------------------------------------------------------
-| STATIC PAGES
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/package/{service}', [PackageController::class, 'showPackage'])->name('package.show')->middleware('auth');
-// Route::get('/package', fn () => view('package'))->middleware('auth')->name('package');
-// Route::get('/payment', fn () => view('payment'))->middleware('auth')->name('payment');
-Route::get('/payment', function () {
-    return redirect()->route('dashboard');
-})->middleware('auth')->name('payment');
-
-/*
-|--------------------------------------------------------------------------
-| PACKAGE - ADIFA
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/package/netflix', [PackageController::class, 'showNetflix'])->name('package.netflix');
-Route::get('/package/primevideo', [PackageController::class, 'showPrime'])->name('package.prime');
-Route::get('/package/viu', [PackageController::class, 'showViu'])->name('package.viu');
-
-// Route paket streaming lainnya (future)
-Route::get('/package/{service}', [PackageController::class, 'showPackage'])->name('package.show');
-
-/*
-|--------------------------------------------------------------------------
-| PAYMENT DETAILS - ADIFA
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/payment/details', [PaymentController::class, 'showPaymentDetails'])->name('payment.details');
-Route::post('/payment/checkout', [PaymentController::class, 'processCheckout'])->name('payment.checkout');
-Route::post('/payment/calculate-discount', [PaymentController::class, 'calculateDiscount'])->name('payment.calculate');
-Route::post('/payment', [PaymentController::class, 'showPayment'])->name('payment.show');
-Route::post('/payment/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
-Route::get('/payment/success/{subscription}', [PaymentController::class, 'showSuccess'])->name('payment.success');
-// Route untuk check payment timeout (AJAX)
-Route::get('/payment/check-timeout', [PaymentController::class, 'checkTimeout'])->name('payment.check.timeout');
